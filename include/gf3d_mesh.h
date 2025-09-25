@@ -81,7 +81,7 @@ Mesh *gf3d_mesh_new();
  * @param filename the name of the file to load
  * @return NULL on error or Mesh data
  */
-Mesh *gf3d_mesh_load_obj(const char *filename);
+Mesh *gf3d_mesh_load(const char *filename);
 
 /**
  * @brief make an exact, but separate copy of the input mesh
