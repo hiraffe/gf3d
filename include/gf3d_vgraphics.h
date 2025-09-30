@@ -23,7 +23,7 @@ typedef struct
  * @brief init Vulkan / SDL, setup device and initialize infrastructure for 3d graphics
  * @param config json file containing setup information
  */
-void gf3d_vgraphics_init(const char *config);
+void gf3d_vgraphics_init(const char* config);
 
 /**
  * @brief kick off a rendering call for the next buffer frame.
@@ -43,7 +43,7 @@ void gf3d_vgraphics_render_end();
 Uint32  gf3d_vgraphics_get_current_buffer_frame();
 
 /**
- * @brief After initialization 
+ * @brief After initialization
  */
 VkDevice gf3d_vgraphics_get_default_logical_device();
 
@@ -87,7 +87,7 @@ GFC_Vector3D vgraphics_3d_position_to_screen_depth(GFC_Vector3D position);
  * @brief copy into view the current view matrix
  * @param view [output]
  */
-void gf3d_vgraphics_get_view(GFC_Matrix4 *view);
+void gf3d_vgraphics_get_view(GFC_Matrix4* view);
 
 
 void gf3d_vgraphics_clear();
@@ -106,13 +106,13 @@ void gf3d_vgraphics_rotate_camera(float degrees);
  * @brief get the matrix used for rendering the view
  * @return the view matrix sent to every rendering call
  */
-GFC_Matrix4 *gf3d_vgraphics_get_view_matrix();
+GFC_Matrix4* gf3d_vgraphics_get_view_matrix();
 
 /**
  * @brief get the projection matrix
  * @param proj where to put the projection matrix
  */
-void gf3d_vgraphics_get_projection_matrix(GFC_Matrix4 *proj);
+void gf3d_vgraphics_get_projection_matrix(GFC_Matrix4* proj);
 
 
 /**
@@ -129,13 +129,13 @@ ModelViewProjection gf3d_vgraphics_get_mvp();
  * @brief get the pipeline that is used to render 2d images to the overlay
  * @return NULL on error or the pipeline in question
  */
-Pipeline *gf3d_vgraphics_get_graphics_overlay_pipeline();
+Pipeline* gf3d_vgraphics_get_graphics_overlay_pipeline();
 
 /**
  * @brief get a command from the graphics command pool
  * @return NULL if non are left, or an empty command
  */
-Command *gf3d_vgraphics_get_graphics_command_pool();
+Command* gf3d_vgraphics_get_graphics_command_pool();
 
 /**
  * @brief create an image view in the given vulkan format
@@ -151,7 +151,7 @@ VkImageView gf3d_vgraphics_create_image_view(VkImage image, VkFormat format);
  * @param h the hight to create, should be non-zero
  * @return NULL on error, or an empty SDL_Surface in the proper format
  */
-SDL_Surface *gf3d_vgraphics_create_surface(Uint32 w,Uint32 h);
+SDL_Surface* gf3d_vgraphics_create_surface(Uint32 w, Uint32 h);
 
 /**
  * @brief convert a SDL_Surface to the format supported by the system
@@ -159,6 +159,8 @@ SDL_Surface *gf3d_vgraphics_create_surface(Uint32 w,Uint32 h);
  * @return NULL on failure, or a new SDL surface of the same image, but in the supported format.
  * @note this will clear the data of the original surface if it is successful automatically.
  */
-SDL_Surface *gf3d_vgraphics_screen_convert(SDL_Surface **surface);
+SDL_Surface* gf3d_vgraphics_screen_convert(SDL_Surface** surface);
+
+void gf3d_vgraphics_set_view(GFC_Matrix4 view);
 
 #endif

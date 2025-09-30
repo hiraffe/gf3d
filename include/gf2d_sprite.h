@@ -35,16 +35,16 @@
 typedef struct
 {
     Uint8                       _inuse;
-    GFC_TextLine                    filename;               /**<the name of the file used to create the sprite*/
+    GFC_TextLine                filename;               /**<the name of the file used to create the sprite*/
     Uint32                      frameCount;             /**<how many frames are loaded for this model*/
-    Texture                    *texture;                /**<texture memory pointer*/
+    Texture* texture;                /**<texture memory pointer*/
     Uint8                       framesPerLine;          /**<how many frames are per line in the sprite sheet*/
-    Uint32                      frameWidth,frameHeight; /*<the size, in pixels, of the individual sprite frames*/
-    float                       widthPercent,heightPercent;/**<size percent of the sprite frame from the texture*/
+    Uint32                      frameWidth, frameHeight; /*<the size, in pixels, of the individual sprite frames*/
+    float                       widthPercent, heightPercent;/**<size percent of the sprite frame from the texture*/
     VkBuffer                    buffer;
     VkDeviceMemory              bufferMemory;
-    VkDescriptorSet            *descriptorSet;          /**<descriptor sets used for this sprite to render*/
-    SDL_Surface                *surface;                /**<pointer to the cpu surface data*/
+    VkDescriptorSet* descriptorSet;          /**<descriptor sets used for this sprite to render*/
+    SDL_Surface* surface;                /**<pointer to the cpu surface data*/
 }Sprite;
 
 /**
@@ -58,7 +58,7 @@ void gf2d_sprite_manager_init(Uint32 max_sprites);
  * @note this provides a pointer to a zero initialized sprite, no other work is done
  * @return NULL on error or an empty sprite otherwise
  */
-Sprite *gf2d_sprite_new();
+Sprite* gf2d_sprite_new();
 
 /**
  * @brief loads a sprite sheet into memory
@@ -68,14 +68,14 @@ Sprite *gf2d_sprite_new();
  * @param frames_per_line how many frames across are on the sprite sheet
  * @return NULL on error (check logs) or a pointer to a sprite that can be draw to the 2d overlay
  */
-Sprite * gf2d_sprite_load(const char * filename,int frame_width,int frame_height, Uint32 frames_per_line);
+Sprite* gf2d_sprite_load(const char* filename, int frame_width, int frame_height, Uint32 frames_per_line);
 
 /**
  * @brief loads a flat image into memory
  * @param filename the name of the file containing the image data
  * @return NULL on error (check logs) or a pointer to a sprite that can be draw to the 2d overlay
  */
-Sprite * gf2d_sprite_load_image(const char * filename);
+Sprite* gf2d_sprite_load_image(const char* filename);
 
 /**
  * @brief load a sprite based on configuration in json
@@ -89,14 +89,14 @@ Sprite * gf2d_sprite_load_image(const char * filename);
     @param json the json containing the sprite configuration
     @return NULL if the json is bad, or the information is incorrect, the sprite otherwise
  */
-Sprite *gf2d_sprite_parse(SJson *json);
+Sprite* gf2d_sprite_parse(SJson* json);
 
 /**
  * @brief create the internal support for rendering the sprite.
  * @note automatically called for loaded sprites, but any created must call this before it will render properly
  * @param sprite the sprite to setup
  */
-void gf2d_sprite_create_vertex_buffer(Sprite *sprite);
+void gf2d_sprite_create_vertex_buffer(Sprite* sprite);
 
 /**
  * @brief create a sprite from an SDL_Surface
@@ -106,13 +106,13 @@ void gf2d_sprite_create_vertex_buffer(Sprite *sprite);
  * @param frames_per_line how many frames across are on the sprite sheet
  * @return NULL on error (check logs) or a pointer to a sprite that can be draw to the 2d overlay
  */
-Sprite * gf2d_sprite_from_surface(SDL_Surface *surface,int frame_width,int frame_height, Uint32 frames_per_line);
+Sprite* gf2d_sprite_from_surface(SDL_Surface* surface, int frame_width, int frame_height, Uint32 frames_per_line);
 
 /**
  * @brief free a previously loaded sprite
  * @param sprite a pointer to the sprite to be freed
  */
-void gf2d_sprite_free(Sprite *sprite);
+void gf2d_sprite_free(Sprite* sprite);
 
 /**
  * @brief draw a sprite to the screen with NULLable options
@@ -127,14 +127,14 @@ void gf2d_sprite_free(Sprite *sprite);
  * @param frame which frame to draw
  */
 void gf2d_sprite_draw(
-    Sprite * sprite,
+    Sprite* sprite,
     GFC_Vector2D position,
-    GFC_Vector2D * scale,
-    GFC_Vector2D * center,
-    float    * rotation,
-    GFC_Vector2D * flip,
-    GFC_Color    * colorShift,
-    GFC_Vector4D * clip,
+    GFC_Vector2D* scale,
+    GFC_Vector2D* center,
+    float* rotation,
+    GFC_Vector2D* flip,
+    GFC_Color* colorShift,
+    GFC_Vector4D* clip,
     Uint32 frame);
 
 /**
@@ -150,7 +150,7 @@ void gf2d_sprite_draw(
  * @param frame which frame to draw
  */
 void gf2d_sprite_draw_full(
-    Sprite   * sprite,
+    Sprite* sprite,
     GFC_Vector2D   position,
     GFC_Vector2D   scale,
     GFC_Vector2D   center,
@@ -171,12 +171,12 @@ void gf2d_sprite_draw_full(
  * @param surface the surface to draw to
  */
 void gf2d_sprite_draw_to_surface(
-    Sprite *sprite,
+    Sprite* sprite,
     GFC_Vector2D position,
-    GFC_Vector2D * scale,
-    GFC_Vector2D * scaleCenter,
+    GFC_Vector2D* scale,
+    GFC_Vector2D* scaleCenter,
     Uint32 frame,
-    SDL_Surface *surface
+    SDL_Surface* surface
 );
 
 /**
@@ -186,26 +186,26 @@ void gf2d_sprite_draw_to_surface(
  * @param frame which frame to draw
  */
 void gf2d_sprite_draw_simple(
-    Sprite   * sprite,
+    Sprite* sprite,
     GFC_Vector2D   position,
     Uint32     frame);
 
 void gf2d_sprite_draw_image(
-    Sprite   * sprite,
+    Sprite* sprite,
     GFC_Vector2D   position);
 
 /**
  * @brief get the default pipeline for overlay rendering
  * @return NULL on error or not yet initlialized, the pipeline otherwise
  */
-Pipeline *gf2d_sprite_get_pipeline();
+Pipeline* gf2d_sprite_get_pipeline();
 
 /**
  * @brief get the binding description for a sprite
  */
-VkVertexInputBindingDescription * gf2d_sprite_get_bind_description();
+VkVertexInputBindingDescription* gf2d_sprite_get_bind_description();
 
-VkVertexInputAttributeDescription * gf2d_sprite_get_attribute_descriptions(Uint32 *count);
+VkVertexInputAttributeDescription* gf2d_sprite_get_attribute_descriptions(Uint32* count);
 
 /**
  * @brief needs to be called once at the beginning of each render frame

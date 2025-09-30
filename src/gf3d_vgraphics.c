@@ -27,6 +27,7 @@
 #include "gf3d_pipeline.h"
 #include "gf3d_commands.h"
 #include "gf3d_texture.h"
+#include "gf3d_mesh.h"
 #include "gf2d_sprite.h"
 
 #include "gf3d_vgraphics.h"
@@ -34,7 +35,7 @@
 
 typedef struct
 {
-    SDL_Window                 *main_window;
+    SDL_Window* main_window;
 
     VkApplicationInfo           vk_app_info;
 
@@ -42,33 +43,33 @@ typedef struct
     VkInstanceCreateInfo        vk_instance_info;
 
     Uint32                      sdl_extension_count;
-    const char                **sdl_extension_names;
+    const char** sdl_extension_names;
     Bool                        enableValidationLayers;
-    
+
     unsigned int                enabled_layer_count;
 
     //devices
     VkPhysicalDevice            gpu;
     Bool                        logicalDeviceCreated;
-    
+
     VkDevice                    device;
     VkSurfaceKHR                surface;
 
     // color space
-    GFC_Color                       bgcolor;
+    GFC_Color                   bgcolor;
     VkFormat                    color_format;
     VkColorSpaceKHR             color_space;
-    
+
     VkSemaphore                 imageAvailableSemaphore;
     VkSemaphore                 renderFinishedSemaphore;
 
-    Command                 *   graphicsCommandPool; 
+    Command* graphicsCommandPool;
     ModelViewProjection         ubo;
-    
+
     //render frame and command buffer for the current render pass
     Uint32                      bufferFrame;
-    
-    SDL_Surface                *screen;
+
+    SDL_Surface* screen;
     Sint32                      bitdepth;
     Uint32                      rmask;
     Uint32                      gmask;
@@ -78,7 +79,7 @@ typedef struct
     Bool                        enable_2d;
 }vGraphics;
 
-static vGraphics gf3d_vgraphics = {0};
+static vGraphics gf3d_vgraphics = { 0 };
 
 int __DEBUG = 0;
 
@@ -93,25 +94,25 @@ void gf3d_vgraphics_debug_close();
 void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT callback, const VkAllocationCallbacks* pAllocator);
 
 void gf3d_vgraphics_setup(
-    const char *windowName,
+    const char* windowName,
     int renderWidth,
     int renderHeight,
     Bool fullscreen,
     Bool enableValidation,
     Bool enableDebug,
-    const char *config
+    const char* config
 );
 
-void gf3d_vgraphics_init(const char *config)
+void gf3d_vgraphics_init(const char* config)
 {
-    Pipeline *renderPipe= NULL;
-    SJson *json,*setup;
-    const char *windowName = NULL;
-    GFC_Vector2D resolution = {1024,768};
+    Pipeline* renderPipe = NULL;
+    SJson* json, * setup;
+    const char* windowName = NULL;
+    GFC_Vector2D resolution = { 1024,768 };
     short int fullscreen = 0;
     short int enableValidation = 0;
     short int enableDebug = 0;
-    
+
     json = gfc_pak_load_json(config);
     if (!json)
     {
@@ -119,8 +120,8 @@ void gf3d_vgraphics_init(const char *config)
         exit(0);
         return;
     }
-    setup = sj_object_get_value(json,"setup");
-    
+    setup = sj_object_get_value(json, "setup");
+
     if (!setup)
     {
         slog("graphics config file missing setup data, exiting");
@@ -128,17 +129,17 @@ void gf3d_vgraphics_init(const char *config)
         exit(0);
         return;
     }
-    
-    windowName = sj_object_get_value_as_string(setup,"application_name");
-    sj_value_as_vector2d(sj_object_get_value(setup,"resolution"),&resolution);
-    gf3d_vgraphics.bgcolor = sj_value_as_color(sj_object_get_value(setup,"background"));
-    sj_get_bool_value(sj_object_get_value(setup,"fullscreen"),&fullscreen);
-    sj_get_bool_value(sj_object_get_value(json,"enable_debug"),&enableDebug);
-    sj_get_bool_value(sj_object_get_value(json,"enable_validation"),&enableValidation);
-    
+
+    windowName = sj_object_get_value_as_string(setup, "application_name");
+    sj_value_as_vector2d(sj_object_get_value(setup, "resolution"), &resolution);
+    gf3d_vgraphics.bgcolor = sj_value_as_color(sj_object_get_value(setup, "background"));
+    sj_get_bool_value(sj_object_get_value(setup, "fullscreen"), &fullscreen);
+    sj_get_bool_value(sj_object_get_value(json, "enable_debug"), &enableDebug);
+    sj_get_bool_value(sj_object_get_value(json, "enable_validation"), &enableValidation);
+
     if (resolution.y == 0)
     {
-        slog("invalid resolution (%f,%f), closing",resolution.x,resolution.y);
+        slog("invalid resolution (%f,%f), closing", resolution.x, resolution.y);
         sj_free(json);
         exit(0);
         return;
@@ -147,15 +148,15 @@ void gf3d_vgraphics_init(const char *config)
     gfc_matrix4_identity(gf3d_vgraphics.ubo.model);
     gfc_matrix4_identity(gf3d_vgraphics.ubo.view);
     gfc_matrix4_identity(gf3d_vgraphics.ubo.proj);
-    
+
     gfc_matrix4_perspective(
         gf3d_vgraphics.ubo.proj,
         45 * GFC_DEGTORAD,
-        resolution.x/resolution.y,
+        resolution.x / resolution.y,
         0.1f,
         100000
     );
-    
+
     gf3d_vgraphics.ubo.proj[1][1] *= -1;
 
     gf3d_vgraphics_setup(
@@ -166,23 +167,23 @@ void gf3d_vgraphics_init(const char *config)
         enableValidation,
         enableDebug,
         config
-        );
-    
+    );
+
     gf3d_vgraphics.device = gf3d_vgraphics_get_default_logical_device();
 
     gf3d_vqueues_setup_device_queues(gf3d_vgraphics.device);
     // swap chain!!!
-    gf3d_swapchain_init(gf3d_vgraphics.gpu,gf3d_vgraphics.device,gf3d_vgraphics.surface,resolution.x,resolution.y);
+    gf3d_swapchain_init(gf3d_vgraphics.gpu, gf3d_vgraphics.device, gf3d_vgraphics.surface, resolution.x, resolution.y);
     gf3d_pipeline_init(16);// how many different rendering pipelines we need
-    
+
     // 2D stuff
     SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_RGBA32,
-                                &gf3d_vgraphics.bitdepth,
-                                &gf3d_vgraphics.rmask,
-                                &gf3d_vgraphics.gmask,
-                                &gf3d_vgraphics.bmask,
-                                &gf3d_vgraphics.amask);
-    
+        &gf3d_vgraphics.bitdepth,
+        &gf3d_vgraphics.rmask,
+        &gf3d_vgraphics.gmask,
+        &gf3d_vgraphics.bmask,
+        &gf3d_vgraphics.amask);
+
     gf3d_vgraphics.screen = SDL_CreateRGBSurface(
         0,
         resolution.x,
@@ -199,8 +200,9 @@ void gf3d_vgraphics_init(const char *config)
     gf3d_vgraphics.graphicsCommandPool = gf3d_command_graphics_pool_setup(gf3d_swapchain_get_swap_image_count());
 
     gf3d_vgraphics.enable_2d = 1;
-    gf2d_sprite_manager_init(1024);
-    renderPipe = gf2d_sprite_get_pipeline();
+    gf3d_mesh_init(1024);
+    //    gf2d_sprite_manager_init(1024);
+    renderPipe = gf3d_mesh_get_pipeline();
 
     gf3d_swapchain_create_depth_image();
     gf3d_swapchain_setup_frame_buffers(renderPipe);
@@ -209,22 +211,22 @@ void gf3d_vgraphics_init(const char *config)
 
 
 void gf3d_vgraphics_setup(
-    const char *windowName,
+    const char* windowName,
     int renderWidth,
     int renderHeight,
     Bool fullscreen,
     Bool enableValidation,
     Bool enableDebug,
-    const char *config
+    const char* config
 )
 {
     Uint32 flags = SDL_WINDOW_VULKAN;
     Uint32 i;
     Uint32 enabledExtensionCount = 0;
-    
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        slog("Unable to initilaize SDL system: %s",SDL_GetError());
+        slog("Unable to initilaize SDL system: %s", SDL_GetError());
         return;
     }
     atexit(SDL_Quit);
@@ -240,36 +242,36 @@ void gf3d_vgraphics_setup(
             flags |= SDL_WINDOW_FULLSCREEN;
         }
     }
-	slog_sync();
+    slog_sync();
     gf3d_vgraphics.main_window = SDL_CreateWindow(windowName,
-                             SDL_WINDOWPOS_UNDEFINED,
-                             SDL_WINDOWPOS_UNDEFINED,
-                             renderWidth, renderHeight,
-                             flags);
-	slog_sync();
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        renderWidth, renderHeight,
+        flags);
+    slog_sync();
     if (!gf3d_vgraphics.main_window)
     {
-        slog("failed to create main window: %s",SDL_GetError());
+        slog("failed to create main window: %s", SDL_GetError());
         gf3d_vgraphics_close();
         exit(0);
         return;
     }
-	slog_sync();
+    slog_sync();
     // instance extension configuration
-    
+
     gf3d_extensions_instance_init(config);
-    
-	slog_sync();
+
+    slog_sync();
     // get the extensions that are needed for rendering to an SDL Window
     SDL_Vulkan_GetInstanceExtensions(gf3d_vgraphics.main_window, &(gf3d_vgraphics.sdl_extension_count), NULL);
     if (gf3d_vgraphics.sdl_extension_count > 0)
     {
-        gf3d_vgraphics.sdl_extension_names = gfc_allocate_array(sizeof(const char *),gf3d_vgraphics.sdl_extension_count);
-        
+        gf3d_vgraphics.sdl_extension_names = gfc_allocate_array(sizeof(const char*), gf3d_vgraphics.sdl_extension_count);
+
         SDL_Vulkan_GetInstanceExtensions(gf3d_vgraphics.main_window, &(gf3d_vgraphics.sdl_extension_count), gf3d_vgraphics.sdl_extension_names);
-        for (i = 0; i < gf3d_vgraphics.sdl_extension_count;i++)
+        for (i = 0; i < gf3d_vgraphics.sdl_extension_count; i++)
         {
-            if (__DEBUG)slog("SDL Vulkan extensions support: %s",gf3d_vgraphics.sdl_extension_names[i]);
+            if (__DEBUG)slog("SDL Vulkan extensions support: %s", gf3d_vgraphics.sdl_extension_names[i]);
             gf3d_extensions_enable(ET_Instance, gf3d_vgraphics.sdl_extension_names[i]);
         }
     }
@@ -280,7 +282,7 @@ void gf3d_vgraphics_setup(
         exit(0);
         return;
     }
-	slog_sync();
+    slog_sync();
     // setup app info
     gf3d_vgraphics.vk_app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     gf3d_vgraphics.vk_app_info.pNext = NULL;
@@ -289,17 +291,17 @@ void gf3d_vgraphics_setup(
     gf3d_vgraphics.vk_app_info.pEngineName = windowName;
     gf3d_vgraphics.vk_app_info.engineVersion = 0;
     gf3d_vgraphics.vk_app_info.apiVersion = VK_API_VERSION_1_2;
-    
+
     gf3d_vgraphics.vk_instance_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     gf3d_vgraphics.vk_instance_info.pNext = NULL;
     gf3d_vgraphics.vk_instance_info.pApplicationInfo = &gf3d_vgraphics.vk_app_info;
-    
+
     if (enableValidation)
     {
         gf3d_validation_init(config);
         gf3d_vgraphics.vk_instance_info.enabledLayerCount = gf3d_validation_get_enabled_layer_count();
         gf3d_vgraphics.vk_instance_info.ppEnabledLayerNames = gf3d_validation_get_enabled_layer_names();
-        gf3d_extensions_enable(ET_Instance,"VK_EXT_debug_utils");
+        gf3d_extensions_enable(ET_Instance, "VK_EXT_debug_utils");
     }
     else
     {
@@ -310,7 +312,7 @@ void gf3d_vgraphics_setup(
     gf3d_vgraphics.vk_instance_info.ppEnabledExtensionNames = gf3d_extensions_get_instance_enabled_names(&enabledExtensionCount);
     gf3d_vgraphics.vk_instance_info.enabledExtensionCount = enabledExtensionCount;
 
-	slog_sync();
+    slog_sync();
 
     // create instance
     vkCreateInstance(&gf3d_vgraphics.vk_instance_info, NULL, &gf3d_vgraphics.vk_instance);
@@ -321,33 +323,33 @@ void gf3d_vgraphics_setup(
         gf3d_vgraphics_close();
         return;
     }
-	slog_sync();
+    slog_sync();
     if (enableDebug)
     {
         gf3d_debug_setup(gf3d_vgraphics.vk_instance);
     }
     atexit(gf3d_vgraphics_close);
-    
+
     // create a surface for the window
     SDL_Vulkan_CreateSurface(gf3d_vgraphics.main_window, gf3d_vgraphics.vk_instance, &gf3d_vgraphics.surface);
-    
+
     if (gf3d_vgraphics.surface == VK_NULL_HANDLE)
     {
         slog("failed to create render target surface");
         gf3d_vgraphics_close();
         return;
     }
-    
-    gf3d_device_manager_init(config, gf3d_vgraphics.vk_instance,gf3d_vgraphics.surface);
+
+    gf3d_device_manager_init(config, gf3d_vgraphics.vk_instance, gf3d_vgraphics.surface);
 
 
     gf3d_vgraphics.gpu = gf3d_devices_get_best_device();
-    if(!gf3d_vgraphics.gpu){
+    if (!gf3d_vgraphics.gpu) {
         slog("Failed to select graphics card.");
         gf3d_vgraphics_close();
         return;
     }
-    
+
     gf3d_vgraphics.device = gf3d_device_get();
     if (gf3d_vgraphics.device != VK_NULL_HANDLE)
     {
@@ -367,10 +369,10 @@ void gf3d_vgraphics_close()
         free(gf3d_vgraphics.sdl_extension_names);
     }
     gf3d_debug_close();
-        
-    if(gf3d_vgraphics.surface && gf3d_vgraphics.vk_instance)
+
+    if (gf3d_vgraphics.surface && gf3d_vgraphics.vk_instance)
     {
-        vkDestroySurfaceKHR(gf3d_vgraphics.vk_instance,gf3d_vgraphics.surface, NULL);
+        vkDestroySurfaceKHR(gf3d_vgraphics.vk_instance, gf3d_vgraphics.surface, NULL);
     }
     if (gf3d_vgraphics.main_window)
     {
@@ -380,7 +382,7 @@ void gf3d_vgraphics_close()
     {
         vkDestroyInstance(gf3d_vgraphics.vk_instance, NULL);
     }
-    memset(&gf3d_vgraphics,0,sizeof(vGraphics));
+    memset(&gf3d_vgraphics, 0, sizeof(vGraphics));
 }
 
 VkDevice gf3d_vgraphics_get_default_logical_device()
@@ -407,14 +409,14 @@ GFC_Vector2D gf3d_vgraphics_get_view_extent_as_vector2d()
 {
     VkExtent2D extent;
     extent = gf3d_swapchain_get_extent();
-    return gfc_vector2d(extent.width,extent.height);
+    return gfc_vector2d(extent.width, extent.height);
 }
 
-SDL_Surface *gf3d_vgraphics_create_surface(Uint32 w,Uint32 h)
+SDL_Surface* gf3d_vgraphics_create_surface(Uint32 w, Uint32 h)
 {
-    SDL_Surface *surface;
+    SDL_Surface* surface;
     surface = SDL_CreateRGBSurface(
-        0,w, h,
+        0, w, h,
         gf3d_vgraphics.bitdepth,
         gf3d_vgraphics.rmask,
         gf3d_vgraphics.gmask,
@@ -424,9 +426,9 @@ SDL_Surface *gf3d_vgraphics_create_surface(Uint32 w,Uint32 h)
 }
 
 
-SDL_Surface *gf3d_vgraphics_screen_convert(SDL_Surface **surface)
+SDL_Surface* gf3d_vgraphics_screen_convert(SDL_Surface** surface)
 {
-    SDL_Surface *convert;
+    SDL_Surface* convert;
     if (!(*surface))
     {
         slog("surface provided was NULL");
@@ -438,11 +440,11 @@ SDL_Surface *gf3d_vgraphics_screen_convert(SDL_Surface **surface)
         return NULL;
     }
     convert = SDL_ConvertSurface(*surface,
-                       gf3d_vgraphics.screen->format,
-                       0);
+        gf3d_vgraphics.screen->format,
+        0);
     if (!convert)
     {
-        slog("failed to convert surface: %s",SDL_GetError());
+        slog("failed to convert surface: %s", SDL_GetError());
         return NULL;
     }
     SDL_FreeSurface(*surface);
@@ -454,7 +456,7 @@ SDL_Surface *gf3d_vgraphics_screen_convert(SDL_Surface **surface)
 Uint32 gf3d_vgraphics_render_begin()
 {
     Uint32 imageIndex;
-    VkSwapchainKHR swapChains[1] = {0};
+    VkSwapchainKHR swapChains[1] = { 0 };
 
     /*
     Acquire an image from the swap chain
@@ -462,7 +464,7 @@ Uint32 gf3d_vgraphics_render_begin()
     Return the image to the swap chain for presentation
     */
     swapChains[0] = gf3d_swapchain_get();
-    
+
     vkAcquireNextImageKHR(
         gf3d_vgraphics.device,
         swapChains[0],
@@ -470,13 +472,13 @@ Uint32 gf3d_vgraphics_render_begin()
         gf3d_vgraphics.imageAvailableSemaphore,
         VK_NULL_HANDLE,
         &imageIndex);
-    
+
     return imageIndex;
 }
 
 /**
  * Rendering wrapper
- * 
+ *
  */
 
 void gf3d_vgraphics_render_start()
@@ -492,15 +494,15 @@ Uint32  gf3d_vgraphics_get_current_buffer_frame()
 
 void gf3d_vgraphics_render_end()
 {
-    VkPresentInfoKHR presentInfo = {0};
-    VkSubmitInfo submitInfo = {0};
-    VkSwapchainKHR swapChains[1] = {0};
-    VkSemaphore waitSemaphores[] = {gf3d_vgraphics.imageAvailableSemaphore};
-    VkSemaphore signalSemaphores[] = {gf3d_vgraphics.renderFinishedSemaphore};
-    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-    
+    VkPresentInfoKHR presentInfo = { 0 };
+    VkSubmitInfo submitInfo = { 0 };
+    VkSwapchainKHR swapChains[1] = { 0 };
+    VkSemaphore waitSemaphores[] = { gf3d_vgraphics.imageAvailableSemaphore };
+    VkSemaphore signalSemaphores[] = { gf3d_vgraphics.renderFinishedSemaphore };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
     gf3d_pipeline_submit_all_pipe_commands();
-    
+
     swapChains[0] = gf3d_swapchain_get();
 
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -510,28 +512,28 @@ void gf3d_vgraphics_render_end()
     submitInfo.pWaitDstStageMask = waitStages;
     //get count of configured command buffers
     //get the list of command buffers
-    
+
     submitInfo.commandBufferCount = gf3d_command_pool_get_used_buffer_count(gf3d_vgraphics.graphicsCommandPool);
     submitInfo.pCommandBuffers = gf3d_command_pool_get_used_buffers(gf3d_vgraphics.graphicsCommandPool);
-    
+
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
-    
+
     if (vkQueueSubmit(gf3d_vqueues_get_graphics_queue(), 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
     {
         slog("failed to submit draw command buffer!");
     }
-    
+
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = signalSemaphores;
-    
+
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &gf3d_vgraphics.bufferFrame;
     presentInfo.pResults = NULL; // Optional
-    
+
     vkQueuePresentKHR(gf3d_vqueues_get_present_queue(), &presentInfo);
 }
 
@@ -543,10 +545,10 @@ void gf3d_vgraphics_semaphores_close()
 
 void gf3d_vgraphics_semaphores_create()
 {
-    VkSemaphoreCreateInfo semaphoreInfo = {0};
-    
+    VkSemaphoreCreateInfo semaphoreInfo = { 0 };
+
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    
+
     if ((vkCreateSemaphore(gf3d_vgraphics.device, &semaphoreInfo, NULL, &gf3d_vgraphics.imageAvailableSemaphore) != VK_SUCCESS) ||
         (vkCreateSemaphore(gf3d_vgraphics.device, &semaphoreInfo, NULL, &gf3d_vgraphics.renderFinishedSemaphore) != VK_SUCCESS))
     {
@@ -558,7 +560,7 @@ void gf3d_vgraphics_semaphores_create()
 uint32_t gf3d_vgraphics_find_memory_type(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 {
     VkPhysicalDeviceMemoryProperties memProperties;
-    
+
     vkGetPhysicalDeviceMemoryProperties(gf3d_vgraphics_get_default_physical_device(), &memProperties);
 
     for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
@@ -573,20 +575,25 @@ uint32_t gf3d_vgraphics_find_memory_type(uint32_t typeFilter, VkMemoryPropertyFl
     return 0;
 }
 
-void gf3d_vgraphics_get_projection_matrix(GFC_Matrix4 *proj)
+void gf3d_vgraphics_get_projection_matrix(GFC_Matrix4* proj)
 {
     if (!proj)return;
-    memcpy(proj,gf3d_vgraphics.ubo.proj,sizeof(GFC_Matrix4));
+    memcpy(proj, gf3d_vgraphics.ubo.proj, sizeof(GFC_Matrix4));
 }
 
-void gf3d_vgraphics_get_view(GFC_Matrix4 *view)
+void gf3d_vgraphics_set_view(GFC_Matrix4 view)
+{
+    gfc_matrix4_copy(gf3d_vgraphics.ubo.view, view);
+}
+
+void gf3d_vgraphics_get_view(GFC_Matrix4* view)
 {
     if (!view)return;
-    memcpy(view,gf3d_vgraphics.ubo.view,sizeof(GFC_Matrix4));
+    memcpy(view, gf3d_vgraphics.ubo.view, sizeof(GFC_Matrix4));
 }
 
 
-GFC_Matrix4 *gf3d_vgraphics_get_view_matrix()
+GFC_Matrix4* gf3d_vgraphics_get_view_matrix()
 {
     return &gf3d_vgraphics.ubo.view;
 }
@@ -597,11 +604,11 @@ void gf3d_vgraphics_rotate_camera(float degrees)
         gf3d_vgraphics.ubo.view,
         gf3d_vgraphics.ubo.view,
         degrees,
-        gfc_vector3d(0,0,1));
+        gfc_vector3d(0, 0, 1));
 
 }
 
-Command *gf3d_vgraphics_get_graphics_command_pool()
+Command* gf3d_vgraphics_get_graphics_command_pool()
 {
     return gf3d_vgraphics.graphicsCommandPool;
 }
@@ -614,7 +621,7 @@ ModelViewProjection gf3d_vgraphics_get_mvp()
 VkImageView gf3d_vgraphics_create_image_view(VkImage image, VkFormat format)
 {
     VkImageView imageView;
-    VkImageViewCreateInfo viewInfo = {0};
+    VkImageViewCreateInfo viewInfo = { 0 };
 
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = image;
@@ -637,13 +644,13 @@ VkImageView gf3d_vgraphics_create_image_view(VkImage image, VkFormat format)
 
 GFC_Vector2D vgraphics_3d_position_to_screen(GFC_Vector3D position)
 {
-    GFC_Vector2D res,out;
-    GFC_Matrix4 mvp,model;
-    GFC_Vector4D transformed = {0};
+    GFC_Vector2D res, out;
+    GFC_Matrix4 mvp, model;
+    GFC_Vector4D transformed = { 0 };
     ModelViewProjection graphics_mvp;
-    
+
     res = gf3d_vgraphics_get_resolution();
-    
+
     gfc_matrix4_make_translation(
         model,
         position);
@@ -653,15 +660,15 @@ GFC_Vector2D vgraphics_3d_position_to_screen(GFC_Vector3D position)
         graphics_mvp.view,
         graphics_mvp.proj
     );
-    
+
     gfc_matrix4_v_multiply(
         &transformed,
-        gfc_vector4d(position.x,position.y,position.z,1.0),
+        gfc_vector4d(position.x, position.y, position.z, 1.0),
         mvp);
-    
-    out.x = (0.5 *(transformed.x / transformed.w) + 0.5)*res.x;
-    out.y = (0.5 *(transformed.y / transformed.w) + 0.5)*res.y;
-        
+
+    out.x = (0.5 * (transformed.x / transformed.w) + 0.5) * res.x;
+    out.y = (0.5 * (transformed.y / transformed.w) + 0.5) * res.y;
+
     return out;
 }
 
@@ -669,12 +676,12 @@ GFC_Vector3D vgraphics_3d_position_to_screen_depth(GFC_Vector3D position)
 {
     GFC_Vector2D res;
     GFC_Vector3D out;
-    GFC_Matrix4 mvp,model;
-    GFC_Vector4D transformed = {0};
+    GFC_Matrix4 mvp, model;
+    GFC_Vector4D transformed = { 0 };
     ModelViewProjection graphics_mvp;
-    
+
     res = gf3d_vgraphics_get_resolution();
-    
+
     gfc_matrix4_make_translation(
         model,
         position);
@@ -684,18 +691,17 @@ GFC_Vector3D vgraphics_3d_position_to_screen_depth(GFC_Vector3D position)
         graphics_mvp.view,
         graphics_mvp.proj
     );
-    
+
     gfc_matrix4_v_multiply(
         &transformed,
-        gfc_vector4d(position.x,position.y,position.z,1.0),
+        gfc_vector4d(position.x, position.y, position.z, 1.0),
         mvp);
-    
-    out.x = (0.5 *(transformed.x / transformed.w) + 0.5)*res.x;
-    out.y = (0.5 *(transformed.y / transformed.w) + 0.5)*res.y;
+
+    out.x = (0.5 * (transformed.x / transformed.w) + 0.5) * res.x;
+    out.y = (0.5 * (transformed.y / transformed.w) + 0.5) * res.y;
     out.z = transformed.z;
     return out;
 }
 
 
 /*eol@eof*/
-
