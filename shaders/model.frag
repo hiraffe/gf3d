@@ -24,4 +24,9 @@ layout(location = 0) out vec2 fragTexCoord;
 layout(location = 1) out vec3 outNormal;
 layout(location = 2) out vec4 colorMod;
 layout(location = 3) out vec4 worldPosition;
-layout(location = 3) out vec4 cameraPos;
+layout(location = 4) out vec4 cameraPos;
+
+void main()
+{
+    //do smth here
+}

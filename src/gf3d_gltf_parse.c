@@ -12,26 +12,26 @@
 #include "gf3d_gltf_parse.h"
 
 
-void gf3d_gltf_reorg_obj(ObjData *obj);
-char *gf3d_gltf_decode(SJson *gltf, Uint32 bufferIndex);
+void gf3d_gltf_reorg_obj(ObjData* obj);
+char* gf3d_gltf_decode(SJson* gltf, Uint32 bufferIndex);
 
 
-GLTF *gf3d_gltf_new()
+GLTF* gf3d_gltf_new()
 {
-    GLTF *gltf = gfc_allocate_array(sizeof(GLTF),1);
+    GLTF* gltf = gfc_allocate_array(sizeof(GLTF), 1);
     gltf->buffers = gfc_list_new();
     return gltf;
 }
 
-void gf3d_gltf_free(GLTF *gltf)
+void gf3d_gltf_free(GLTF* gltf)
 {
-    int i,c;
-    char *buffer;
+    int i, c;
+    char* buffer;
     if (!gltf)return;
     c = gfc_list_get_count(gltf->buffers);
     for (i = 0; i < c; i++)
     {
-        buffer = gfc_list_get_nth(gltf->buffers,i);
+        buffer = gfc_list_get_nth(gltf->buffers, i);
         if (!buffer)continue;
         free(buffer);
     }
@@ -40,12 +40,12 @@ void gf3d_gltf_free(GLTF *gltf)
     free(gltf);
 }
 
-GLTF *gf3d_gltf_load(const char *filename)
+GLTF* gf3d_gltf_load(const char* filename)
 {
-    SJson *json;
-    SJson *buffers;
-    int i,c;
-    GLTF *gltf;
+    SJson* json;
+    SJson* buffers;
+    int i, c;
+    GLTF* gltf;
     if (!filename)return NULL;
     json = gfc_pak_load_json(filename);
     if (!json)return NULL;
@@ -56,237 +56,237 @@ GLTF *gf3d_gltf_load(const char *filename)
         return NULL;
     }
     gltf->json = json;
-    gfc_line_cpy(gltf->filename,filename);
-    buffers = sj_object_get_value(json,"buffers");
+    gfc_line_cpy(gltf->filename, filename);
+    buffers = sj_object_get_value(json, "buffers");
     c = sj_array_get_count(buffers);
-    for (i = 0;i < c; i++)
+    for (i = 0; i < c; i++)
     {
-        gfc_list_append(gltf->buffers,gf3d_gltf_decode(json, i));
+        gfc_list_append(gltf->buffers, gf3d_gltf_decode(json, i));
     }
-//    slog("decoded %i buffers from %s",c,filename);
+    //    slog("decoded %i buffers from %s",c,filename);
     return gltf;
 }
 
 
-SJson *gf3d_gltf_parse_get_accessor(GLTF *gltf,Uint32 index)
+SJson* gf3d_gltf_parse_get_accessor(GLTF* gltf, Uint32 index)
 {
-    SJson *accessors;
+    SJson* accessors;
     if (!gltf)return NULL;
-    
-    accessors = sj_object_get_value(gltf->json,"accessors");
+
+    accessors = sj_object_get_value(gltf->json, "accessors");
     if (!accessors)return NULL;
-    return sj_array_get_nth(accessors,index);
+    return sj_array_get_nth(accessors, index);
 }
 
-SJson *gf3d_gltf_parse_get_buffer_view(SJson *gltf,Uint32 index)
+SJson* gf3d_gltf_parse_get_buffer_view(SJson* gltf, Uint32 index)
 {
-    SJson *bufferViews;
+    SJson* bufferViews;
     if (!gltf)return NULL;
-    
-    bufferViews = sj_object_get_value(gltf,"bufferViews");
+
+    bufferViews = sj_object_get_value(gltf, "bufferViews");
     if (!bufferViews)return NULL;
-    return sj_array_get_nth(bufferViews,index);
+    return sj_array_get_nth(bufferViews, index);
 }
 
-char *gf3d_gltf_decode(SJson *gltf, Uint32 bufferIndex)
+char* gf3d_gltf_decode(SJson* gltf, Uint32 bufferIndex)
 {
-    SJson *buffers,*buffer;
-    const char *data;
+    SJson* buffers, * buffer;
+    const char* data;
     if (!gltf)return NULL;
-    
-    buffers = sj_object_get_value(gltf,"buffers");
+
+    buffers = sj_object_get_value(gltf, "buffers");
     if (!buffers)return NULL;
 
-    buffer = sj_array_get_nth(buffers,bufferIndex);
+    buffer = sj_array_get_nth(buffers, bufferIndex);
     if (!buffer)return NULL;
-    
-    data = sj_object_get_value_as_string(buffer,"uri");
+
+    data = sj_object_get_value_as_string(buffer, "uri");
     if (!data)return NULL;
-        
+
     data = strchr(data, ',');
     data++;// move past the header
-    return gfc_base64_decode (data, strlen(data), NULL);
+    return gfc_base64_decode(data, strlen(data), NULL);
 }
 
-const char *gf3d_gltf_get_buffer(GLTF *gltf,Uint32 index)
+const char* gf3d_gltf_get_buffer(GLTF* gltf, Uint32 index)
 {
     if (!gltf)return NULL;
-    return gfc_list_get_nth(gltf->buffers,index);
+    return gfc_list_get_nth(gltf->buffers, index);
 }
 
-const char *gf3d_gltf_get_buffer_data(GLTF *gltf,Uint32 index,size_t offset)
+const char* gf3d_gltf_get_buffer_data(GLTF* gltf, Uint32 index, size_t offset)
 {
-    const char *data;
-    
+    const char* data;
+
     if (!gltf)return NULL;
-    data = gf3d_gltf_get_buffer(gltf,index);    
+    data = gf3d_gltf_get_buffer(gltf, index);
     if (!data)
     {
-        slog("failed to get buffer %i from file %s",index,gltf->filename);
+        slog("failed to get buffer %i from file %s", index, gltf->filename);
         return NULL;
     }
-    
+
     return &data[offset];
 }
 
-Uint8 gf3d_gltf_parse_copy_buffer_data(SJson *gltf,Uint32 index,size_t offset,size_t length, char *output)
+Uint8 gf3d_gltf_parse_copy_buffer_data(SJson* gltf, Uint32 index, size_t offset, size_t length, char* output)
 {
-    char *data;
-    
+    char* data;
+
     if (!output)
     {
         slog("no output parameter provided");
         return 0;
     }
-    data = gf3d_gltf_decode(gltf, index);    
-    if (!data)return 0;    
-    memcpy(output,&data[offset],length);
+    data = gf3d_gltf_decode(gltf, index);
+    if (!data)return 0;
+    memcpy(output, &data[offset], length);
     free(data);
     return 1;
 }
 
-Uint8 gf3d_gltf_get_data_from_buffer(GLTF *gltf,Uint32 buffer,size_t offset,size_t length, char *output)
+Uint8 gf3d_gltf_get_data_from_buffer(GLTF* gltf, Uint32 buffer, size_t offset, size_t length, char* output)
 {
-    const char *data;
-    
+    const char* data;
+
     if (!output)
     {
         slog("no output parameter provided");
         return 0;
     }
-    data = gf3d_gltf_get_buffer_data(gltf,buffer,offset);
+    data = gf3d_gltf_get_buffer_data(gltf, buffer, offset);
     if (!data)return 0;
-    memcpy(output,data,length);
+    memcpy(output, data, length);
     return 1;
 }
 
 
-void gf3d_gltf_get_buffer_view_data(GLTF *gltf,Uint32 viewIndex,char *buffer)
+void gf3d_gltf_get_buffer_view_data(GLTF* gltf, Uint32 viewIndex, char* buffer)
 {
-    SJson *bufferView;
-    int index,byteLength,byteOffset;
-    if ((!gltf)||(!buffer))return;
-    bufferView = gf3d_gltf_parse_get_buffer_view(gltf->json,viewIndex);
+    SJson* bufferView;
+    int index, byteLength, byteOffset;
+    if ((!gltf) || (!buffer))return;
+    bufferView = gf3d_gltf_parse_get_buffer_view(gltf->json, viewIndex);
     if (!bufferView)
     {
-        slog("failed to find buffer view %i in %s",viewIndex,gltf->filename);
+        slog("failed to find buffer view %i in %s", viewIndex, gltf->filename);
         return;
     }
-    sj_object_get_value_as_int(bufferView,"buffer",&index);
-    sj_object_get_value_as_int(bufferView,"byteLength",&byteLength);
-    sj_object_get_value_as_int(bufferView,"byteOffset",&byteOffset);
-    gf3d_gltf_get_data_from_buffer(gltf,index,byteOffset,byteLength, buffer);
+    sj_object_get_value_as_int(bufferView, "buffer", &index);
+    sj_object_get_value_as_int(bufferView, "byteLength", &byteLength);
+    sj_object_get_value_as_int(bufferView, "byteOffset", &byteOffset);
+    gf3d_gltf_get_data_from_buffer(gltf, index, byteOffset, byteLength, buffer);
 }
 
 //TODO: report on componentType so the data can be parsed correctly
-const char *gf3d_gltf_accessor_get_details(GLTF* gltf,Uint32 accessorIndex, int *bufferIndex, int *count)
+const char* gf3d_gltf_accessor_get_details(GLTF* gltf, Uint32 accessorIndex, int* bufferIndex, int* count)
 {
-    SJson *accessor;
+    SJson* accessor;
     if (!gltf)return NULL;
-    accessor = gf3d_gltf_parse_get_accessor(gltf,accessorIndex);
+    accessor = gf3d_gltf_parse_get_accessor(gltf, accessorIndex);
     if (!accessor)return NULL;
     if (bufferIndex)
     {
-        sj_object_get_value_as_int(accessor,"bufferView",bufferIndex);
+        sj_object_get_value_as_int(accessor, "bufferView", bufferIndex);
     }
     if (count)
     {
-        sj_object_get_value_as_int(accessor,"count",count);
+        sj_object_get_value_as_int(accessor, "count", count);
     }
-    return sj_object_get_value_as_string(accessor,"type");
+    return sj_object_get_value_as_string(accessor, "type");
 }
 
-ObjData *gf3d_gltf_parse_primitive(GLTF *gltf,SJson *primitive)
+ObjData* gf3d_gltf_parse_primitive(GLTF* gltf, SJson* primitive)
 {
-    ObjData *obj;
-    GFC_Vector3D min,max;
-    int index,bufferIndex;
-    SJson *attributes,*accessor;
+    ObjData* obj;
+    GFC_Vector3D min, max;
+    int index, bufferIndex;
+    SJson* attributes, * accessor;
 
-    if ((!gltf)||(!primitive))return NULL;
+    if ((!gltf) || (!primitive))return NULL;
     obj = gf3d_obj_new();
     if (!obj)return NULL;
-    
-    attributes = sj_object_get_value(primitive,"attributes");
-    
+
+    attributes = sj_object_get_value(primitive, "attributes");
+
     if (!attributes)
     {
         free(obj);
         slog("primitive contains no attributes");
         return NULL;
     }
-    
-    if (sj_object_get_value_as_int(attributes,"POSITION",&index))
+
+    if (sj_object_get_value_as_int(attributes, "POSITION", &index))
     {
-        if (gf3d_gltf_accessor_get_details(gltf,index, &bufferIndex, (int *)&obj->vertex_count))
+        if (gf3d_gltf_accessor_get_details(gltf, index, &bufferIndex, (int*)&obj->vertex_count))
         {
-            obj->vertices = (GFC_Vector3D *)gfc_allocate_array(sizeof(GFC_Vector3D),obj->vertex_count);
-            
-            gf3d_gltf_get_buffer_view_data(gltf,bufferIndex,(char *)obj->vertices);
-            
-            accessor = gf3d_gltf_parse_get_accessor(gltf,index);
+            obj->vertices = (GFC_Vector3D*)gfc_allocate_array(sizeof(GFC_Vector3D), obj->vertex_count);
+
+            gf3d_gltf_get_buffer_view_data(gltf, bufferIndex, (char*)obj->vertices);
+
+            accessor = gf3d_gltf_parse_get_accessor(gltf, index);
             gfc_vector3d_clear(min);
             gfc_vector3d_clear(max);
-            sj_value_as_vector3d(sj_object_get_value(accessor,"min"),&min);
-            sj_value_as_vector3d(sj_object_get_value(accessor,"max"),&max);
+            sj_value_as_vector3d(sj_object_get_value(accessor, "min"), &min);
+            sj_value_as_vector3d(sj_object_get_value(accessor, "max"), &max);
             obj->bounds = gfc_box(min.x, min.y, min.z, max.x, max.y, max.z);
         }
-        else slog("failed to get accessor detials");        
+        else slog("failed to get accessor detials");
     }
-    if (sj_object_get_value_as_int(attributes,"NORMAL",&index))
+    if (sj_object_get_value_as_int(attributes, "NORMAL", &index))
     {
-        if (gf3d_gltf_accessor_get_details(gltf,index, &bufferIndex, (int *)&obj->normal_count))
+        if (gf3d_gltf_accessor_get_details(gltf, index, &bufferIndex, (int*)&obj->normal_count))
         {
-            obj->normals = (GFC_Vector3D *)gfc_allocate_array(sizeof(GFC_Vector3D),obj->normal_count);
-            
-            gf3d_gltf_get_buffer_view_data(gltf,bufferIndex,(char *)obj->normals);            
+            obj->normals = (GFC_Vector3D*)gfc_allocate_array(sizeof(GFC_Vector3D), obj->normal_count);
+
+            gf3d_gltf_get_buffer_view_data(gltf, bufferIndex, (char*)obj->normals);
         }
         else slog("failed to get accessor detials");
     }
-    
-    if (sj_object_get_value_as_int(attributes,"TEXCOORD_0",&index))
+
+    if (sj_object_get_value_as_int(attributes, "TEXCOORD_0", &index))
     {
-        if (gf3d_gltf_accessor_get_details(gltf,index, &bufferIndex, (int *)&obj->texel_count))
+        if (gf3d_gltf_accessor_get_details(gltf, index, &bufferIndex, (int*)&obj->texel_count))
         {
-            obj->texels = (GFC_Vector2D *)gfc_allocate_array(sizeof(GFC_Vector2D),obj->texel_count);
-            
-            gf3d_gltf_get_buffer_view_data(gltf,bufferIndex,(char *)obj->texels);            
+            obj->texels = (GFC_Vector2D*)gfc_allocate_array(sizeof(GFC_Vector2D), obj->texel_count);
+
+            gf3d_gltf_get_buffer_view_data(gltf, bufferIndex, (char*)obj->texels);
         }
         else slog("failed to get accessor detials");
     }
-    
+
     //bone indices
-    if (sj_object_get_value_as_int(attributes,"JOINTS_0",&index))
+    if (sj_object_get_value_as_int(attributes, "JOINTS_0", &index))
     {
-        if (gf3d_gltf_accessor_get_details(gltf,index, &bufferIndex, (int *)&obj->bone_count))
+        if (gf3d_gltf_accessor_get_details(gltf, index, &bufferIndex, (int*)&obj->bone_count))
         {
-            obj->boneIndices = (GFC_Vector4UI8 *)gfc_allocate_array(sizeof(GFC_Vector4UI8),obj->bone_count);
-            
-            gf3d_gltf_get_buffer_view_data(gltf,bufferIndex,(char *)obj->boneIndices);
-            
+            obj->boneIndices = (GFC_Vector4UI8*)gfc_allocate_array(sizeof(GFC_Vector4UI8), obj->bone_count);
+
+            gf3d_gltf_get_buffer_view_data(gltf, bufferIndex, (char*)obj->boneIndices);
+
         }
         else slog("failed to get accessor detials");
     }
     //bone weights
-    if (sj_object_get_value_as_int(attributes,"WEIGHTS_0",&index))
+    if (sj_object_get_value_as_int(attributes, "WEIGHTS_0", &index))
     {
-        if (gf3d_gltf_accessor_get_details(gltf,index, &bufferIndex, (int *)&obj->weight_count))
+        if (gf3d_gltf_accessor_get_details(gltf, index, &bufferIndex, (int*)&obj->weight_count))
         {
-            obj->boneWeights = (GFC_Vector4D *)gfc_allocate_array(sizeof(GFC_Vector4D),obj->weight_count);
-            
-            gf3d_gltf_get_buffer_view_data(gltf,bufferIndex,(char *)obj->boneWeights);
+            obj->boneWeights = (GFC_Vector4D*)gfc_allocate_array(sizeof(GFC_Vector4D), obj->weight_count);
+
+            gf3d_gltf_get_buffer_view_data(gltf, bufferIndex, (char*)obj->boneWeights);
         }
         else slog("failed to get accessor detials");
     }
 
-    if (sj_object_get_value_as_int(primitive,"indices",&index))
+    if (sj_object_get_value_as_int(primitive, "indices", &index))
     {
-        if (gf3d_gltf_accessor_get_details(gltf,index, &bufferIndex, (int *)&obj->face_count))
+        if (gf3d_gltf_accessor_get_details(gltf, index, &bufferIndex, (int*)&obj->face_count))
         {
             obj->face_count /= 3;
-            obj->outFace = (Face *)gfc_allocate_array(sizeof(Face),obj->face_count);
+            obj->outFace = (Face*)gfc_allocate_array(sizeof(Face), obj->face_count);
 
-            gf3d_gltf_get_buffer_view_data(gltf,bufferIndex,(char *)obj->outFace);            
+            gf3d_gltf_get_buffer_view_data(gltf, bufferIndex, (char*)obj->outFace);
         }
         else slog("failed to get accessor detials");
     }
@@ -294,20 +294,20 @@ ObjData *gf3d_gltf_parse_primitive(GLTF *gltf,SJson *primitive)
     return obj;
 }
 
-void gf3d_gltf_reorg_obj(ObjData *obj)
+void gf3d_gltf_reorg_obj(ObjData* obj)
 {
     int i;
-    
-    if (!obj)return;
-    
-    obj->face_vert_count = obj->vertex_count;
-    obj->faceVertices = (Vertex *)gfc_allocate_array(sizeof(Vertex),obj->face_vert_count);
 
-    for (i = 0; i< obj->vertex_count;i++)
+    if (!obj)return;
+
+    obj->face_vert_count = obj->vertex_count;
+    obj->faceVertices = (Vertex*)gfc_allocate_array(sizeof(Vertex), obj->face_vert_count);
+
+    for (i = 0; i < obj->vertex_count; i++)
     {
-        if (obj->vertices)gfc_vector3d_copy(obj->faceVertices[i].vertex,obj->vertices[i]);
-        if (obj->normals)gfc_vector3d_copy(obj->faceVertices[i].normal,obj->normals[i]);
-        if (obj->texels)gfc_vector2d_copy(obj->faceVertices[i].texel,obj->texels[i]);
+        if (obj->vertices)gfc_vector3d_copy(obj->faceVertices[i].vertex, obj->vertices[i]);
+        if (obj->normals)gfc_vector3d_copy(obj->faceVertices[i].normal, obj->normals[i]);
+        if (obj->texels)gfc_vector2d_copy(obj->faceVertices[i].texel, obj->texels[i]);
     }
 }
 /*EOL@EOF*/

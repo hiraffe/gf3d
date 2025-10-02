@@ -37,4 +37,5 @@ void main()
     colorMod = ubo.color;
     cameraPos = ubo.camera;
     worldPosition = vec4(inPosition, 1.0);
+    fragTexCoord = inTexCoord;
 }

@@ -5,6 +5,7 @@
 #include "gf3d_swapchain.h"
 #include "gf3d_obj_load.h"
 #include "gf3d_vgraphics.h"
+#include "gf3d_camera.h"
 
 #include "gf3d_mesh.h"
 
@@ -151,7 +152,6 @@ Mesh* gf3d_mesh_load(const char *filename)
 	if (!obj)
 	{
 		slog("failed to load obj file %s", filename);
-		gf3d_obj_free(obj);
 		return NULL;
 	}
 	mesh = gf3d_mesh_new();
@@ -168,12 +168,13 @@ Mesh* gf3d_mesh_load(const char *filename)
 		gf3d_mesh_free(mesh);
 		return NULL;
 	}
-	primitive->objData = obj;
-	gfc_list_append(mesh->primitives,primitive);
 
-	/* store the filename for lookup later (make a copy if necessary) */
-	//strncpy(mesh->filename, filename, sizeof(mesh->filename) - 1);
-	//mesh->filename[sizeof(mesh->filename) - 1] = '\0';
+	gfc_list_append(mesh->primitives,primitive);
+	primitive->objData = obj;
+
+	//figure this out
+	//gf3d_mesh_primitive_create_vertex_buffers(primitive);
+	//gf3d_mesh_setup_face_buffers(primitive);
 
 	return mesh;
 }
@@ -238,8 +239,8 @@ void gf3d_mesh_create_buffers(MeshPrimitive* prim, Face *faces, Uint32 fcount)
 	void* data = NULL;
 	VkDevice device = gf3d_vgraphics_get_default_logical_device();
 	VkDeviceSize bufferSize = sizeof(Face) * fcount;
-	//Vertex* vertices;
-	//Uint32 vcount;
+	Vertex* vertices;
+	Uint32 vcount;
 	VkBuffer stagingBuffer = VK_NULL_HANDLE;
 	VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
 
@@ -250,6 +251,9 @@ void gf3d_mesh_create_buffers(MeshPrimitive* prim, Face *faces, Uint32 fcount)
 		fcount = prim->objData->face_count;
 	}
 	if ((!faces) || (!fcount)) return;
+
+	vertices = prim->objData->faceVertices; //
+	vcount = prim->objData->face_vert_count; //
 
 	gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
 
@@ -306,6 +310,7 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
 
 	ubo.color = gfc_color_to_vector4(mod);
 	//TODO GFC_Vector4D camera
+	//ubo.camera = gfc_vector3dw(gf3d_camera_get_position(),1.0);
 
 	gf3d_mesh_queue_render(mesh, mesh_manager.pipe, &ubo, texture);
 }
