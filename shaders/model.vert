@@ -8,6 +8,8 @@ layout(binding = 0) uniform UniformBufferObject
     mat4    proj;
     vec4    color;
     vec4    camera;
+    vec4    lightPos;
+    vec4    lightColor;
 
 } ubo;
 
@@ -25,6 +27,8 @@ layout(location = 1) out vec3 outNormal;
 layout(location = 2) out vec4 colorMod;
 layout(location = 3) out vec4 worldPosition;
 layout(location = 4) out vec4 cameraPos;
+layout(location = 5) out vec4 lightPos;
+layout(location = 6) out vec4 lightColor;
 
 
 void main()
@@ -33,9 +37,11 @@ void main()
     mat4 mvp = ubo.proj * ubo.view * ubo.model;
     gl_Position = mvp * vec4(inPosition, 1.0);
     normalMatrix = transpose(inverse(mat3(ubo.model)));
-    outNormal = normalize(normalMatrix * inNormal);
+    outNormal = normalize(inNormal * normalMatrix);
     colorMod = ubo.color;
     cameraPos = ubo.camera;
-    worldPosition = vec4(inPosition, 1.0);
+    worldPosition = ubo.model * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;
+    lightPos = ubo.lightPos;
+    lightColor = ubo.lightColor;
 }

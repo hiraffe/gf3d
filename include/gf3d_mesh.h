@@ -24,6 +24,8 @@ typedef struct
     GFC_Matrix4     proj;
     GFC_Vector4D    color;
     GFC_Vector4D    camera;
+    GFC_Vector4D    lightPos;
+    GFC_Vector4D    lightColor;
 }MeshUBO;
 
 typedef struct
@@ -46,7 +48,7 @@ typedef struct
     Uint32          faceCount;
     VkBuffer        faceBuffer;
     VkDeviceMemory  faceBufferMemory;
-    ObjData* objData;
+    ObjData*        objData;
 }MeshPrimitive;
 
 typedef struct
@@ -81,8 +83,10 @@ Mesh* gf3d_mesh_load(const char* filename);
 
 /**
  * @brief draw a mesh given the parameters
+ * @param mesh the mesh to draw
+ * @param modelMat
  */
-void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
+void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor);
 
 /**
  * @brief allocate a zero initialized mesh primitive
@@ -120,6 +124,13 @@ void gf3d_mesh_delete(Mesh* mesh);
  * @note the primitive must have the objData set and it must have be organizes in buffer order
  */
 void gf3d_mesh_create_vertex_buffer_from_vertices(MeshPrimitive* primitive);
+
+void gf3d_mesh_create_buffers(Mesh* mesh, Face* faces, Uint32 fcount);
+void gf3d_mesh_primitive_vertex_buffers(MeshPrimitive* prim, Face* faces, Uint32 fcount);
+
+
+void gf3d_mesh_create_face_buffers(MeshPrimitive* prim, Face* faces, Uint32 fcount);
+void gf3d_mesh_primitive_create_vertex_buffers(MeshPrimitive* prim);
 
 /**
  * @brief get the pipeline that is used to render basic 3d meshes
