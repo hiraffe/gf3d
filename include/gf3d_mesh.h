@@ -95,6 +95,9 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
 MeshPrimitive* gf3d_mesh_primitive_new();
 
 
+void gf3d_mesh_primitive_free(MeshPrimitive* prim);
+
+
 /**
  * @brief get the input attribute descriptions for mesh based rendering
  * @param count (optional, output) the number of attributes
@@ -106,7 +109,7 @@ VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* 
  * @brief get the binding description for mesh based rendering
  * @return vertex input binding descriptions compatible with mesh data
  */
-VkVertexInputBindingDescription* gf3d_mesh_manager_get_bind_description();
+VkVertexInputBindingDescription* gf3d_mesh_get_bind_description();
 
 /**
  * @brief free a mesh that has been loaded from memory
@@ -123,8 +126,10 @@ void gf3d_mesh_delete(Mesh* mesh);
  * @param primitive the mesh primitive to populate
  * @note the primitive must have the objData set and it must have be organizes in buffer order
  */
-void gf3d_mesh_setup_face_buffers(MeshPrimitive* prim);
-void gf3d_mesh_primitive_create_vertex_buffers(MeshPrimitive* prim);
+void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* prim);
+void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* prim);
+
+void gf3d_mesh_primitive_queue_render(MeshPrimitive* prim, Pipeline* pipe, void* uboData, Texture* texture);
 
 /**
  * @brief get the pipeline that is used to render basic 3d meshes

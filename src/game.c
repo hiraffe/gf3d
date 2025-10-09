@@ -23,6 +23,9 @@
 #include "gf3d_camera.h"
 #include "gf3d_mesh.h"
 
+#include "entity.h"
+#include "monster.h"
+
 extern int __DEBUG;
 
 static int _done = 0;
@@ -43,8 +46,8 @@ int main(int argc, char* argv[])
     //local variables
     Uint32 time;
     Mesh* mesh;
-    GFC_Vector3D lightPos = { 5,5,50 };
     Texture* texture;
+    GFC_Vector3D lightPos = { 5,5,50 };
     GFC_Vector3D cam = { 0,50,0 };
     GFC_Matrix4 id;
     GFC_Matrix4 dinoM;
@@ -60,9 +63,10 @@ int main(int argc, char* argv[])
     gfc_action_init(1024);
     //gf3d init
     gf3d_vgraphics_init("config/setup.cfg"); 
-    VkDevice dev = gf3d_vgraphics_get_default_logical_device(); //delete this later
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
+
+    entity_system_init(8000);
     slog("time to init: %i ms", SDL_GetTicks() - time);
 
     //game init
@@ -74,6 +78,11 @@ int main(int argc, char* argv[])
     gfc_matrix4_identity(id);
 
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    //for (int i = 0; i < 500; i++)
+    //{
+    //    monster_spawn(gfc_crandom()*50, gfc_crandom*50, );
+    //}
+    //monster_spawn(lightPos, GFC_COLOR_GREY);
     //main game loop
     while (!_done)
     {
@@ -82,11 +91,14 @@ int main(int argc, char* argv[])
         gf2d_font_update();
         //world updates
         theta += 0.1;
+        //entity_system_think_all();
+        //entity_system_update_all();
         gfc_matrix4_rotate_z(dinoM,id,theta);
         //camera updaes
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
             //3D draws
+            //entity_system_draw_all(gfc_vector3d(0,0,0), GFC_COLOR_LIGHTCYAN);
             gf3d_mesh_draw(mesh, id, GFC_COLOR_WHITE, texture, lightPos, GFC_COLOR_RED);
             //2D draws
             gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
@@ -95,8 +107,7 @@ int main(int argc, char* argv[])
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();
     }
-    //vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
-    vkDeviceWaitIdle(dev);
+    vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
     //cleanup
     slog("gf3d program end");
     exit(0);
