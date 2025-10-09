@@ -13,12 +13,13 @@ layout(location = 6) in vec4 lightColor;
 
 layout(location = 0) out vec4 outColor;
 
+
 void main()
 {
     vec3 lightDir = normalize(lightPos.xyz - worldPosition.xyz);
     vec4 texColor = texture(texSampler, fragTexCoord);
 
-    texColor.xyz = dot(inNormal, -lightDir) * texColor.xyz;
+    texColor.xyz = texColor.xyz * max(0.0,dot(-lightDir,inNormal));
 
     outColor = texColor * colorMod;
 }

@@ -81,8 +81,8 @@ int main(int argc, char* argv[])
         gf2d_mouse_update();
         gf2d_font_update();
         //world updates
-        //theta += 0.1;
-        //gfc_matrix4_rotate_z(dinoM,id,theta);
+        theta += 0.1;
+        gfc_matrix4_rotate_z(dinoM,id,theta);
         //camera updaes
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();

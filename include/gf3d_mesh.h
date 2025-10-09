@@ -106,7 +106,7 @@ VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* 
  * @brief get the binding description for mesh based rendering
  * @return vertex input binding descriptions compatible with mesh data
  */
-VkVertexInputBindingDescription* gf3d_mesh_get_bind_description();
+VkVertexInputBindingDescription* gf3d_mesh_manager_get_bind_description();
 
 /**
  * @brief free a mesh that has been loaded from memory
@@ -123,13 +123,7 @@ void gf3d_mesh_delete(Mesh* mesh);
  * @param primitive the mesh primitive to populate
  * @note the primitive must have the objData set and it must have be organizes in buffer order
  */
-void gf3d_mesh_create_vertex_buffer_from_vertices(MeshPrimitive* primitive);
-
-void gf3d_mesh_create_buffers(Mesh* mesh, Face* faces, Uint32 fcount);
-void gf3d_mesh_primitive_vertex_buffers(MeshPrimitive* prim, Face* faces, Uint32 fcount);
-
-
-void gf3d_mesh_create_face_buffers(MeshPrimitive* prim, Face* faces, Uint32 fcount);
+void gf3d_mesh_setup_face_buffers(MeshPrimitive* prim);
 void gf3d_mesh_primitive_create_vertex_buffers(MeshPrimitive* prim);
 
 /**

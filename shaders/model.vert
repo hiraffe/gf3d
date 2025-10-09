@@ -10,7 +10,6 @@ layout(binding = 0) uniform UniformBufferObject
     vec4    camera;
     vec4    lightPos;
     vec4    lightColor;
-
 } ubo;
 
 out gl_PerVertex
@@ -30,17 +29,22 @@ layout(location = 4) out vec4 cameraPos;
 layout(location = 5) out vec4 lightPos;
 layout(location = 6) out vec4 lightColor;
 
-
 void main()
 {
     mat3 normalMatrix;
     mat4 mvp = ubo.proj * ubo.view * ubo.model;
-    gl_Position = mvp * vec4(inPosition, 1.0);
+
+    //positions
+    gl_Position =  mvp * vec4(inPosition, 1.0);
+    worldPosition = ubo.model * vec4(inPosition,1.0);
+
+    //normals
     normalMatrix = transpose(inverse(mat3(ubo.model)));
-    outNormal = normalize(inNormal * normalMatrix);
+    outNormal = normalize(normalMatrix*inNormal);
+
+    //pass throughs
     colorMod = ubo.color;
     cameraPos = ubo.camera;
-    worldPosition = ubo.model * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;
     lightPos = ubo.lightPos;
     lightColor = ubo.lightColor;
