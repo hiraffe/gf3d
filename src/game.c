@@ -46,7 +46,6 @@ int main(int argc, char* argv[])
     //local variables
     Uint32 time;
     Mesh* mesh;
-    Entity* monster;
     Texture* texture;
     GFC_Vector3D lightPos = { 5,5,50 };
     GFC_Vector3D cam = { 0,50,0 };
@@ -76,38 +75,31 @@ int main(int argc, char* argv[])
     gf2d_mouse_load("actors/mouse.actor");
     mesh = gf3d_mesh_load("models/dino/dino.obj");
     texture = gf3d_texture_load("models/dino/dino.png");
-    //mesh = gf3d_mesh_load("models/sky/sky.obj");
-    //texture = gf3d_texture_load("models/sky/sky.png");
     gfc_matrix4_identity(id);
 
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     //for (int i = 0; i < 500; i++)
     //{
-    //    monster_spawn(gfc_crandom()*50, gfc_crandom*50, gfc_color(gfc_random(), gfc_random(), gfc_random(),1));
+    //    monster_spawn(gfc_crandom()*50, gfc_crandom*50, );
     //}
-    monster = monster_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
+    //monster_spawn(lightPos, GFC_COLOR_GREY);
     //main game loop
     while (!_done)
     {
-        slog("Game loop:");
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
         //world updates
         theta += 0.1;
-        gfc_matrix4_rotate_z(dinoM, id, theta);
-        entity_system_think_all();
-        entity_system_update_all();
+        //entity_system_think_all();
+        //entity_system_update_all();
+        gfc_matrix4_rotate_z(dinoM,id,theta);
         //camera updaes
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
             //3D draws
-            //gf3d_
-        slog("Before draw all");
-            entity_system_draw_all(gfc_vector3d(0,0,0), GFC_COLOR_LIGHTCYAN);
-            slog("after draw all");
-
-           // gf3d_mesh_draw(mesh, dinoM, GFC_COLOR_WHITE, texture, lightPos, GFC_COLOR_RED);
+            //entity_system_draw_all(gfc_vector3d(0,0,0), GFC_COLOR_LIGHTCYAN);
+            gf3d_mesh_draw(mesh, id, GFC_COLOR_WHITE, texture, lightPos, GFC_COLOR_RED);
             //2D draws
             gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
             gf2d_mouse_draw();
