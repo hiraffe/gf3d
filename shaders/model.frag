@@ -20,6 +20,7 @@ void main()
     vec4 texColor = texture(texSampler, fragTexCoord);
 
     texColor.xyz = texColor.xyz * max(0.0,dot(-lightDir,inNormal));
+    //texColor.xyz = texColor.xyz * colorMod.xyz + texColor.xyz * max(0.0,dot(-lightDir,inNormal));
 
     outColor = texColor * colorMod;
 }

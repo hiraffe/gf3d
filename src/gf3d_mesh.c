@@ -22,7 +22,8 @@ typedef struct
     Uint32                                  mesh_count;
     Uint32                                  chain_length;     /**<length of swap chain*/
     VkDevice                                device;           /**<logical vulkan device*/
-    Pipeline* pipe;             /**<the pipeline associated with mesh rendering*/
+    Pipeline*                               pipe;             /**<the pipeline associated with mesh rendering*/
+    Pipeline*                               sky_pipe;             /**<the pipeline associated with skybox rendering*/
     VkBuffer                                faceBuffer;
     VkDeviceMemory                          faceBufferMemory;
     VkVertexInputAttributeDescription       attributeDescriptions[MESH_ATTRIBUTE_COUNT];
@@ -32,10 +33,6 @@ typedef struct
 } MeshManager;
 
 static MeshManager mesh_manager = { 0 };
-
-
-
-
 
 void gf3d_mesh_manager_close()
 {
@@ -52,7 +49,6 @@ void gf3d_mesh_manager_close()
     memset(&mesh_manager, 0, sizeof(MeshManager));
     if (__DEBUG)slog("Mesh manager closed");
 }
-
 
 void gf3d_mesh_init(Uint32 mesh_max)
 {
@@ -80,6 +76,17 @@ void gf3d_mesh_init(Uint32 mesh_max)
         sizeof(MeshUBO),
         VK_INDEX_TYPE_UINT16
     );
+    mesh_manager.sky_pipe = gf3d_pipeline_create_from_config(
+        gf3d_vgraphics_get_default_logical_device(),
+        "config/sky_pipeline.cfg",
+        gf3d_vgraphics_get_view_extent(),
+        mesh_max,
+        gf3d_mesh_get_bind_description(),
+        gf3d_mesh_get_attribute_descriptions(NULL),
+        count,
+        sizeof(SkyUBO),
+        VK_INDEX_TYPE_UINT16
+    );
 
     mesh_manager.defaultTexture = gf3d_texture_load("images/default.png");
     if (__DEBUG)slog("mesh manager initiliazed");
@@ -99,20 +106,8 @@ void gf3d_mesh_delete(Mesh* mesh)
         gf3d_mesh_primitive_free(prim);
     }
     if (mesh->primitives) gfc_list_delete(mesh->primitives);
-
-    //if (mesh->buffer != VK_NULL_HANDLE)
-    //{
-    //    vkDestroyBuffer(gf2d_sprite.device, sprite->buffer, NULL);
-    //}
-    //if (sprite->bufferMemory != VK_NULL_HANDLE)
-    //{
-    //    vkFreeMemory(gf2d_sprite.device, sprite->bufferMemory, NULL);
-    //}
-
-   // gf3d_texture_free(mesh->texture);
     memset(mesh, 0, sizeof(Mesh));
 }
-
 
 Mesh* gf3d_mesh_new()
 {
@@ -142,7 +137,6 @@ Mesh* gf3d_mesh_get_by_filename(const char* filename)
     return NULL;
 }
 
-
 Mesh* gf3d_mesh_load(const char* filename)
 {
     MeshPrimitive* primitive;
@@ -150,12 +144,12 @@ Mesh* gf3d_mesh_load(const char* filename)
     ObjData* obj;
 
     if (!filename) return NULL;
-    //mesh = gf3d_mesh_get_by_filename(filename);
-    //if (mesh)
-    //{
-    //    mesh->_refCount++;  //If mesh currently exists, grab it and end call
-    //    return mesh;
-    //}
+    mesh = gf3d_mesh_get_by_filename(filename);
+    if (mesh)
+    {
+        mesh->_refCount++;  //If mesh currently exists, grab it and end call
+        return mesh;
+    }
     obj = gf3d_obj_load_from_file(filename); //Parse data from file
     if (!obj)
     {
@@ -197,9 +191,6 @@ void gf3d_mesh_primitive_free(MeshPrimitive* prim)
 {
     //
 }
-
-
-
 
 MeshPrimitive* gf3d_mesh_primitive_new()
 {
@@ -388,7 +379,27 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
     gf3d_mesh_queue_render(mesh, mesh_manager.pipe, &ubo, texture);
 }
 
+void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)
+{
+    SkyUBO ubo = { 0 };
+
+    if (!mesh) return;
+    gfc_matrix4_copy(ubo.model, modelMat);
+    gf3d_vgraphics_get_view(&ubo.view);
+
+    ubo.view[0][3] = 0;
+    ubo.view[1][3] = 0;
+    ubo.view[2][3] = 0;
+    ubo.view[3][0] = 0;
+    ubo.view[3][0] = 0; //1
+    ubo.view[3][0] = 0; //2
+
+    gf3d_vgraphics_get_projection_matrix(&ubo.proj);
+    ubo.color = gfc_color_to_vector4f(mod);
+    gf3d_mesh_queue_render(mesh, mesh_manager.sky_pipe, &ubo, texture);
+}
+
 Pipeline* gf3d_mesh_get_pipeline()
 {
-    return mesh_manager.pipe;
+    return mesh_manager.sky_pipe;
 }

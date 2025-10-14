@@ -16,6 +16,14 @@
 //forward declaration:
 typedef struct ObjData_S ObjData;
 
+typedef struct
+{
+    GFC_Matrix4     model;
+    GFC_Matrix4     view;
+    GFC_Matrix4     proj;
+    GFC_Vector4D    color;
+}SkyUBO;
+
 //absolute basics of the mesh information sent to the graphics card
 typedef struct
 {
@@ -55,7 +63,7 @@ typedef struct
 {
     GFC_TextLine        filename;
     Uint32              _refCount;
-    GFC_List* primitives;
+    GFC_List*           primitives;
     GFC_Box             bounds;
 }Mesh;
 
