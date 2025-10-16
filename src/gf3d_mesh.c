@@ -1,5 +1,4 @@
 #include "simple_logger.h"
-
 #include "simple_json.h"
 
 #include "gf3d_vgraphics.h"
@@ -73,17 +72,6 @@ void gf3d_mesh_init(Uint32 mesh_max)
         sizeof(MeshUBO),
         VK_INDEX_TYPE_UINT16
     );
-    mesh_manager.sky_pipe = gf3d_pipeline_create_from_config(
-        gf3d_vgraphics_get_default_logical_device(),
-        "config/sky_pipeline.cfg",
-        gf3d_vgraphics_get_view_extent(),
-        mesh_max,
-        gf3d_mesh_get_bind_description(),
-        gf3d_mesh_get_attribute_descriptions(NULL),
-        count,
-        sizeof(SkyUBO),
-        VK_INDEX_TYPE_UINT16
-    );
 
     mesh_manager.defaultTexture = gf3d_texture_load("images/default.png");
     if (__DEBUG)slog("mesh manager initiliazed");
@@ -103,6 +91,7 @@ void gf3d_mesh_delete(Mesh* mesh)
         gf3d_mesh_primitive_free(prim);
     }
     if (mesh->primitives) gfc_list_delete(mesh->primitives);
+
     memset(mesh, 0, sizeof(Mesh));
 }
 
@@ -134,7 +123,6 @@ Mesh* gf3d_mesh_get_by_filename(const char* filename)
     return NULL;
 }
 
-
 Mesh* gf3d_mesh_load(const char* filename)
 {
     MeshPrimitive* primitive;
@@ -142,6 +130,7 @@ Mesh* gf3d_mesh_load(const char* filename)
     ObjData* obj;
 
     if (!filename) return NULL;
+
     obj = gf3d_obj_load_from_file(filename); //Parse data from file
     if (!obj)
     {
@@ -174,9 +163,11 @@ Mesh* gf3d_mesh_load(const char* filename)
     gf3d_mesh_primitive_create_vertex_buffer(primitive);
     gf3d_mesh_primitive_create_face_buffer(primitive);
     gfc_line_cpy(mesh->filename, filename);
-
+    //gf3d_mesh_create_vertex_buffer(mesh);
     return mesh;
 }
+
+void gf3d_mesh_primitive_free(MeshPrimitive* prim){}
 
 MeshPrimitive* gf3d_mesh_primitive_new()
 {
@@ -222,8 +213,6 @@ VkVertexInputBindingDescription* gf3d_mesh_get_bind_description()
 
     return &mesh_manager.bindingDescription;
 }
-
-void gf3d_mesh_primitive_free(Mesh* mesh) {}
 
 void gf3d_mesh_free(Mesh* mesh)
 {
@@ -379,5 +368,3 @@ Pipeline* gf3d_mesh_get_pipeline()
 {
     return mesh_manager.pipe;
 }
-
-
