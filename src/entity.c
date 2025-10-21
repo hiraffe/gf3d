@@ -35,6 +35,7 @@ Entity* entity_new()
 void entity_free(Entity* ent)
 {
 	if (!ent)return;
+	if (ent->free)ent->free(ent);
 	gf3d_mesh_free(ent->mesh);
 	gf3d_texture_free(ent->texture);
 	memset(ent, 0, sizeof(Entity));

@@ -4,7 +4,7 @@
 #include "gfc_vector.h"
 #include "entity.h"
 
-Entity *monster_spawn(GFC_Vector3D position, GFC_Color color);
+Entity *monster_spawn(GFC_Vector3D position, GFC_Color color, Entity* cam);
 
 
 #endif
