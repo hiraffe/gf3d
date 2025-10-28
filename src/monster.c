@@ -91,10 +91,11 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)//, Entity *cam)
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->position = position;
 	self->color = color;
-	self->scale = gfc_vector3d(1,1,1);
 	//data->cam = cam;
 
+	self->rotation = gfc_vector3d(0, 0, 0);
 	self->rotation.z = 180;
+	self->velocity = gfc_vector3d(0, 0, 0);
 	self->velocity.x = 0;
 
 	//void			(*draw)(struct Entity_S* self);

@@ -23,6 +23,7 @@
 #include "gf3d_camera.h"
 #include "gf3d_mesh.h"
 
+#include "world.h"
 #include "entity.h"
 #include "monster.h"
 
@@ -44,6 +45,7 @@ void exitGame()
 int main(int argc, char* argv[])
 {
     //local variables
+    World* world;
     Entity* monster;
     Mesh* mesh;
     Texture* texture;
@@ -72,15 +74,18 @@ int main(int argc, char* argv[])
     slog_sync();
     gf2d_mouse_load("actors/mouse.actor");
 
-    // main game loop    
+    world = world_load("defs/terrain.def");
     camera = entity_new();
-    monster = monster_spawn(gfc_vector3d(10,10,10), GFC_COLOR_CYAN);
+    monster = monster_spawn(gfc_vector3d(10,10,10), GFC_COLOR_ORANGE);
 
     //mesh = gf3d_mesh_load("models/dino/dino.obj");
     //texture = gf3d_texture_load("models/dino/dino.png");
+    mesh = gf3d_mesh_load("models/testworld.obj");
+    texture = gf3d_texture_load("models/terrain/terrain.png");
 
     gfc_matrix4_identity(id);
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    // main game loop 
     while (!_done)
     {
         gfc_input_update();
@@ -96,7 +101,7 @@ int main(int argc, char* argv[])
         gf3d_vgraphics_render_start();
         //3D draws
         entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
-        //gf3d_mesh_draw(mesh, dinoM, GFC_COLOR_WHITE, texture, lightPos, GFC_COLOR_RED);
+        world_draw(world);
         //2D draws
         gf2d_font_draw_line_tag("ALT+F4 to exit", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
         //gf2d_mouse_draw();

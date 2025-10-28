@@ -49,6 +49,8 @@ World* world_load(const char* filename)
 	sj_object_get_color_value(config, "lightColor", &world->lightColor);
 	sj_object_get_vector3d(config, "lightPos", &world->lightPos);
 	sj_free(json);
+
+	return world;
 }
 
 World* world_free(World* world)
@@ -64,6 +66,7 @@ World* world_draw(World* world)
 	GFC_Matrix4 modelMat;
 	if (!world)return;
 	gfc_matrix4_identity(modelMat);
+	gf3d_mesh_draw(world->terrain, modelMat, GFC_COLOR_WHITE, world->texture, world->lightPos, world->lightColor);
 	//gfc_mesh_draw(jfskdflsfksdf);
 	//entity system draw all entites in the world entity list
 }
