@@ -25,7 +25,7 @@ Entity* entity_new()
 				entity_system.entity_list[i].scale = gfc_vector3d(1, 1, 1);
 				entity_system.entity_list[i].doGenericUpdate = 1;
 
-				return &entity_system.entity_list;
+				return &entity_system.entity_list[i];
 			}
 		}
 	}
@@ -74,6 +74,7 @@ void entity_system_init(Uint32 max_ents)
 	}
 	entity_system.entity_max = max_ents;
 	atexit(entity_system_close);
+
 	slog("entity system initialized");
 }
 
@@ -81,6 +82,7 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
 	if(!ent)return;
 	GFC_Matrix4 modelMat;
+	
 	gfc_matrix4_from_vectors(
 		modelMat,
 		ent->position,
@@ -88,11 +90,13 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 		ent->scale);
 	if (!ent->mesh)
 	{
-		slog("no mesh data");
+		//slog("no mesh data for %s", ent->name);
 		return;
 	}
 	//slog("entity model matrix:");
 	//gfc_matrix4_slog(modelMat);
+	
+	gfc_matrix4_identity(modelMat);
 	gf3d_mesh_draw(
 		ent->mesh,
 		modelMat,
@@ -110,14 +114,14 @@ void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor)
 		if (entity_system.entity_list[i]._inuse)
 		{
 			entity_draw(&entity_system.entity_list[i], lightPos, lightColor);
-			slog("entity drawn");
+			//slog("entity drawn");
 		}
 	}
 }
 
 void entity_think(Entity *ent)
 {
-	if (!ent)return;
+	if (!ent) return;
 	if (ent->think)ent->think(ent);
 }
 
@@ -139,7 +143,7 @@ void entity_update(Entity* ent)
 	// all the generic updates
 	if (ent->doGenericUpdate)
 	{
-		gfc_vector3d_add(ent->position, ent->rotation, ent->velocity);
+		gfc_vector3d_add(ent->position, ent->rotation, ent->scale);
 	}
 }
 

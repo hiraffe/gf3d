@@ -5,7 +5,6 @@
 
 static Camera gf3d_camera = { 0 };
 
-
 void gf3d_camera_update_view()
 {
     /**
