@@ -104,7 +104,7 @@ void camera_entity_think(Entity* self)
 	gfc_vector3d_scale(offset, offset, data->followDistance);
 	offset.z = data->followHeight;
 
-	//data->position.z = data->target->position.z + data->followHeight;
+	self->position.z = data->target->position.z + data->followHeight;
 	gf3d_camera_look_at(data->target->position, &self->position);
 }
 

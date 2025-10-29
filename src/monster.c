@@ -20,7 +20,6 @@ void monster_free(Entity* self)
 
 void monster_think(Entity* self)
 {
-	/*
 	GFC_Vector3D cameraDir;
 	float move = 0;
 	float moveStep = 0.5;
@@ -62,18 +61,19 @@ void monster_think(Entity* self)
 		gfc_vector2d_scale(cameraDir, cameraDir, move);
 		gfc_vector2d_add(self->position, self->position, cameraDir);
 	}
-	*/
 }
 
 void monster_set_camera_ent(Entity* self, Entity* camera)
 {
-	//if ((!self) || !camera) return;
-	//MonsterEntityData* data;
-	//if ((!self) || !(self->data)) return;
-	//data = self->data;
+	if ((!self) || !camera) return;
+	MonsterEntityData* data;
+	if ((!self) || !(self->data)) return;
+	data = self->data;
+
+	data->cam = camera;
 }
 
-Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)//, Entity *cam)
+Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 {
 	Entity* self;
 	MonsterEntityData* data;
@@ -91,7 +91,6 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)//, Entity *cam)
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->position = position;
 	self->color = color;
-	//data->cam = cam;
 
 	self->rotation = gfc_vector3d(0, 0, 0);
 	self->rotation.z = 180;
