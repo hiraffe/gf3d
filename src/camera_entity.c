@@ -6,14 +6,6 @@
 
 #include "camera_entity.h"
 
-typedef struct
-{
-	Entity* target;
-	float followHeight;
-	float followDistance;
-	float angle;
-}CameraEntityData;
-
 void camera_entity_free(Entity* self)
 {
 	CameraEntityData* data;
@@ -25,85 +17,33 @@ void camera_entity_free(Entity* self)
 
 void camera_entity_think(Entity* self)
 {
-	/*float move = 5;
-	float turn = 0.05;
-	float pitch = 0;
-	float yaw = 0;
-	GFC_Vector3D movement = { 0 };
-	GFC_Vector3D dir = { 0 };
-	CameraEntityData* data;
-	if ((!self) || (!self->data)) return;
-
-	if (gfc_input_command_down("walkforward"))
-	{
-		movement.y += move;
-	}
-	if (gfc_input_command_down("walkright"))
-	{
-		movement.x += move;
-	}
-	if (gfc_input_command_down("walkback"))
-	{
-		movement.y -= move;
-	}
-	if (gfc_input_command_down("walkleft"))
-	{
-		movement.x -= move;
-	}
-	gfc_vector3d_scale(dir, dir, movement.y);
-	gfc_vector3d_add(self->position, self->position, movement);
-	gfc_vector3d_add(data->target, data->target, movement);
-
-	gfc_vector3d_normalize(&dir);
-	gfc_vector3d_rotate_about_z(&dir, GFC_PI_HALFPI);
-
-	gfc_vector3d_scale(dir, dir, movement.x);
-	gfc_vector3d_add(self->position, self->position, movement);
-	gfc_vector3d_add(data->target, data->target, movement);
-
-	if (gfc_input_command_down("panleft"))
-	{
-		yaw += turn;
-	}
-	if (gfc_input_command_down("panright"))
-	{
-		yaw -= turn;
-	}
-	if (gfc_input_command_down("panup"))
-	{
-		pitch += turn;
-	}
-	if (gfc_input_command_down("pandown"))
-	{
-		pitch -= turn;
-	}
-
-	if (pitch)
-	{
-		data->target.z += pitch;
-	}
-	if(yaw)
-	{
-		gfc_vector3d_sub(dir, data->target, self->position);
-		gfc_vector3d_normalize(&dir);
-		gfc_vector3d_rotate_about_z(&dir, yaw);
-		gfc_vector3d_add(data->target, self->position, dir);
-	}
-	gf3d_camera_look_at(data->target, &self->position);
-	*/
-
+	const Uint8* keystate = SDL_GetKeyboardState(NULL);
 	GFC_Vector3D d, offset;
 	CameraEntityData* data;
+	float turnSpeed;
 	if ((!self) || (!self->data)) return;
 	data = self->data;
 	if (!data->target)return;
+
+	turnSpeed = 0.05;
+	if (keystate[SDL_SCANCODE_LEFT])
+	{
+		data->angle += turnSpeed;
+	}
+	//if (gfc_input_command_down("walkright"))
+	if (keystate[SDL_SCANCODE_RIGHT])
+	{
+		data->angle -= turnSpeed;
+	}
 
 	offset = gfc_vector3d(0, 1, 0);
 	gfc_vector3d_rotate_about_z(&offset, data->angle);
 	gfc_vector3d_copy(d, data->target->position);
 	gfc_vector3d_scale(offset, offset, data->followDistance);
-	offset.z = data->followHeight;
+	//offset.z = data->followHeight;
 
+	self->position.x = data->target->position.x - offset.x; //
+	self->position.y = data->target->position.y - offset.y; //
 	self->position.z = data->target->position.z + data->followHeight;
 	gf3d_camera_look_at(data->target->position, &self->position);
 }
@@ -126,11 +66,9 @@ Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 	self->free = camera_entity_free;
 	self->data = data;
 	data->target = target;
-
-	//gfc_vector3d_sub(dir, target, position);
-	//gfc_vector3d_normalize(&dir);
-	//gfc_vector3d_add(data->target, position, dir);
-	//gf3d_camera_look_at(data->target, &self->position);
+	data->followHeight = 5;
+	data->followDistance = 50;
+	data->angle = 0;
 
 	return self;
 }

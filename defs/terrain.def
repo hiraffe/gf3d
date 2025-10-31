@@ -1,7 +1,7 @@
 {
 	"world":
 	{
-		"terrainMesh":"models/testworld.obj",
+		"terrainMesh":"models/terrain/terrain.obj",
 		"terrainTexture":"models/terrain/terrain.png",
 		"lightColor":[255,200,10,255],
 		"lightPos":[4,1,6]

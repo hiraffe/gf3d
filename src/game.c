@@ -74,12 +74,13 @@ int main(int argc, char* argv[])
     gf2d_mouse_load("actors/mouse.actor");
 
     world = world_load("defs/terrain.def");
-    monster = monster_spawn(gfc_vector3d(10,10,10), GFC_COLOR_ORANGE);
-    camEnt = camera_entity_spawn(gfc_vector3d(0, 50, 0), monster);
+    monster = monster_spawn(gfc_vector3d(0,0,5), GFC_COLOR_ORANGE);
+    camEnt = camera_entity_spawn(gfc_vector3d(0, 10, -5), monster);
     monster_set_camera_ent(monster, camEnt);
 
     gfc_matrix4_identity(id);
-    gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    // 
     // main game loop 
     while (!_done)
     {

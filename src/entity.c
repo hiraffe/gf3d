@@ -96,7 +96,6 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 	//slog("entity model matrix:");
 	//gfc_matrix4_slog(modelMat);
 	
-	gfc_matrix4_identity(modelMat);
 	gf3d_mesh_draw(
 		ent->mesh,
 		modelMat,
@@ -143,7 +142,7 @@ void entity_update(Entity* ent)
 	// all the generic updates
 	if (ent->doGenericUpdate)
 	{
-		gfc_vector3d_add(ent->position, ent->rotation, ent->scale);
+		gfc_vector3d_add(ent->position, ent->position, ent->velocity);
 	}
 }
 

@@ -47,5 +47,6 @@ void main()
     cameraPos = ubo.camera;
     fragTexCoord = inTexCoord;
     lightPos = ubo.lightPos;
+    lightPos.x+=100;
     lightColor = ubo.lightColor;
 }
