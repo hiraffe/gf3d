@@ -1,0 +1,50 @@
+{
+	"crops":
+	[
+		{
+			"name":"Pumpkin",
+			"seed":"Pumpkin Seeds",
+			"cropMesh":"models/dino/dino.obj",
+			"unripeTexture":"models/dino/dino.png",
+			"ripeTexture":"models/crops/terrain.png",
+			"color":[255,200,10,255],
+			"ripenTime":12
+		},
+		{
+			"name":"Brain Berries",
+			"seed":"Brains",
+			"cropMesh":"models/crops/terrain.obj",
+			"unripeTexture":"models/crops/terrain.png",
+			"ripeTexture":"models/crops/terrain.png",
+			"color":[255,200,10,255],
+			"ripenTime":30
+		},
+		{
+			"name":"Ghost Pepper",
+			"seed":"Pile of Flesh",
+			"cropMesh":"models/crops/terrain.obj",
+			"unripeTexture":"models/crops/terrain.png",
+			"ripeTexture":"models/crops/terrain.png",
+			"color":[255,200,10,255],
+			"ripenTime":60
+		},
+		{
+			"name":"Candy Corn",
+			"seed":"Corn Seeds",
+			"cropMesh":"models/crops/terrain.obj",
+			"unripeTexture":"models/crops/terrain.png",
+			"ripeTexture":"models/crops/terrain.png",
+			"color":[255,200,10,255],
+			"ripenTime":5
+		},
+		{
+			"name":"Chocolate",
+			"seed":"Cocoa Seeds",
+			"cropMesh":"models/crops/terrain.obj",
+			"unripeTexture":"models/crops/terrain.png",
+			"ripeTexture":"models/crops/terrain.png",
+			"color":[255,200,10,255],
+			"ripenTime":15
+		}
+	]
+}

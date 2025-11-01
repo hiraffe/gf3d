@@ -61,10 +61,11 @@ Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 		free(self);
 		return NULL;
 	}
+	self->data = data;
+
 	self->position = position;
 	self->think = camera_entity_think;
 	self->free = camera_entity_free;
-	self->data = data;
 	data->target = target;
 	data->followHeight = 5;
 	data->followDistance = 50;

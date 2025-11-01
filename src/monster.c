@@ -2,13 +2,9 @@
 
 #include "gfc_input.h"
 
+#include "crop.h"
 #include "camera_entity.h"
 #include "monster.h"
-
-typedef struct
-{
-	Entity* cam;
-}MonsterEntityData;
 
 void monster_free(Entity* self)
 {
@@ -17,13 +13,6 @@ void monster_free(Entity* self)
 	//data = self->data;
 	//free(data);
 	//free(self);
-}
-
-float gfc_angle_diff(float a, float b)
-{
-	float diff = fmodf(b - a + GFC_PI, GFC_PI * 2);
-	if (diff < 0) diff += GFC_PI * 2;
-	return diff - GFC_PI;
 }
 
 void monster_think(Entity* self)
@@ -63,6 +52,14 @@ void monster_think(Entity* self)
 	gfc_vector3d_add(movement, forward, right);
 
 	gfc_vector3d_add(self->position, self->position, movement);
+
+	// spawn crop
+	if (keystate[SDL_SCANCODE_Q])
+	{
+		GFC_Vector3D cropLocation = self->position;
+		gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0,10,0));
+		crop_spawn(cropLocation, "Pumpkin");
+	}
 }
 
 void monster_set_camera_ent(Entity* self, Entity* camera)

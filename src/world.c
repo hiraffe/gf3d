@@ -13,6 +13,8 @@ World* world_new()
 	World* world;
 	world = gfc_allocate_array(sizeof(World), 1);
 	if (!world) return NULL;
+
+	// load all the crop defs
 	return world;
 }
 

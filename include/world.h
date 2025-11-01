@@ -5,11 +5,11 @@
 
 typedef struct
 {
-	Mesh* terrain;
-	Texture* texture;
-	GFC_Color lightColor;
-	GFC_Vector3D lightPos;
-	GFC_List* entities; //just the ones in the world	
+	Mesh*			terrain;
+	Texture*		texture;
+	GFC_Color		lightColor;
+	GFC_Vector3D	lightPos;
+	GFC_List*		entities; //just the ones in the world	
 }World;
 
 /**

@@ -7,11 +7,11 @@
 
 typedef struct
 {
-	GFC_List* staticMeshes; //terrain(s)
-	GFC_List* bodies; //for entities and the like
-	GFC_List* staticBodies; //for non-moving platforms
-	Uint32 iterations; //how many movement subdivisions to use
-	float step; //should be 1/iterations
+	GFC_List*	staticMeshes; //terrain(s)
+	GFC_List*	bodies; //for entities and the like
+	GFC_List*	staticBodies; //for non-moving platforms
+	Uint32		iterations; //how many movement subdivisions to use
+	float		step; //should be 1/iterations
 
 }Space;
 

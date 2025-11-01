@@ -27,6 +27,7 @@
 #include "entity.h"
 #include "monster.h"
 #include "camera_entity.h"
+#include "crop.h"
 
 extern int __DEBUG;
 
@@ -67,6 +68,7 @@ int main(int argc, char* argv[])
     gf2d_actor_init(1000);
     //entity init
     entity_system_init(10); //change back
+    crop_load("defs/crops.def");
 
     //game init
     srand(SDL_GetTicks());
