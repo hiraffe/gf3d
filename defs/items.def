@@ -1,0 +1,77 @@
+{
+	"items":
+	[
+		{
+			"name":"pumpkin_seeds",
+			"displayName":"Pumpkin Seeds",
+			"price":5,
+			"type":"seed"
+		},
+		{
+			"name":"pumpkin",
+			"displayName":"Pumpkin",
+			"price":25,
+			"type":"crop"
+		},
+		{
+			"name":"brain_seeds",
+			"displayName":"Brains",
+			"price":10,
+			"type":"seed"
+		},
+		{
+			"name":"brain_berries",
+			"displayName":"Brain Berries",
+			"price":50,
+			"type":"crop"
+		},
+		{
+			"name":"pepper_seeds",
+			"displayName":"Pile of Flesh",
+			"price":5,
+			"type":"seed"
+		},
+		{
+			"name":"ghost_pepper",
+			"displayName":"Ghost Pepper",
+			"price":50,
+			"type":"crop"
+		},
+		{
+			"name":"corn_seeds",
+			"displayName":"Corn Seeds",
+			"price":5,
+			"type":"seed"
+		},
+		{
+			"name":"candy_corn",
+			"displayName":"Candy Corn",
+			"price":15,
+			"type":"crop"
+		},
+		{
+			"name":"cocoa_seeds",
+			"displayName":"Cocoa Seeds",
+			"price":5,
+			"type":"seed"
+		},
+		{
+			"name":"chocolate",
+			"displayName":"Chocolate",
+			"price":25,
+			"type":"crop"
+		},
+		{
+			"name":"fertilizer",
+			"displayName":"Fertilizer",
+			"price":100,
+			"type":"seed"
+		},
+		{
+			"name":"pest_control",
+			"displayName":"Pest Control",
+			"price":25,
+			"type":"seed"
+		}
+	]
+}

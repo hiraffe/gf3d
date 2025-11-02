@@ -12,7 +12,7 @@ void camera_entity_free(Entity* self)
 	if ((!self) || (!self->data)) return;
 	data = self->data;
 	free(self->data);
-	free(self);
+	//free(self);
 }
 
 void camera_entity_think(Entity* self)

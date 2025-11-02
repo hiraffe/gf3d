@@ -29,14 +29,20 @@ typedef struct
 Entity* crop_spawn(GFC_Vector3D position, const char *name);
 
 /**
- * @brief load crop data from a json file
- * @param filename name of the file to load
- * @return NULL on error or the world
+ * @brief initialize and load crop definitions from a json file
+ * @param filename json file containing crop data
  */
-SJson* crop_load(const char* filename);
+void crops_init(const char* filename);
 
 /**
- * @brief free a previously loaded world
+ * @brief crop definition by its name
+ * @param name the search criteria
+ * @return NULL if not found, otherwise the definition information of the crop
+ */
+SJson* crop_get_def_by_name(const char* name);
+
+/**
+ * @brief free a previously loaded crop
  * @param world the world to free
  */
 void crop_free(Entity* crop);

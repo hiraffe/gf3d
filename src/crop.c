@@ -6,7 +6,7 @@ static SJson* cropDefs = NULL;
 
 void crop_free(Entity* crop)
 {
-	//
+	cropDefs = NULL;
 }
 
 void crop_think(Entity* self)
@@ -39,7 +39,7 @@ void crop_think(Entity* self)
 	}
 }
 
-SJson* crop_load(const char* filename)
+void crops_init(const char* filename)
 {
 	SJson* json;
 	json = sj_load(filename);
@@ -54,7 +54,7 @@ SJson* crop_load(const char* filename)
 	//atexit(crop_close);
 }
 
-SJson* get_crop_by_name(const char *name)
+SJson* crop_get_def_by_name(const char *name)
 {
 	int i, c;
 	SJson* crop;
@@ -98,7 +98,7 @@ Entity* crop_spawn(GFC_Vector3D position, const char* name)
 	self->data = data;
 
 	//populate data
-	def = get_crop_by_name(name);
+	def = crop_get_def_by_name(name);
 
 	gfc_line_cpy(self->name, sj_object_get_value_as_string(def, "name"));
 	self->mesh = gf3d_mesh_load("models/crops/test-seed.obj");
@@ -123,8 +123,3 @@ Entity* crop_spawn(GFC_Vector3D position, const char* name)
 	slog("Crop spawned: %s", self->name);
 	return self;
 }
-
-
-
-
-

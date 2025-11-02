@@ -2,11 +2,15 @@
 #define __MONSTER_H__
 
 #include "gfc_vector.h"
+#include "inventory.h"
+
 #include "entity.h"
 
 typedef struct
 {
 	Entity* cam;
+	Uint32 money;
+	Inventory* inventory;
 }MonsterEntityData;
 
 Entity* monster_spawn(GFC_Vector3D position, GFC_Color color);

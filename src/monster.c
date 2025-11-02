@@ -8,11 +8,12 @@
 
 void monster_free(Entity* self)
 {
-	//MonsterEntityData* data;
-	//if ((!self) || (!self->data)) return;
-	//data = self->data;
-	//free(data);
-	//free(self);
+	MonsterEntityData* data;
+	if ((!self) || (!self->data)) return;
+	data = self->data;
+	inventory_cleanup(&data->inventory);
+	free(data);
+	//entity_free(self);
 }
 
 static char *crop_held = "Pumpkin";
@@ -74,7 +75,7 @@ void monster_think(Entity* self)
 	// get current item
 	get_crop_held();
 
-	// spawn crop
+	// plant crops
 	if (keystate[SDL_SCANCODE_Q])
 	{
 		GFC_Vector3D cropLocation = self->position;
@@ -82,6 +83,8 @@ void monster_think(Entity* self)
 		crop_spawn(cropLocation, crop_held);
 		// if theres another crop in the area, dont plant it
 	}
+
+	//add function to harvest crops as well
 }
 
 void monster_set_camera_ent(Entity* self, Entity* camera)
@@ -106,6 +109,8 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 		free(self);
 		return NULL;
 	}
+	self->data = data;
+
 	//populate monster data
 	gfc_line_cpy(self->name, "notAgumon");
 	self->mesh = gf3d_mesh_load("models/dino/dino.obj");
@@ -115,12 +120,14 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->rotation = gfc_vector3d(0, 0, 135);
 	self->velocity = gfc_vector3d(0, 0, 0);
 
+
+
 	//void			(*draw)(struct Entity_S* self);
 	self->think = monster_think;
 	//void			(*update)(struct Entity_S* self);
 	self->free = monster_free;
 
-	self->data = data;
+	
 	slog("Monster spawned: %s", self->name);
 	return self;
 }
