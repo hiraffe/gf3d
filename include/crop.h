@@ -5,10 +5,21 @@
 
 #include "entity.h"
 
+typedef enum
+{
+	C_SEED,
+	C_UNRIPE,
+	C_RIPE
+}CropGrowth;
+
 typedef struct
 {
+	Mesh*			cropMesh;		
+	Texture*		ripeTexture;
 	Texture*		unripeTexture;
-	Uint32			ripenTime;
+	Uint32			spawnTime;
+	float			ripenTime;
+	CropGrowth		growth;
 }CropEntityData;
 
 /**

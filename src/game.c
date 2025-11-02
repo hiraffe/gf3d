@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
     //entity init
-    entity_system_init(10); //change back
+    entity_system_init(1024); 
     crop_load("defs/crops.def");
 
     //game init

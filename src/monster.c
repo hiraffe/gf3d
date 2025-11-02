@@ -15,6 +15,24 @@ void monster_free(Entity* self)
 	//free(self);
 }
 
+static char *crop_held = "Pumpkin";
+
+void get_crop_held()
+{
+	const Uint8* keystate = SDL_GetKeyboardState(NULL);
+
+	if (keystate[SDL_SCANCODE_1])
+		crop_held = "Pumpkin";
+	if (keystate[SDL_SCANCODE_2])
+		crop_held = "Brain Berries";
+	if (keystate[SDL_SCANCODE_3])
+		crop_held = "Ghost Pepper";
+	if (keystate[SDL_SCANCODE_4])
+		crop_held = "Candy Corn";
+	if (keystate[SDL_SCANCODE_5])
+		crop_held = "Chocolate";
+}
+
 void monster_think(Entity* self)
 {
 	const Uint8* keystate = SDL_GetKeyboardState(NULL);
@@ -53,12 +71,16 @@ void monster_think(Entity* self)
 
 	gfc_vector3d_add(self->position, self->position, movement);
 
+	// get current item
+	get_crop_held();
+
 	// spawn crop
 	if (keystate[SDL_SCANCODE_Q])
 	{
 		GFC_Vector3D cropLocation = self->position;
-		gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0,10,0));
-		crop_spawn(cropLocation, "Pumpkin");
+		gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0,10,2));
+		crop_spawn(cropLocation, crop_held);
+		// if theres another crop in the area, dont plant it
 	}
 }
 

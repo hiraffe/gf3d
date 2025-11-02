@@ -11,24 +11,38 @@ void crop_free(Entity* crop)
 
 void crop_think(Entity* self)
 {
-	//
+	Uint32 currentTime;
+	float delay;
+	CropEntityData* data;
+	if ((!self) || !(self->data)) return;
+	data = self->data;
+
+	currentTime = SDL_GetTicks();
+	delay = data->ripenTime * 1000;
+
+	if (data->growth == C_SEED)
+	{
+		if (currentTime - data->spawnTime >= delay / 2)
+		{
+			data->growth = C_UNRIPE;
+			self->mesh = data->cropMesh;
+			self->texture = data->unripeTexture;
+		}
+	}
+	else if (data->growth == C_UNRIPE)
+	{
+		if (currentTime - data->spawnTime >= delay)
+		{
+			data->growth = C_RIPE;
+			self->texture = data->ripeTexture;
+		}
+	}
 }
 
 SJson* crop_load(const char* filename)
 {
 	SJson* json;
-
-	if (!filename)
-	{
-		slog("no filename provided for crop initialization");
-		return;
-	}
 	json = sj_load(filename);
-	if (!json)
-	{
-		slog("failed to load the json for the crop definition");
-		return;
-	}
 	cropDefs = sj_object_get_value(json, "crops");
 	if (!cropDefs)
 	{
@@ -70,6 +84,7 @@ SJson* get_crop_by_name(const char *name)
 Entity* crop_spawn(GFC_Vector3D position, const char* name)
 {
 	SJson* def;
+	const char* cmesh, *rtexture, *utexture;
 	Entity* self;
 	CropEntityData* data;
 	self = entity_new();
@@ -86,21 +101,26 @@ Entity* crop_spawn(GFC_Vector3D position, const char* name)
 	def = get_crop_by_name(name);
 
 	gfc_line_cpy(self->name, sj_object_get_value_as_string(def, "name"));
-	self->mesh = gf3d_mesh_load(sj_object_get_value_as_string(def, "cropMesh"));
+	self->mesh = gf3d_mesh_load("models/crops/test-seed.obj");
+	self->texture = gf3d_texture_load("models/crops/green.png");
 	
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
-	self->rotation = gfc_vector3d(0, 0, 135);
 
+	cmesh = sj_object_get_string(def, "cropMesh");
+	data->cropMesh = gf3d_mesh_load(cmesh);
+
+	data->ripeTexture = gf3d_texture_load(sj_object_get_value_as_string(def, "ripeTexture"));
 	data->unripeTexture = gf3d_texture_load(sj_object_get_value_as_string(def, "unripeTexture"));
-	sj_object_get_value_as_int(def, "y", &data->ripenTime);
+	sj_object_get_value_as_float(def, "ripenTime", &data->ripenTime);
+	data->spawnTime = SDL_GetTicks();
 
 	//void			(*draw)(struct Entity_S* self);
 	self->think = crop_think;
 	//void			(*update)(struct Entity_S* self);
 	self->free = crop_free;
 
-	slog("Monster spawned: %s", self->name);
+	slog("Crop spawned: %s", self->name);
 	return self;
 }
 
