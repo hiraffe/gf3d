@@ -8,6 +8,23 @@
 #include "camera_entity.h"
 #include "monster.h"
 
+static Entity* theMonster = NULL;
+
+Entity* monster_get_the()
+{
+	return theMonster;
+}
+
+void monster_free(Entity* self)
+{
+	MonsterEntityData* data;
+	if ((!self) || (!self->data)) return;
+	data = self->data;
+	inventory_cleanup(&data->inventory);
+	item_free(data->item_held);
+	free(data);
+}
+
 void set_item_held(Entity* self)
 {
 	const Uint8* keystate = SDL_GetKeyboardState(NULL);
@@ -30,15 +47,12 @@ void set_item_held(Entity* self)
 Inventory* populate_inventory(Inventory* inv)
 {
 	int i;
-	for (i = 0; i < 5; i++)
-	{
-		inventory_add_item(inv, "pumpkin_seeds");
-		inventory_add_item(inv, "brain_seeds");
-		inventory_add_item(inv, "pepper_seeds");
-		inventory_add_item(inv, "corn_seeds");
-		inventory_add_item(inv, "cocoa_seeds");
-	}
-
+	inventory_add_item(inv, "hoe");
+	inventory_add_item(inv, "pumpkin_seeds");
+	inventory_add_item(inv, "brain_seeds");
+	inventory_add_item(inv, "pepper_seeds");
+	inventory_add_item(inv, "corn_seeds");
+	inventory_add_item(inv, "cocoa_seeds");
 	return inv;
 }
 
@@ -67,15 +81,11 @@ void harvest_nearest_crop(Entity* self)
 		}
 	}
 
-	if (!nearest)
-	{
-		slog("There are no crops nearby for you to harvest");
-		return;
-	}
+	if (!nearest) return; //no crops nearby
 
+	inventory_add_item(data->inventory, nearest->name);
 	nearest->_inuse = 0;
 	entity_free(nearest);
-	inventory_add_item(data->inventory, nearest->name);
 }
 
 void monster_think(Entity* self)
@@ -118,24 +128,27 @@ void monster_think(Entity* self)
 
 	// get current item held
 	set_item_held(self);
-	gf2d_font_draw_line_tag("Item held:", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(15, 15));
+	//gf2d_font_draw_line_tag("Item held:", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(15, 15));
 	//gf2d_font_draw_line_tag(data->item_held->displayname, FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
 
 	// plant crops
 	if (keystate[SDL_SCANCODE_Q])
 	{
-		if (data->item_held->count <= 0)
+		if (strcmp(data->item_held->type, "seed") == 0)
 		{
-			slog("No more %s left!", data->item_held->displayName);
+			if (data->item_held->count > 0)
+			{
+				GFC_Vector3D cropLocation = self->position;
+				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 2));
+				crop_spawn(cropLocation, data->item_held->crop);
+				data->item_held->count--;
+			}
+			else
+			{
+				//slog("No more %s left!", data->item_held->displayName);
+			}
+			// if theres another crop in the area, dont plant it
 		}
-		else
-		{
-			GFC_Vector3D cropLocation = self->position;
-			gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 2));
-			crop_spawn(cropLocation, data->item_held->crop);
-			data->item_held->count--;
-		}
-		// if theres another crop in the area, dont plant it
 	}
 
 	//add function to harvest crops as well
@@ -144,9 +157,16 @@ void monster_think(Entity* self)
 		harvest_nearest_crop(self);
 	}
 
+	// get inventory
 	if (keystate[SDL_SCANCODE_I])
 	{
 		inventory_print(data->inventory);
+	}
+
+	// get position
+	if (keystate[SDL_SCANCODE_P])
+	{
+		slog("%i, %i, %i", self->position.x, self->position.y, self->position.z);
 	}
 }
 
@@ -158,16 +178,6 @@ void monster_set_camera_ent(Entity* self, Entity* camera)
 	data = self->data;
 
 	data->cam = camera;
-}
-
-void monster_free(Entity* self)
-{
-	MonsterEntityData* data;
-	if ((!self) || (!self->data)) return;
-	data = self->data;
-	inventory_cleanup(&data->inventory);
-	item_free(data->item_held);
-	free(data);
 }
 
 Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
@@ -195,15 +205,16 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->rotation = gfc_vector3d(0, 0, 135);
 	self->velocity = gfc_vector3d(0, 0, 0);
 
-	data->money = 100;
+	data->gold = 200;
 	inventory = inventory_new();
 	inventory = populate_inventory(inventory);
 	data->inventory = inventory;
-	data->item_held = inventory_get_item_by_name(inventory, "pumpkin_seeds");
+	data->item_held = inventory_get_item_by_name(inventory, "hoe");
 
 	self->think = monster_think;
 	self->free = monster_free;
 
 	slog("Monster spawned: %s", self->name);
+	theMonster = self;
 	return self;
 }

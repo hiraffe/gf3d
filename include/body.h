@@ -5,19 +5,31 @@
 #include "gfc_list.h"
 #include "gfc_primitives.h"
 
+typedef enum
+{
+	CFM_none = 0,
+	CFM_Player = 1,
+	CFM_Monster = 2,
+	CFM_Item = 4,
+	CFM_World = 8,
+	CFM_Interactable = 16
+}CollisionFilterMask;
+
 typedef struct Body_S
 {
-	GFC_TextLine	name;
-	GFC_Vector3D	position; //center of mass
-	GFC_Vector3D	velocity; //how fast we are currently moving
-	GFC_List		*volumes; //some number of bounding shapes for collisions
-	void			(*onCollide)(struct Body_S* self, struct Body_S other, void* data); //call this whenever we hit
-	void*			data;
+	GFC_TextLine		name;
+	CollisionFilterMask mask;		//only collide when there is overlap
+	Uint8				team;
+	GFC_Vector3D		position;	//center of mass
+	GFC_Vector3D		velocity;	//how fast we are currently moving
+	GFC_List*			volumes;	//some number of bounding shapes for collisions
+	void				(*onCollide)(struct Body_S* self, struct Body_S other, void* data); //call this whenever we hit
+	void*				data;
 
-	GFC_Vector3D	stepPosition;
-	GFC_Vector3D	stepVelocity;
+	GFC_Vector3D		stepPosition;
+	GFC_Vector3D		stepVelocity;
 
-	Uint8			stopped; //stop iterating on this body, we already hit something
+	Uint8				stopped;	//stop iterating on this body, we already hit something
 }Body;
 
 typedef void body_collide_func(Body* self, Body* other, void* data);

@@ -58,3 +58,12 @@ void space_add_body(Space* space, Body* body)
 {
 	gfc_list_append(space->bodies, body);
 }
+
+int space_edge_test(Space* space, GFC_Edge3D test);
+
+//make cube, scale to .5, overwrite prev cube
+//make cylinder with 16 faces
+//scale to .5 and move up
+//rasterizer polygon mode: line vs fill, topology triangle list
+
+//particles: polygon mode point, topologt point list

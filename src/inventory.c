@@ -25,6 +25,7 @@ void inventory_print(Inventory* inventory)
 		if (!item) continue;
 		slog("Count of %s: %i", item->name, item->count);
 	}
+	//slog("Size: %i, Count: %i", inventory->itemslist->size, inventory->itemslist->count);
 	return;
 }
 

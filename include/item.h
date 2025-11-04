@@ -8,7 +8,7 @@ typedef struct
 {
 	GFC_TextLine	name;			/**<name of the item */
 	GFC_TextLine	displayName;	/**<item name that will be displayed*/
-	GFC_TextLine	type;			/**<type of item*/
+	const char*		type;			/**<type of item*/
 	int				price;			/**<shop price of item*/
 	int				count;			/**<how many of the item u have */
 	int				max_count;		/**<max number of the item u can stack */

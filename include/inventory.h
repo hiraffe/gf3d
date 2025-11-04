@@ -6,18 +6,9 @@
 
 #define MAX_ITEMS 128
 
-typedef enum
-{
-	II_PumpkinSeeds,
-	II_Pumpkin,
-	II_BrainSeeds,
-	II_BrainBerries,
-	II_MAX
-}InventoryIndices;
-
 typedef struct
 {
-	GFC_List *itemslist;
+	GFC_List	*itemslist;
 }Inventory;
 
 Inventory* inventory_new();

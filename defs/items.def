@@ -77,6 +77,13 @@
 			"displayName":"Pest Control",
 			"price":25,
 			"type":"equipment"
+		},
+		{
+			"name":"hoe",
+			"displayName":"Hoe",
+			"price":10,
+			"type":"tool",
+			"duration":50
 		}
 	]
 }

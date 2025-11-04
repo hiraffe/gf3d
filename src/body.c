@@ -22,6 +22,11 @@ Body* body_free(Body* b)
 	free(b);
 }
 
+//void body_add_collision_layer(Body* b, )
+//{
+//
+//}
+
 void body_add_volume(Body *b, GFC_Primitive v)
 {
 	GFC_Primitive* p;
@@ -41,7 +46,7 @@ void body_set_colliison(Body* b, body_collide_func* collide, void *data)
 
 void body_reset_for_updates(Body* b, float factor)
 {
-	//sanity check
+	if (!b) return;
 	b->stepPosition = b->position;
 	gfc_vector3d_scale(b->stepVelocity, b->velocity, factor);
 	b->stopped = 0;
@@ -54,15 +59,19 @@ int body_test_body(Body* a, Body* b)
 	GFC_Primitive apTest, bpTest;
 	if ((!a) || (!b)) return 0;
 	//for each primitive in a, test each primitive in b
+	if ((a->team& b->team) && (a->team = b->team)) return 0;
+	if (!(a->mask & b->mask)) return 0;
 	c = gfc_list_count(a->volumes);
 	for (i = 0; i < c; i++)
 	{
 		ap = gfc_list_nth(a->volumes, i);
+		if (!ap)continue;
 		apTest = gfc_primitive_offset(*ap, a->stepPosition);
 		d = gfc_list_count(b->volumes);
 		for (j = 0; j < d; j++)
 		{
 			bp = gfc_list_nth(b->volumes, j);
+			if (!bp) continue;
 			bpTest = gfc_primitive_offset(*bp, b->stepPosition);
 			//TODO: test if the two primitives, now in world space collide
 			// if so, call callbacks on a AND b

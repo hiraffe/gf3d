@@ -10,10 +10,12 @@
 typedef struct
 {
 	Entity*		cam;
-	Uint32		money;
+	float		gold;
 	Item*		item_held;
 	Inventory*	inventory;
 }MonsterEntityData;
+
+Entity* monster_get_the();
 
 Entity* monster_spawn(GFC_Vector3D position, GFC_Color color);
 

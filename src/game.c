@@ -28,8 +28,10 @@
 #include "monster.h"
 #include "camera_entity.h"
 #include "crop.h"
+#include "animal.h"
 #include "item.h"
 #include "inventory.h"
+#include "shop.h"
 
 extern int __DEBUG;
 
@@ -51,6 +53,7 @@ int main(int argc, char* argv[])
     //local variables
     World* world;
     Entity* monster;
+    Entity* shop;
     float theta = 0;
     GFC_Vector3D lightPos = { 5,5,20 };
     GFC_Vector3D cam = { 0,50,0 };
@@ -71,6 +74,7 @@ int main(int argc, char* argv[])
     //entity init
     entity_system_init(1024); 
     crops_init("defs/crops.def");
+    animals_init("defs/animals.def");
     items_init("defs/items.def");
 
     //game init
@@ -82,6 +86,7 @@ int main(int argc, char* argv[])
     monster = monster_spawn(gfc_vector3d(0,0,5), GFC_COLOR_ORANGE);
     camEnt = camera_entity_spawn(gfc_vector3d(0, 10, -5), monster);
     monster_set_camera_ent(monster, camEnt);
+    shop = shop_spawn(gfc_vector3d(-10,-10,5));
 
     gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);

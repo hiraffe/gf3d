@@ -9,6 +9,11 @@ void crop_free(Entity* crop)
 	cropDefs = NULL;
 }
 
+void crops_close()
+{
+	cropDefs = NULL;
+}
+
 void crop_think(Entity* self)
 {
 	Uint32 currentTime;
@@ -51,7 +56,7 @@ void crops_init(const char* filename)
 		json = NULL;
 		return;
 	}
-	//atexit(crop_close);
+	atexit(crops_close);
 }
 
 SJson* crop_get_def_by_name(const char *name)
@@ -84,7 +89,6 @@ SJson* crop_get_def_by_name(const char *name)
 Entity* crop_spawn(GFC_Vector3D position, const char* name)
 {
 	SJson* def;
-	const char* cmesh, *rtexture, *utexture;
 	Entity* self;
 	CropEntityData* data;
 	self = entity_new();

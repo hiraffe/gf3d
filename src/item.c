@@ -5,6 +5,11 @@
 static SJson* itemJson = NULL;
 static SJson* itemDefs = NULL;
 
+void item_free(Item* item)
+{
+	if (!item) return;
+}
+
 void items_close()
 {
 	if (itemJson)
@@ -74,20 +79,15 @@ Item* item_new(const char* name)
 
 	gfc_line_cpy(item->name, sj_object_get_value_as_string(def, "name"));
 	gfc_line_cpy(item->displayName, sj_object_get_value_as_string(def, "displayName"));
-	gfc_line_cpy(item->type, sj_object_get_value_as_string(def, "type"));
+	item->type = sj_object_get_value_as_string(def, "type");
 	sj_object_get_value_as_int(def, "price", &item->price);
 	item->count = 1;
 
-	if (gfc_strlcmp(item->type, "seed") == 0)
+	if (strcmp(item->type, "seed") == 0)
 	{
 		item->crop = sj_object_get_value_as_string(def, "crop");
 	}
 
 	slog("Item added: %s", item->name);
 	return item;
-}
-
-void item_free(Item* item)
-{
-	if (!item) return;
 }
