@@ -5,10 +5,10 @@
 
 typedef struct
 {
-	Entity* target;
-	float followHeight;
-	float followDistance;
-	float angle;
+	Entity*		target;
+	float		followHeight;
+	float		followDistance;
+	float		angle;
 }CameraEntityData;
 
 Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target);

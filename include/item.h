@@ -6,11 +6,14 @@
 
 typedef struct
 {
-	GFC_TextLine	name;		/**<name of the item */
-	const char*		type;		/**<type of item*/
-	int				price;		/**<shop price of item*/
-	int				count;		/**<how many of the item u have */
-	int				max_count;	/**<max number of the item u can stack */
+	GFC_TextLine	name;			/**<name of the item */
+	GFC_TextLine	displayName;	/**<item name that will be displayed*/
+	GFC_TextLine	type;			/**<type of item*/
+	int				price;			/**<shop price of item*/
+	int				count;			/**<how many of the item u have */
+	int				max_count;		/**<max number of the item u can stack */
+
+	const char*		crop;			/**<if item is a seed, what crop grows from it*/
 }Item;
 
 /**

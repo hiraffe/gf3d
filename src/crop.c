@@ -100,26 +100,24 @@ Entity* crop_spawn(GFC_Vector3D position, const char* name)
 	//populate data
 	def = crop_get_def_by_name(name);
 
-	gfc_line_cpy(self->name, sj_object_get_value_as_string(def, "name"));
+	gfc_line_cpy(self->name, name);
+	gfc_line_cpy(self->displayName, sj_object_get_value_as_string(def, "displayName"));
+	self->entityType = "crop";
 	self->mesh = gf3d_mesh_load("models/crops/test-seed.obj");
 	self->texture = gf3d_texture_load("models/crops/green.png");
-	
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
 
-	cmesh = sj_object_get_string(def, "cropMesh");
-	data->cropMesh = gf3d_mesh_load(cmesh);
-
+	gfc_line_cpy(data->seed, sj_object_get_value_as_string(def, "seed"));
+	data->cropMesh = gf3d_mesh_load(sj_object_get_string(def, "cropMesh"));
 	data->ripeTexture = gf3d_texture_load(sj_object_get_value_as_string(def, "ripeTexture"));
 	data->unripeTexture = gf3d_texture_load(sj_object_get_value_as_string(def, "unripeTexture"));
 	sj_object_get_value_as_float(def, "ripenTime", &data->ripenTime);
 	data->spawnTime = SDL_GetTicks();
 
-	//void			(*draw)(struct Entity_S* self);
 	self->think = crop_think;
-	//void			(*update)(struct Entity_S* self);
 	self->free = crop_free;
 
-	slog("Crop spawned: %s", self->name);
+	slog("Crop spawned: %s", name);
 	return self;
 }

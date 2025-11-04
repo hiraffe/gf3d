@@ -12,7 +12,6 @@ void camera_entity_free(Entity* self)
 	if ((!self) || (!self->data)) return;
 	data = self->data;
 	free(self->data);
-	//free(self);
 }
 
 void camera_entity_think(Entity* self)
@@ -30,7 +29,6 @@ void camera_entity_think(Entity* self)
 	{
 		data->angle += turnSpeed;
 	}
-	//if (gfc_input_command_down("walkright"))
 	if (keystate[SDL_SCANCODE_RIGHT])
 	{
 		data->angle -= turnSpeed;
@@ -40,7 +38,6 @@ void camera_entity_think(Entity* self)
 	gfc_vector3d_rotate_about_z(&offset, data->angle);
 	gfc_vector3d_copy(d, data->target->position);
 	gfc_vector3d_scale(offset, offset, data->followDistance);
-	//offset.z = data->followHeight;
 
 	self->position.x = data->target->position.x - offset.x; //
 	self->position.y = data->target->position.y - offset.y; //
@@ -64,12 +61,14 @@ Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
 	self->data = data;
 
 	self->position = position;
-	self->think = camera_entity_think;
-	self->free = camera_entity_free;
+	self->entityType = "cameraEnt";
 	data->target = target;
 	data->followHeight = 5;
 	data->followDistance = 50;
 	data->angle = 0;
+
+	self->think = camera_entity_think;
+	self->free = camera_entity_free;
 
 	return self;
 }

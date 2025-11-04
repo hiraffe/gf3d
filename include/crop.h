@@ -14,6 +14,7 @@ typedef enum
 
 typedef struct
 {
+	GFC_TextLine	seed;
 	Mesh*			cropMesh;		
 	Texture*		ripeTexture;
 	Texture*		unripeTexture;

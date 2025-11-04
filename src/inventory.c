@@ -1,13 +1,31 @@
 #include "simple_logger.h"
 
-#include "item.h"
 #include "inventory.h"
 
-void inventory_init(Inventory* inventory)
+Inventory* inventory_new()
 {
-	if (!inventory) return;
+	Inventory* inventory;
+	inventory = gfc_allocate_array(sizeof(Inventory), 1);
+	if (!inventory) return NULL;
 
 	inventory->itemslist = gfc_list_new();
+	return inventory;
+}
+
+void inventory_print(Inventory* inventory)
+{
+	Item* item;
+	int i, c;
+	if (!inventory) return NULL;
+
+	c = gfc_list_get_count(inventory->itemslist);
+	for (i = 0; i < c; i++)
+	{
+		item = gfc_list_get_nth(inventory->itemslist, i);
+		if (!item) continue;
+		slog("Count of %s: %i", item->name, item->count);
+	}
+	return;
 }
 
 Item* inventory_get_item_by_name(Inventory *inventory, const char* name)

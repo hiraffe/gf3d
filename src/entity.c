@@ -2,13 +2,12 @@
 
 #include "entity.h"
 
-typedef struct
-{
-	Entity* entity_list;
-	Uint32 entity_max;
-}EntitySystem;
-
 static EntitySystem entity_system = { 0 };
+
+EntitySystem entity_get_system()
+{
+	return entity_system;
+}
 
 Entity* entity_new()
 {

@@ -12,6 +12,8 @@ typedef struct Entity_S
 {
 	Uint8			_inuse;
 	GFC_TextLine	name;
+	GFC_TextLine	displayName;
+	const char*		entityType;
 	Mesh*			mesh;
 	Texture*		texture;
 	GFC_Color		color;
@@ -29,6 +31,18 @@ typedef struct Entity_S
 	Uint8			doGenericUpdate;
 	void*			data;
 }Entity;
+
+typedef struct
+{
+	Entity* entity_list;
+	Uint32 entity_max;
+}EntitySystem;
+
+/**
+ * @brief get the entity system
+ * @return the entity system
+ */
+EntitySystem entity_get_system();
 
 /**
  * @brief get a pointer to a new blank entity
