@@ -24,6 +24,7 @@
 #include "gf3d_mesh.h"
 
 #include "world.h"
+#include "ui.h"
 #include "entity.h"
 #include "monster.h"
 #include "camera_entity.h"
@@ -32,6 +33,7 @@
 #include "item.h"
 #include "inventory.h"
 #include "shop.h"
+#include "shop_menu.h"
 
 extern int __DEBUG;
 
@@ -73,6 +75,7 @@ int main(int argc, char* argv[])
     gf2d_actor_init(1000);
     //entity init
     entity_system_init(1024); 
+    ui_manager_init();
     crops_init("defs/crops.def");
     animals_init("defs/animals.def");
     items_init("defs/items.def");
@@ -86,7 +89,7 @@ int main(int argc, char* argv[])
     monster = monster_spawn(gfc_vector3d(0,0,5), GFC_COLOR_ORANGE);
     camEnt = camera_entity_spawn(gfc_vector3d(0, 10, -5), monster);
     monster_set_camera_ent(monster, camEnt);
-    shop = shop_spawn(gfc_vector3d(-10,-10,5));
+    shop = shop_spawn(gfc_vector3d(-50,-50,5));
 
     gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
@@ -102,6 +105,7 @@ int main(int argc, char* argv[])
         //world updates
         entity_system_think_all();
         entity_system_update_all();
+        shop_menu_think();
         //camera updates
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
@@ -110,7 +114,8 @@ int main(int argc, char* argv[])
         world_draw(world);
         //2D draws
         gf2d_font_draw_line_tag("ALT+F4 to exit", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
-        gf2d_mouse_draw();
+        shop_menu_draw();
+        //gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();

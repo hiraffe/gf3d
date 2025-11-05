@@ -57,7 +57,7 @@ Entity* entity_new();
 void entity_free(Entity *ent);
 
 /**
- * initialozes the entity subsystem
+ * @brief initialozes the entity subsystem
  * @param max_ents how many to support concurrently
  */
 void entity_system_init(Uint32 max_ents);

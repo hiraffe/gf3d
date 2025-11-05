@@ -10,6 +10,8 @@ typedef struct
 	Uint8		isOpen;
 }ShopEntityData;
 
+Entity* shop_get_the();
+
 /**
  * @brief spawn in a new shop
  * @return NULL on error, or a new shop

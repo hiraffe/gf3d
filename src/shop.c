@@ -3,6 +3,14 @@
 #include "monster.h"
 
 #include "shop.h"
+#include "shop_menu.h"
+
+Entity* theShop = { 0 };
+
+Entity* shop_get_the()
+{
+	return theShop;
+}
 
 void shop_free(Entity* self)
 {
@@ -61,22 +69,28 @@ void shop_sell_all(Entity* self, Entity* monster)
 	}
 	monsterData->gold -= totalGold;
 	slog("Total spent: %.2f gold (new balance: %.2f)", totalGold, monsterData->gold);
+	data->isOpen = 0;
 }
 
 
 void shop_think(Entity* self)
 {
 	const Uint8* keystate = SDL_GetKeyboardState(NULL);
+	ShopEntityData* data;
 	Entity* monster = monster_get_the();
-	if (!monster) return;
+	if ((!self)||(!self->data)||(!monster)) return;
+	data = self->data;
 
-	if (gfc_vector3d_magnitude_between(monster->position, self->position) < 50)
+	if (gfc_vector3d_magnitude_between(monster->position, self->position) < 10)
 	{
 		if (keystate[SDL_SCANCODE_E])
 		{
-			slog("Open shop...");
-			//market_ui_open();
-			shop_sell_all(self, monster);
+			if (data->isOpen)
+			{
+				slog("Open shop...");
+				shop_menu_open();
+				//shop_sell_all(self, monster);
+			}
 		}
 	}
 }
@@ -122,10 +136,12 @@ Entity* shop_spawn(GFC_Vector3D position)
 	inv = inventory_new();
 	inv = shop_populate(inv);
 	data->sell_list = inv;
+	data->isOpen = 1;
 
 	self->think = shop_think;
 	self->free = shop_free;
 
 	slog("Shop spawned: %s", self->name);
+	theShop = self;
 	return self;
 }
