@@ -4,7 +4,7 @@
 		{
 			"name":"pumpkin_seeds",
 			"displayName":"Pumpkin Seeds",
-			"price":5,
+			"price":1,
 			"type":"seed",
 			"crop":"pumpkin"
 		},
@@ -18,21 +18,21 @@
 		{
 			"name":"pepper_seeds",
 			"displayName":"Pile of Flesh",
-			"price":5,
+			"price":2,
 			"type":"seed",
 			"crop":"ghost_pepper"
 		},
 		{
 			"name":"corn_seeds",
 			"displayName":"Corn Seeds",
-			"price":5,
+			"price":15,
 			"type":"seed",
 			"crop":"candy_corn"
 		},
 		{
 			"name":"cocoa_seeds",
 			"displayName":"Cocoa Seeds",
-			"price":5,
+			"price":25,
 			"type":"seed",
 			"crop":"chocolate"
 		},

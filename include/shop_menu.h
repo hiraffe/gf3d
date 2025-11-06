@@ -11,13 +11,18 @@ typedef enum
 
 typedef struct
 {
-	Entity*		shop;
-	ShopState	state;
+	ShopState		state;
+	ShopEntityData* shopData;
 }ShopMenuData;
 
-void shop_menu_open();
+UI* shop_menu_new(ShopEntityData* shop);
+
+void shop_menu_open(UI* ui);
+
 void shop_menu_close();
-void shop_menu_think();
-void shop_menu_draw();
+
+void shop_menu_think(UI* ui);
+
+void shop_menu_draw(UI* ui);
 
 #endif

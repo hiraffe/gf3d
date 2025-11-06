@@ -88,6 +88,6 @@ Item* item_new(const char* name)
 		item->crop = sj_object_get_value_as_string(def, "crop");
 	}
 
-	slog("Item added: %s", item->name);
+	//slog("Item added: %s", item->name);
 	return item;
 }

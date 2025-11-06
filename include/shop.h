@@ -3,11 +3,13 @@
 
 #include "entity.h"
 #include "inventory.h"
+#include "ui.h"
 
 typedef struct
 {
-	Inventory*	sell_list;
-	Uint8		isOpen;
+	Inventory*		sell_list;
+	Uint8			isOpen;
+	UI*				menu;
 }ShopEntityData;
 
 Entity* shop_get_the();

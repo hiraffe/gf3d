@@ -36,6 +36,38 @@ float shop_item_get_price(Inventory* inv, const char* itemName)
 	return 0;
 }
 
+void shop_sell_item(Entity* self, Entity* monster, int itemnum)
+{
+	Inventory* inv, * monsterInv;
+	Item* item;
+	ShopEntityData* data;
+	MonsterEntityData* monsterData;
+	if ((!self) || (!self->data) || (!monster) || (!monster->data)) return;
+	data = self->data;
+	inv = data->sell_list;
+	monsterData = monster->data;
+	monsterInv = monsterData->inventory;
+
+	float totalGold = 0;
+
+	item = gfc_list_get_nth(inv->itemslist, itemnum);
+	if (item->count <= 0) return;
+
+	float price = shop_item_get_price(inv, item->name);
+	if (price > 0)
+	{
+		float gain = price * item->count;
+		totalGold += gain;
+		slog("Sold %d x %s for %.2f gold", item->count, item->name, gain);
+		for (int j = 0; j < item->count; j++) {
+			inventory_add_item(monsterInv, item->name);
+		}
+		item->count--;
+	}
+
+	monsterData->gold -= totalGold;
+	data->isOpen = 0;
+}
 
 void shop_sell_all(Entity* self, Entity* monster)
 {
@@ -72,7 +104,6 @@ void shop_sell_all(Entity* self, Entity* monster)
 	data->isOpen = 0;
 }
 
-
 void shop_think(Entity* self)
 {
 	const Uint8* keystate = SDL_GetKeyboardState(NULL);
@@ -88,7 +119,7 @@ void shop_think(Entity* self)
 			if (data->isOpen)
 			{
 				slog("Open shop...");
-				shop_menu_open();
+				shop_menu_open(data->menu);
 				//shop_sell_all(self, monster);
 			}
 		}
@@ -112,6 +143,7 @@ Inventory* shop_populate(Inventory* inv)
 Entity* shop_spawn(GFC_Vector3D position)
 {
 	Inventory* inv;
+	UI* shop_menu;
 	Entity* self;
 	ShopEntityData* data;
 	self = entity_new();
@@ -137,6 +169,8 @@ Entity* shop_spawn(GFC_Vector3D position)
 	inv = shop_populate(inv);
 	data->sell_list = inv;
 	data->isOpen = 1;
+	//shop_menu = shop_menu_new(self->data);
+	data->menu = shop_menu_new(self->data);
 
 	self->think = shop_think;
 	self->free = shop_free;

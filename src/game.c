@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     gf2d_actor_init(1000);
     //entity init
     entity_system_init(1024); 
-    ui_manager_init();
+    ui_manager_init(16);
     crops_init("defs/crops.def");
     animals_init("defs/animals.def");
     items_init("defs/items.def");
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
         //world updates
         entity_system_think_all();
         entity_system_update_all();
-        shop_menu_think();
+        ui_manager_think_all();
         //camera updates
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         world_draw(world);
         //2D draws
         gf2d_font_draw_line_tag("ALT+F4 to exit", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
-        shop_menu_draw();
+        ui_manager_draw_all();
         //gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
