@@ -26,4 +26,8 @@ Entity* shop_spawn(GFC_Vector3D position);
  */
 void shop_free(Entity* crop);
 
+float shop_sell_item(Inventory* inv, Inventory* otherInv, int itemIndex);
+
+void shop_sell_all(Entity* self, Entity* monster);
+
 #endif

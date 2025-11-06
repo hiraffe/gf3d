@@ -65,6 +65,16 @@ void inventory_add_item(Inventory* inventory, const char* name)
 	gfc_list_append(inventory->itemslist, item);
 }
 
+void inventory_remove_item(Inventory* inventory, const char* name)
+{
+	Item* item;
+	if ((!inventory) | (!name)) return;
+
+	item = inventory_get_item_by_name(inventory, name);
+
+	gfc_list_delete_data(inventory->itemslist, item);
+}
+
 void inventory_cleanup(Inventory* inventory)
 {
 	if (!inventory) return;
@@ -72,4 +82,23 @@ void inventory_cleanup(Inventory* inventory)
 	gfc_list_foreach(inventory->itemslist, (gfc_work_func*)item_free);
 	gfc_list_delete(inventory->itemslist);
 	inventory->itemslist = NULL;
+}
+
+void inventory_update(Inventory* inventory)
+{
+	Item* item;
+	int i, c;
+	if (!inventory) return NULL;
+
+	c = gfc_list_get_count(inventory->itemslist);
+	for (i = 0; i < c; i++)
+	{
+		item = gfc_list_get_nth(inventory->itemslist, i);
+		if (!item) continue;
+		if (item->count <= 0)
+		{
+			inventory_remove_item(inventory, item);
+		}
+	}
+	return NULL;
 }

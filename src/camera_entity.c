@@ -25,11 +25,11 @@ void camera_entity_think(Entity* self)
 	if (!data->target)return;
 
 	turnSpeed = 0.05;
-	if (keystate[SDL_SCANCODE_LEFT])
+	if (gfc_input_command_down("panleft"))
 	{
 		data->angle += turnSpeed;
 	}
-	if (keystate[SDL_SCANCODE_RIGHT])
+	if (gfc_input_command_down("panright"))
 	{
 		data->angle -= turnSpeed;
 	}

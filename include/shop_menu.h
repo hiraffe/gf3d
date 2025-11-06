@@ -19,7 +19,7 @@ UI* shop_menu_new(ShopEntityData* shop);
 
 void shop_menu_open(UI* ui);
 
-void shop_menu_close();
+void shop_menu_close(UI* ui);
 
 void shop_menu_think(UI* ui);
 

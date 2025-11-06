@@ -44,18 +44,6 @@ void set_item_held(Entity* self)
 		data->item_held = inventory_get_item_by_name(data->inventory, "cocoa_seeds");
 }
 
-Inventory* populate_inventory(Inventory* inv)
-{
-	int i;
-	inventory_add_item(inv, "hoe");
-	inventory_add_item(inv, "pumpkin_seeds");
-	inventory_add_item(inv, "brain_seeds");
-	inventory_add_item(inv, "pepper_seeds");
-	inventory_add_item(inv, "corn_seeds");
-	inventory_add_item(inv, "cocoa_seeds");
-	return inv;
-}
-
 void harvest_nearest_crop(Entity* self)
 {
 	int i;
@@ -103,13 +91,13 @@ void monster_think(Entity* self)
 	if (!camData) return;
 
 	// --- input ---
-	if (keystate[SDL_SCANCODE_W])
+	if (gfc_input_command_down("walkforward"))
 		move += moveStep;
-	if (keystate[SDL_SCANCODE_S])
+	if (gfc_input_command_down("walkback"))
 		move -= moveStep;
-	if (keystate[SDL_SCANCODE_A])
+	if (gfc_input_command_down("walkleft"))
 		moveSide -= moveStep;
-	if (keystate[SDL_SCANCODE_D])
+	if (gfc_input_command_down("walkright"))
 		moveSide += moveStep;
 
 	// --- get camera facing direction ---
@@ -128,11 +116,9 @@ void monster_think(Entity* self)
 
 	// get current item held
 	set_item_held(self);
-	//gf2d_font_draw_line_tag("Item held:", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(15, 15));
-	//gf2d_font_draw_line_tag(data->item_held->displayname, FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
 
 	// plant crops
-	if (keystate[SDL_SCANCODE_Q])
+	if (gfc_input_command_pressed("plant"))
 	{
 		if (strcmp(data->item_held->type, "seed") == 0)
 		{
@@ -152,22 +138,25 @@ void monster_think(Entity* self)
 	}
 
 	//add function to harvest crops as well
-	if (keystate[SDL_SCANCODE_E])
+	if (gfc_input_command_pressed("select"))
 	{
 		harvest_nearest_crop(self);
 	}
 
 	// get inventory
-	if (keystate[SDL_SCANCODE_I])
+	inventory_update(data->inventory);
+	if (gfc_input_command_pressed("inventory"))
 	{
 		inventory_print(data->inventory);
 	}
 
 	// get position
-	if (keystate[SDL_SCANCODE_P])
+	/*
+	if (gfc_input_command_pressed("select"))
 	{
 		slog("%i, %i, %i", self->position.x, self->position.y, self->position.z);
 	}
+	*/
 }
 
 void monster_set_camera_ent(Entity* self, Entity* camera)
@@ -207,7 +196,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 
 	data->gold = 200;
 	inventory = inventory_new();
-	inventory = populate_inventory(inventory);
+	inventory_add_item(inventory, "hoe");
 	data->inventory = inventory;
 	data->item_held = inventory_get_item_by_name(inventory, "hoe");
 

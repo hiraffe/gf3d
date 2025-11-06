@@ -17,6 +17,10 @@ void inventory_cleanup(Inventory* inventory);
 
 void inventory_add_item(Inventory* inventory, const char* name);
 
+void inventory_remove_item(Inventory* inventory, const char* name);
+
+void inventory_update(Inventory* inventory);
+
 Item* inventory_get_item_by_name(Inventory* inventory, const char* name);
 
 void inventory_print(Inventory* inventory);

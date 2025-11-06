@@ -1,9 +1,12 @@
 #include "simple_logger.h"
 
+#include "gfc_input.h"
+
 #include "monster.h"
+#include "shop_menu.h"
 
 #include "shop.h"
-#include "shop_menu.h"
+
 
 Entity* theShop = { 0 };
 
@@ -36,21 +39,14 @@ float shop_item_get_price(Inventory* inv, const char* itemName)
 	return 0;
 }
 
-void shop_sell_item(Entity* self, Entity* monster, int itemnum)
+float shop_sell_item(Inventory* inv, Inventory* otherInv, int itemIndex)
 {
-	Inventory* inv, * monsterInv;
+	slog("selling item...");
 	Item* item;
-	ShopEntityData* data;
-	MonsterEntityData* monsterData;
-	if ((!self) || (!self->data) || (!monster) || (!monster->data)) return;
-	data = self->data;
-	inv = data->sell_list;
-	monsterData = monster->data;
-	monsterInv = monsterData->inventory;
+	if ((!inv) || (!otherInv))return;
 
 	float totalGold = 0;
-
-	item = gfc_list_get_nth(inv->itemslist, itemnum);
+	item = gfc_list_get_nth(inv->itemslist, itemIndex);
 	if (item->count <= 0) return;
 
 	float price = shop_item_get_price(inv, item->name);
@@ -58,15 +54,13 @@ void shop_sell_item(Entity* self, Entity* monster, int itemnum)
 	{
 		float gain = price * item->count;
 		totalGold += gain;
-		slog("Sold %d x %s for %.2f gold", item->count, item->name, gain);
-		for (int j = 0; j < item->count; j++) {
-			inventory_add_item(monsterInv, item->name);
-		}
+		slog("Sold %s for %.2f gold", item->name, gain);
+		inventory_add_item(otherInv, item->name);
 		item->count--;
 	}
 
-	monsterData->gold -= totalGold;
-	data->isOpen = 0;
+	return totalGold;
+	//monsterData->gold -= totalGold;
 }
 
 void shop_sell_all(Entity* self, Entity* monster)
@@ -114,7 +108,7 @@ void shop_think(Entity* self)
 
 	if (gfc_vector3d_magnitude_between(monster->position, self->position) < 10)
 	{
-		if (keystate[SDL_SCANCODE_E])
+		if (gfc_input_command_pressed("select"))
 		{
 			if (data->isOpen)
 			{

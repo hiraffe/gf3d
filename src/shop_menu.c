@@ -1,5 +1,7 @@
 #include "simple_logger.h"
 
+#include "gfc_input.h"
+
 #include "ui.h"
 #include "shop.h"
 #include "monster.h"
@@ -8,41 +10,52 @@
 
 void shop_menu_open(UI* ui)
 {
-	if (!ui) return;
+	ShopMenuData* data;
+	if ((!ui) || (!ui->data)) return;
+	data = ui->data;
+
+	ui->item_selected = 0;
 	ui->visible = 1;
+	data->state = SS_Buy;
 }
 
-void shop_menu_close()
+void shop_menu_close(UI* ui)
 {
-	ui_manager_hide();
+	if (!ui) return;
+	ui->visible = 0;
 }
 
 void shop_menu_think(UI* ui)
 {
 	UI_Manager ui_manager = ui_get_manager();
-	const Uint8* keystate = SDL_GetKeyboardState(NULL);
 	ShopMenuData* data;
 	if ((!ui) || (!ui->data)) return;
 	data = ui->data;
 
-	if (keystate[SDL_SCANCODE_DOWN]) {
+	// update inventory
+	inventory_update(data->shopData->sell_list);
+	inventory_update(ui->mData->inventory);
+
+	if (gfc_input_command_pressed("pandown")) {
 		ui->item_selected++;
 		if (ui->item_selected >= ui->item_max) {
 			ui->item_selected = ui->item_max;
 		}
 	}
 
-	if (keystate[SDL_SCANCODE_UP]) {
+	if (gfc_input_command_pressed("panup")) {
 		ui->item_selected--;
 		if (ui->item_selected <= 0) {
 			ui->item_selected = 0;
 		}
 	}
 
-	if (keystate[SDL_SCANCODE_SELECT]) {
+	if (gfc_input_command_pressed("enter")) 
+	{
 		if (ui->item_selected >= ui->item_max)
 		{
-			if (data->state == SS_Buy) {
+			ui->item_selected = 0;
+			if (data->state == SS_Buy)  {
 				data->state = SS_Sell;
 			}
 			else {
@@ -50,13 +63,18 @@ void shop_menu_think(UI* ui)
 			}
 		}
 		else {
-			shop_sell_item(data->shopData->sell_list, ui->mData->inventory, ui->item_selected);
+			if (data->state == SS_Buy) {
+				ui->mData->gold -= shop_sell_item(data->shopData->sell_list, ui->mData->inventory, ui->item_selected);
+			}
+			else {
+				ui->mData->gold -= shop_sell_item(ui->mData->inventory, data->shopData->sell_list, ui->item_selected);
+			}
 		}
 	}
 
-	if (keystate[SDL_SCANCODE_ESCAPE])
+	if (gfc_input_command_pressed("cancel"))
 	{
-		shop_menu_close();
+		shop_menu_close(ui);
 	}
 }
 
@@ -81,7 +99,7 @@ void shop_draw_inventory(UI* ui, Inventory* inv, char str[16])
 		gf2d_font_draw_line_tag(priceStr, FT_H5, color, gfc_vector2d(720, 250+offset));
 		offset += 30;
 	}
-	color = (ui->item_max-1 <= ui->item_selected) ? GFC_COLOR_WHITE : GFC_COLOR_YELLOW;
+	color = (ui->item_max <= ui->item_selected) ? GFC_COLOR_WHITE : GFC_COLOR_YELLOW;
 	gf2d_font_draw_line_tag(str, FT_H5, color, gfc_vector2d(710, 440));
 }
 
@@ -95,19 +113,19 @@ void shop_menu_draw(UI* ui)
 	if (data->state == SS_Buy)
 	{
 		gf2d_font_draw_line_tag("Seed Shop", FT_H2, GFC_COLOR_YELLOW, gfc_vector2d(560, 205));
-		ui->item_max = data->shopData->sell_list->itemslist->count+1;
+		ui->item_max = data->shopData->sell_list->itemslist->count;
 		shop_draw_inventory(ui, data->shopData->sell_list, "Sell");
 	}
-	else if (data->state == SS_Buy)
+	else if (data->state == SS_Sell)
 	{
 		gf2d_font_draw_line_tag("Inventory", FT_H2, GFC_COLOR_YELLOW, gfc_vector2d(560, 205));
-		ui->item_max = ui->mData->inventory->itemslist->count + 1;
+		ui->item_max = ui->mData->inventory->itemslist->count;
 		shop_draw_inventory(ui, ui->mData->inventory, "Buy");
 	}
 
 	char gold[32];
 	snprintf(gold, sizeof(gold), "Total money: $%.2f", ui->mData->gold);
-	gf2d_font_draw_line_tag(gold, FT_H5, GFC_COLOR_GREY, gfc_vector2d(505, 410));
+	gf2d_font_draw_line_tag(gold, FT_H5, GFC_COLOR_GREY, gfc_vector2d(505, 450));
 }
 
 UI* shop_menu_new(ShopEntityData* shop)
