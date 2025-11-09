@@ -12,12 +12,12 @@
 
 void spawn_animals()
 {
-	GFC_Vector3D pos = { 0 };
+	GFC_Vector3D pos = gfc_vector3d(0,-100,0);
 	Entity* a1 = animal_spawn(pos, "deer");
-	//Entity* a2 = animal_spawn(pos, "cow");
-	//Entity* a3 = animal_spawn(pos, "chicken");
-	//Entity* a4 = animal_spawn(pos, "lamb");
-	//Entity* a5 = animal_spawn(pos, "cat");
+	Entity* a2 = animal_spawn(pos, "cow");
+	Entity* a3 = animal_spawn(pos, "chicken");
+	Entity* a4 = animal_spawn(pos, "lamb");
+	Entity* a5 = animal_spawn(pos, "cat");
 }
 
 World* world_new()
