@@ -6,7 +6,7 @@ static SJson* cropDefs = NULL;
 
 void crop_free(Entity* crop)
 {
-	cropDefs = NULL;
+	//cropDefs = NULL;
 }
 
 void crops_close()
@@ -56,7 +56,7 @@ void crops_init(const char* filename)
 		json = NULL;
 		return;
 	}
-	atexit(crops_close);
+	//atexit(crops_close);
 }
 
 SJson* crop_get_def_by_name(const char *name)
@@ -67,7 +67,7 @@ SJson* crop_get_def_by_name(const char *name)
 	if (!name) return NULL;
 	if (!cropDefs)
 	{
-		slog("no crop definitions loaded");
+		slog("no crop definitions loaded for %s", name);
 		return NULL;
 	}
 	c = sj_array_get_count(cropDefs);

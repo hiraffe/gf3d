@@ -11,8 +11,9 @@ typedef struct
 {
 	Entity*		cam;
 	float		gold;
-	Item*		item_held;
 	Inventory*	inventory;
+	Item*		item_held;
+	Uint32		item_index;
 }MonsterEntityData;
 
 Entity* monster_get_the();

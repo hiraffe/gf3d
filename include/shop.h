@@ -18,7 +18,7 @@ Entity* shop_get_the();
  * @brief spawn in a new shop
  * @return NULL on error, or a new shop
  */
-Entity* shop_spawn(GFC_Vector3D position);
+Entity* shop_spawn(GFC_Vector3D position, const char* name);
 
 /**
  * @brief free a previously loaded crop

@@ -41,7 +41,6 @@ float shop_item_get_price(Inventory* inv, const char* itemName)
 
 float shop_sell_item(Inventory* inv, Inventory* otherInv, int itemIndex)
 {
-	slog("selling item...");
 	Item* item;
 	if ((!inv) || (!otherInv))return;
 
@@ -49,18 +48,16 @@ float shop_sell_item(Inventory* inv, Inventory* otherInv, int itemIndex)
 	item = gfc_list_get_nth(inv->itemslist, itemIndex);
 	if (item->count <= 0) return;
 
-	float price = shop_item_get_price(inv, item->name);
+	float price = item->price;
 	if (price > 0)
 	{
-		float gain = price * item->count;
-		totalGold += gain;
-		slog("Sold %s for %.2f gold", item->name, gain);
+		totalGold += price;
+		slog("Sold %s for %.2f gold", item->name, price);
 		inventory_add_item(otherInv, item->name);
 		item->count--;
 	}
 
 	return totalGold;
-	//monsterData->gold -= totalGold;
 }
 
 void shop_sell_all(Entity* self, Entity* monster)
@@ -81,7 +78,7 @@ void shop_sell_all(Entity* self, Entity* monster)
 		item = gfc_list_get_nth(inv->itemslist, i);
 		if (item->count <= 0) continue;
 
-		float price = shop_item_get_price(inv, item->name);
+		float price = item->price;
 		if (price > 0)
 		{
 			float gain = price * item->count;
@@ -114,13 +111,12 @@ void shop_think(Entity* self)
 			{
 				slog("Open shop...");
 				shop_menu_open(data->menu);
-				//shop_sell_all(self, monster);
 			}
 		}
 	}
 }
 
-Inventory* shop_populate(Inventory* inv)
+Inventory* shop_populate_seeds(Inventory* inv)
 {
 	int i;
 	for (i = 0; i < 5; i++)
@@ -134,7 +130,19 @@ Inventory* shop_populate(Inventory* inv)
 	return inv;
 }
 
-Entity* shop_spawn(GFC_Vector3D position)
+Inventory* shop_populate_equipment(Inventory* inv)
+{
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		inventory_add_item(inv, "fertilizer");
+		inventory_add_item(inv, "fertilizer2");
+		inventory_add_item(inv, "pest_control");
+	}
+	return inv;
+}
+
+Entity* shop_spawn(GFC_Vector3D position, const char* name)
 {
 	Inventory* inv;
 	UI* shop_menu;
@@ -151,8 +159,8 @@ Entity* shop_spawn(GFC_Vector3D position)
 	self->data = data;
 
 	//populate data
-	gfc_line_cpy(self->name, "totallyNotAgumon");
-	gfc_line_cpy(self->displayName, "Seed Shop");
+	gfc_line_cpy(self->name, name);
+	gfc_line_cpy(self->displayName, name);
 	self->entityType = "market";
 	self->mesh = gf3d_mesh_load("models/dino/dino.obj");
 	self->texture = gf3d_texture_load("models/dino/dino.png");
@@ -160,11 +168,16 @@ Entity* shop_spawn(GFC_Vector3D position)
 	self->color = GFC_COLOR_WHITE;
 
 	inv = inventory_new();
-	inv = shop_populate(inv);
+	if (strcmp(name, "Seed Shop") == 0) {
+		inv = shop_populate_seeds(inv);
+	}
+	else {
+		inv = shop_populate_equipment(inv);
+	}
 	data->sell_list = inv;
 	data->isOpen = 1;
 	//shop_menu = shop_menu_new(self->data);
-	data->menu = shop_menu_new(self->data);
+	data->menu = shop_menu_new(self->data, name);
 
 	self->think = shop_think;
 	self->free = shop_free;

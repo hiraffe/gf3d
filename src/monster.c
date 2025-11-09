@@ -6,6 +6,7 @@
 
 #include "crop.h"
 #include "camera_entity.h"
+
 #include "monster.h"
 
 static Entity* theMonster = NULL;
@@ -27,31 +28,47 @@ void monster_free(Entity* self)
 
 void set_item_held(Entity* self)
 {
-	const Uint8* keystate = SDL_GetKeyboardState(NULL);
+	int max;
+	Item* item;
 	MonsterEntityData* data;
 	if ((!self) || !(self->data)) return;
 	data = self->data;
 
-	if (keystate[SDL_SCANCODE_1])
-		data->item_held = inventory_get_item_by_name(data->inventory, "pumpkin_seeds");
-	if (keystate[SDL_SCANCODE_2])
-		data->item_held = inventory_get_item_by_name(data->inventory, "brain_seeds");
-	if (keystate[SDL_SCANCODE_3])
-		data->item_held = inventory_get_item_by_name(data->inventory, "pepper_seeds");
-	if (keystate[SDL_SCANCODE_4])
-		data->item_held = inventory_get_item_by_name(data->inventory, "corn_seeds");
-	if (keystate[SDL_SCANCODE_5])
-		data->item_held = inventory_get_item_by_name(data->inventory, "cocoa_seeds");
+	if ((!data->inventory) || (!data->inventory->itemslist) || (data->inventory->itemslist->count <= 0))
+	{
+		data->item_held = NULL;
+		data->item_index = 0;
+		return;
+	}
+
+	max = data->inventory->itemslist->count;
+
+	if (gfc_input_command_pressed("itemright"))
+	{
+		data->item_index = (data->item_index + 1) % max;
+		slog("Scrolled right -> new index: %d / %d", data->item_index, max - 1);
+	}
+
+	if (gfc_input_command_pressed("itemleft"))
+	{
+		data->item_index = (data->item_index - 1 + max) % max;  // prevents negatives
+		slog("Scrolled left -> new index: %d / %d", data->item_index, max - 1);
+	}
+
+	item = gfc_list_get_nth(data->inventory->itemslist, data->item_index);
+	if (!item) return;
+
+	data->item_held = item;
 }
 
-void harvest_nearest_crop(Entity* self)
+void select_nearest_crop(Entity* self)
 {
 	int i;
 	Entity* nearest = NULL;
 	float nearestDist = 10;
 	EntitySystem entity_system = entity_get_system();
 	MonsterEntityData* data = self->data;
-	CropEntityData* cropData;
+	CropEntityData* cropData = NULL;
 
 	for (i = 0; i < entity_system.entity_max; i++)
 	{
@@ -60,20 +77,31 @@ void harvest_nearest_crop(Entity* self)
 		if (!ent->data) continue;
 		if (ent->entityType != "crop") continue;
 
-		cropData = ent->data;
-		if (cropData->growth != C_RIPE) continue; // only harvest ripe crops
-		if(gfc_vector3d_distance_between_less_than(self->position, ent->position, nearestDist))
+		// find the nearest crop
+		if (gfc_vector3d_distance_between_less_than(self->position, ent->position, nearestDist))
 		{
+			cropData = ent->data;
 			nearest = ent;
 			nearestDist = gfc_vector3d_magnitude_between(self->position, ent->position);
 		}
 	}
 
-	if (!nearest) return; //no crops nearby
+	if ((!nearest)) return; // no crops nearby
 
-	inventory_add_item(data->inventory, nearest->name);
-	nearest->_inuse = 0;
-	entity_free(nearest);
+	// harvest if ripe
+	if (cropData->growth == C_RIPE)
+	{
+		inventory_add_item(data->inventory, nearest->name);
+		entity_free(nearest);
+		//data->item_held = gfc_list_get_nth(data->inventory->itemslist, data->item_index);
+	}
+
+	// fertilize seeds
+	if (strcmp(data->item_held->type, "fertilizer") == 0)
+	{
+		cropData->ripenTime *= data->item_held->speedMod;
+		data->item_held->count--;
+	}
 }
 
 void monster_think(Entity* self)
@@ -90,7 +118,7 @@ void monster_think(Entity* self)
 	camData = data->cam->data;
 	if (!camData) return;
 
-	// --- input ---
+	// --- movement function ---
 	if (gfc_input_command_down("walkforward"))
 		move += moveStep;
 	if (gfc_input_command_down("walkback"))
@@ -100,13 +128,11 @@ void monster_think(Entity* self)
 	if (gfc_input_command_down("walkright"))
 		moveSide += moveStep;
 
-	// --- get camera facing direction ---
 	GFC_Vector3D forward = { 0, 1, 0 };
 	GFC_Vector3D right = { 1, 0, 0 };
 	gfc_vector3d_rotate_about_z(&forward, camData->angle);
 	gfc_vector3d_rotate_about_z(&right, camData->angle);
 
-	// --- apply movement ---
 	GFC_Vector3D movement = { 0 };
 	gfc_vector3d_scale(forward, forward, move);
 	gfc_vector3d_scale(right, right, moveSide);
@@ -117,11 +143,12 @@ void monster_think(Entity* self)
 	// get current item held
 	set_item_held(self);
 
-	// plant crops
-	if (gfc_input_command_pressed("plant"))
+	// --- plant crops ---
+	if (gfc_input_command_pressed("use"))
 	{
-		if (strcmp(data->item_held->type, "seed") == 0)
+		if (data->item_held && data->item_held->type && strcmp(data->item_held->type, "seed") == 0)
 		{
+			slog("item: %s, type: %s", data->item_held->name, data->item_held->type);
 			if (data->item_held->count > 0)
 			{
 				GFC_Vector3D cropLocation = self->position;
@@ -129,21 +156,16 @@ void monster_think(Entity* self)
 				crop_spawn(cropLocation, data->item_held->crop);
 				data->item_held->count--;
 			}
-			else
-			{
-				//slog("No more %s left!", data->item_held->displayName);
-			}
-			// if theres another crop in the area, dont plant it
 		}
 	}
 
-	//add function to harvest crops as well
+	// --- harvest crops ---
 	if (gfc_input_command_pressed("select"))
 	{
-		harvest_nearest_crop(self);
+		select_nearest_crop(self);
 	}
 
-	// get inventory
+	// --- print inventory ---
 	inventory_update(data->inventory);
 	if (gfc_input_command_pressed("inventory"))
 	{
@@ -194,14 +216,16 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->rotation = gfc_vector3d(0, 0, 135);
 	self->velocity = gfc_vector3d(0, 0, 0);
 
-	data->gold = 200;
+	data->gold = 100;
 	inventory = inventory_new();
 	inventory_add_item(inventory, "hoe");
 	data->inventory = inventory;
 	data->item_held = inventory_get_item_by_name(inventory, "hoe");
+	data->item_index = 0;
 
 	self->think = monster_think;
 	self->free = monster_free;
+
 
 	slog("Monster spawned: %s", self->name);
 	theMonster = self;

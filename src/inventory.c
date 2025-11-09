@@ -23,7 +23,7 @@ void inventory_print(Inventory* inventory)
 	{
 		item = gfc_list_get_nth(inventory->itemslist, i);
 		if (!item) continue;
-		slog("Count of %s: %i", item->name, item->count);
+		slog("Item %i. %s (%i)", i, item->name, item->count);
 	}
 	//slog("Size: %i, Count: %i", inventory->itemslist->size, inventory->itemslist->count);
 	return;
@@ -91,6 +91,7 @@ void inventory_update(Inventory* inventory)
 	if (!inventory) return NULL;
 
 	c = gfc_list_get_count(inventory->itemslist);
+	inventory->itemsCount = c;
 	for (i = 0; i < c; i++)
 	{
 		item = gfc_list_get_nth(inventory->itemslist, i);
@@ -98,6 +99,7 @@ void inventory_update(Inventory* inventory)
 		if (item->count <= 0)
 		{
 			inventory_remove_item(inventory, item);
+			inventory->itemsCount--;
 		}
 	}
 	return NULL;

@@ -82,10 +82,20 @@ Item* item_new(const char* name)
 	item->type = sj_object_get_value_as_string(def, "type");
 	sj_object_get_value_as_int(def, "price", &item->price);
 	item->count = 1;
+	item->sellable = 1;
 
 	if (strcmp(item->type, "seed") == 0)
 	{
 		item->crop = sj_object_get_value_as_string(def, "crop");
+	}
+	if (strcmp(item->type, "hoe") == 0)
+	{
+		item->sellable = 0;
+	}
+
+	if (strcmp(item->type, "fertilizer") == 0)
+	{
+		sj_object_get_value_as_float(def, "speed", &item->speedMod);
 	}
 
 	//slog("Item added: %s", item->name);

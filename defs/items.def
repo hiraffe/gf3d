@@ -69,21 +69,29 @@
 		{
 			"name":"fertilizer",
 			"displayName":"Fertilizer",
+			"price":50,
+			"type":"fertilizer",
+			"speed":"0.75"
+		},
+		{
+			"name":"fertilizer2",
+			"displayName":"Fertilizer 2",
 			"price":100,
-			"type":"equipment"
+			"type":"fertilizer",
+			"speed":"0.5"
 		},
 		{
 			"name":"pest_control",
 			"displayName":"Pest Control",
 			"price":25,
-			"type":"equipment"
+			"type":"tool"
 		},
 		{
 			"name":"hoe",
 			"displayName":"Hoe",
 			"price":10,
 			"type":"tool",
-			"duration":50
+			"strength":50
 		}
 	]
 }

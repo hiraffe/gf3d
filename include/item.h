@@ -9,11 +9,13 @@ typedef struct
 	GFC_TextLine	name;			/**<name of the item */
 	GFC_TextLine	displayName;	/**<item name that will be displayed*/
 	const char*		type;			/**<type of item*/
-	int				price;			/**<shop price of item*/
-	int				count;			/**<how many of the item u have */
-	int				max_count;		/**<max number of the item u can stack */
+	Uint32			price;			/**<shop price of item*/
+	Uint32			count;			/**<how many of the item u have */
+	Uint32			max_count;		/**<max number of the item u can stack */
+	Uint8			sellable;
 
 	const char*		crop;			/**<if item is a seed, what crop grows from it*/
+	float			speedMod;		/**<if item is a fertilizer, how much less time a crop needs to grow*/
 }Item;
 
 /**

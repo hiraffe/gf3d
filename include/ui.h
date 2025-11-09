@@ -11,7 +11,9 @@
 
 typedef struct UI_S
 {
+	Uint8				_inuse;
 	GFC_TextLine		name;
+	GFC_TextLine		type;
 	Sprite*				background;
 	Uint8				visible;
 	Uint32				item_selected;
@@ -61,15 +63,5 @@ void ui_manager_close();
 void ui_manager_draw_all();
 
 void ui_manager_think_all();
-
-/**
- * @brief makes the ui visible
- */
-void ui_manager_show();
-
-/**
- * @brief hides the ui
- */
-void ui_manager_hide();
 
 #endif

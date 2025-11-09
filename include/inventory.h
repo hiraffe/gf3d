@@ -9,6 +9,7 @@
 typedef struct
 {
 	GFC_List	*itemslist;
+	Uint32		itemsCount;
 }Inventory;
 
 Inventory* inventory_new();

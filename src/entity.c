@@ -38,6 +38,7 @@ void entity_free(Entity* ent)
 	gf3d_mesh_free(ent->mesh);
 	gf3d_texture_free(ent->texture);
 	memset(ent, 0, sizeof(Entity));
+	ent->_inuse = 0;
 }
 
 void entity_system_close()

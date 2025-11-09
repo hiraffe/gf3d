@@ -3,6 +3,8 @@
 
 #include "shop.h"
 
+#include "ui.h"
+
 typedef enum
 {
 	SS_Buy,
@@ -15,7 +17,7 @@ typedef struct
 	ShopEntityData* shopData;
 }ShopMenuData;
 
-UI* shop_menu_new(ShopEntityData* shop);
+UI* shop_menu_new(ShopEntityData* shop, const char* name);
 
 void shop_menu_open(UI* ui);
 
