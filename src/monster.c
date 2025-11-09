@@ -152,7 +152,7 @@ void monster_think(Entity* self)
 			if (data->item_held->count > 0)
 			{
 				GFC_Vector3D cropLocation = self->position;
-				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 2));
+				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 0));
 				crop_spawn(cropLocation, data->item_held->crop);
 				data->item_held->count--;
 			}

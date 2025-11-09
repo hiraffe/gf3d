@@ -88,11 +88,11 @@ int main(int argc, char* argv[])
     gf2d_mouse_load("actors/mouse.actor");
 
     world = world_load("defs/terrain.def");
-    monster = monster_spawn(gfc_vector3d(0,0,5), GFC_COLOR_ORANGE);
+    monster = monster_spawn(gfc_vector3d(0,0,6), GFC_COLOR_ORANGE);
     camEnt = camera_entity_spawn(gfc_vector3d(0, 10, -5), monster);
     monster_set_camera_ent(monster, camEnt);
-    shop = shop_spawn(gfc_vector3d(-50,-50,5), "Seed Shop");
-    shop2 = shop_spawn(gfc_vector3d(-70,-50,5), "Tool Shop");
+    shop = shop_spawn(gfc_vector3d(-50,-50,6), "Seed Shop");
+    shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Tool Shop");
     hotbar = hotbar_new();
     hotbar_open(hotbar);
 

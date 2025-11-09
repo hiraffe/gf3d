@@ -16,10 +16,25 @@ layout(location = 0) out vec4 outColor;
 
 void main()
 {
+    // normalize inputs
+    vec3 norm = normalize(inNormal);
     vec3 lightDir = normalize(lightPos.xyz - worldPosition.xyz);
-    vec4 texColor = texture(texSampler, fragTexCoord);
+    vec3 viewDir = normalize(cameraPos.xyz - worldPosition.xyz);
+    vec3 reflectDir = reflect(-lightDir, norm);
 
-    texColor.xyz = texColor.xyz * max(0.0,dot(-lightDir,inNormal));
+    // texture color
+    vec3 texColor = texture(texSampler, fragTexCoord).rgb;
 
-    outColor = texColor * colorMod;
+    // --- lighting components ---
+    float diff = max(dot(norm, lightDir), 0.0);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0); // shininess = 32
+
+    vec3 ambient = 0.25 * lightColor.rgb;     // soft global light
+    vec3 diffuse = diff * lightColor.rgb;     // main light brightness
+    vec3 specular = 0.5 * spec * lightColor.rgb; // highlight reflection
+
+    // combine
+    vec3 finalColor = (ambient + diffuse + specular) * texColor * colorMod.rgb;
+
+    outColor = vec4(finalColor, colorMod.a);
 }

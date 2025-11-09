@@ -15,7 +15,7 @@ void spawn_animals()
 	GFC_Vector3D pos = { 0 };
 	Entity* a1 = animal_spawn(pos, "deer");
 	//Entity* a2 = animal_spawn(pos, "cow");
-	Entity* a3 = animal_spawn(pos, "chicken");
+	//Entity* a3 = animal_spawn(pos, "chicken");
 	//Entity* a4 = animal_spawn(pos, "lamb");
 	//Entity* a5 = animal_spawn(pos, "cat");
 }
@@ -64,7 +64,7 @@ World* world_load(const char* filename)
 	sj_object_get_vector3d(config, "lightPos", &world->lightPos);
 	sj_free(json);
 
-	//spawn_animals();
+	spawn_animals();
 
 	return world;
 }

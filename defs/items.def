@@ -81,6 +81,12 @@
 			"speed":"0.5"
 		},
 		{
+			"name":"watering-can",
+			"displayName":"Watering can",
+			"price":10,
+			"type":"water"
+		},
+		{
 			"name":"pest_control",
 			"displayName":"Pest Control",
 			"price":25,
