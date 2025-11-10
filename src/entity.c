@@ -157,3 +157,21 @@ void entity_system_update_all()
 		}
 	}
 }
+
+int entity_check_collision(Entity* self, GFC_Vector3D newPos, float radius)
+{
+	for (int i = 0; i < entity_system.entity_max; i++)
+	{
+		Entity* other = &entity_system.entity_list[i];
+		if (!other->_inuse) continue;
+		if (other == self) continue;
+		if (other->collisionRadius <= 0) continue; // skip non-collidable
+
+		float combinedRadius = radius + other->collisionRadius;
+		if (gfc_vector3d_distance_between_less_than(newPos, other->position, combinedRadius))
+		{
+			return 1; // collision detected
+		}
+	}
+	return 0; // no collision
+}

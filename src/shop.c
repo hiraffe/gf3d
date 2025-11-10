@@ -103,7 +103,7 @@ void shop_think(Entity* self)
 	if ((!self)||(!self->data)||(!monster)) return;
 	data = self->data;
 
-	if (gfc_vector3d_magnitude_between(monster->position, self->position) < 10)
+	if (gfc_vector3d_magnitude_between(monster->position, self->position) < 15)
 	{
 		if (gfc_input_command_pressed("select"))
 		{
@@ -167,6 +167,7 @@ Entity* shop_spawn(GFC_Vector3D position, const char* name)
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
+	self->collisionRadius = 4;
 
 	inv = inventory_new();
 	if (strcmp(name, "Seed Shop") == 0) {

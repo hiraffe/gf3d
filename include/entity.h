@@ -24,6 +24,7 @@ typedef struct Entity_S
 	GFC_Vector3D	velocity;
 
 	GFC_Box			bounds;
+	float			collisionRadius;
 	void			(*draw)(struct Entity_S *self);
 	void			(*think)(struct Entity_S *self);
 	void			(*update)(struct Entity_S *self);
@@ -68,5 +69,7 @@ void entity_system_init(Uint32 max_ents);
 void entity_system_draw_all(GFC_Vector3D lightPos, GFC_Color lightColor);
 void entity_system_think_all();
 void entity_system_update_all();
+
+int entity_check_collision(Entity* self, GFC_Vector3D newPos, float radius);
 
 #endif

@@ -110,6 +110,7 @@ void monster_think(Entity* self)
 	GFC_Vector3D dir, cameraDir;
 	float move = 0, moveSide = 0;
 	float moveStep = 0.5;
+	GFC_Vector3D stepPosition;
 	MonsterEntityData* data;
 	if ((!self) || !(self->data)) return;
 	data = self->data;
@@ -138,7 +139,13 @@ void monster_think(Entity* self)
 	gfc_vector3d_scale(right, right, moveSide);
 	gfc_vector3d_add(movement, forward, right);
 
-	gfc_vector3d_add(self->position, self->position, movement);
+	stepPosition = self->position;
+	gfc_vector3d_add(stepPosition, stepPosition, movement);
+
+	if (!entity_check_collision(self, stepPosition, self->collisionRadius))
+	{
+		gfc_vector3d_add(self->position, self->position, movement);
+	}
 
 	// get current item held
 	set_item_held(self);
@@ -215,6 +222,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->color = color;
 	self->rotation = gfc_vector3d(0, 0, 135);
 	self->velocity = gfc_vector3d(0, 0, 0);
+	self->collisionRadius = 4;
 
 	data->gold = 100;
 	inventory = inventory_new();
@@ -224,6 +232,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	data->item_index = 0;
 
 	self->think = monster_think;
+	//self->update = monster_update;
 	self->free = monster_free;
 
 

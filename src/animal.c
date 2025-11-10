@@ -32,7 +32,7 @@ void animal_think(Entity* self)
 	gfc_vector3d_sub(dir, data->target, self->position);
 	float dist = gfc_vector3d_magnitude(dir);
 
-	if (dist < 2.0f)
+	if (dist < 2.0f ) //|| !entity_check_collision(self, data->target, self->collisionRadius))
 	{
 		// reached target — choose a new one
 		data->idleTime = (float)(rand() % 50) / 10.0f; // random idle 0–5s
@@ -123,6 +123,7 @@ Entity* animal_spawn(GFC_Vector3D position, const char* name)
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
 	self->rotation = gfc_vector3d(0, 0, 0);
+	//self->collisionRadius = 8;
 
 	data->home = position;
 	data->target = position;
