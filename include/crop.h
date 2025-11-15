@@ -16,6 +16,7 @@ typedef struct
 {
 	GFC_TextLine	seed;
 	Mesh*			cropMesh;		
+	Mesh*			unripeMesh;		
 	Texture*		ripeTexture;
 	Texture*		unripeTexture;
 	Uint32			spawnTime;

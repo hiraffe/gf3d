@@ -15,7 +15,6 @@ void shop_menu_open(UI* ui)
 	ui->item_selected = 0;
 	ui->visible = 1;
 	data->state = SS_Buy;
-
 }
 
 void shop_menu_close(UI* ui)

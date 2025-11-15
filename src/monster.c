@@ -46,13 +46,10 @@ void set_item_held(Entity* self)
 	if (gfc_input_command_pressed("itemright"))
 	{
 		data->item_index = (data->item_index + 1) % max;
-		slog("Scrolled right -> new index: %d / %d", data->item_index, max - 1);
 	}
-
 	if (gfc_input_command_pressed("itemleft"))
 	{
 		data->item_index = (data->item_index - 1 + max) % max;  // prevents negatives
-		slog("Scrolled left -> new index: %d / %d", data->item_index, max - 1);
 	}
 
 	item = gfc_list_get_nth(data->inventory->itemslist, data->item_index);
@@ -160,6 +157,7 @@ void monster_think(Entity* self)
 			{
 				GFC_Vector3D cropLocation = self->position;
 				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 0));
+				gfc_vector3d_sub(cropLocation, cropLocation, gfc_vector3d(0, 0, 6));
 				crop_spawn(cropLocation, data->item_held->crop);
 				data->item_held->count--;
 			}

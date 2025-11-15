@@ -17,14 +17,21 @@ typedef struct
 	ShopEntityData* shopData;
 }ShopMenuData;
 
+/**
+ * @brief spawn in a new shop menu
+ * @return NULL on error, or a new shop menu
+ */
 UI* shop_menu_new(ShopEntityData* shop, const char* name);
 
+/**
+ * @brief make the shop menu visible
+ */
 void shop_menu_open(UI* ui);
 
+/**
+ * @brief hide the shop menu
+ */
 void shop_menu_close(UI* ui);
 
-void shop_menu_think(UI* ui);
-
-void shop_menu_draw(UI* ui);
 
 #endif

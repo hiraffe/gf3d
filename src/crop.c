@@ -6,7 +6,7 @@ static SJson* cropDefs = NULL;
 
 void crop_free(Entity* crop)
 {
-	//cropDefs = NULL;
+	//free data i think
 }
 
 void crops_close()
@@ -30,7 +30,7 @@ void crop_think(Entity* self)
 		if (currentTime - data->spawnTime >= delay / 2)
 		{
 			data->growth = C_UNRIPE;
-			self->mesh = data->cropMesh;
+			self->mesh = data->unripeMesh;
 			self->texture = data->unripeTexture;
 		}
 	}
@@ -39,6 +39,7 @@ void crop_think(Entity* self)
 		if (currentTime - data->spawnTime >= delay)
 		{
 			data->growth = C_RIPE;
+			self->mesh = data->cropMesh;
 			self->texture = data->ripeTexture;
 		}
 	}
@@ -107,13 +108,14 @@ Entity* crop_spawn(GFC_Vector3D position, const char* name)
 	gfc_line_cpy(self->name, name);
 	gfc_line_cpy(self->displayName, sj_object_get_value_as_string(def, "displayName"));
 	self->entityType = "crop";
-	self->mesh = gf3d_mesh_load("models/crops/test-seed.obj");
+	self->mesh = gf3d_mesh_load("models/crops/seed.obj");
 	self->texture = gf3d_texture_load("models/crops/green.png");
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
 
 	gfc_line_cpy(data->seed, sj_object_get_value_as_string(def, "seed"));
 	data->cropMesh = gf3d_mesh_load(sj_object_get_string(def, "cropMesh"));
+	data->unripeMesh = gf3d_mesh_load(sj_object_get_string(def, "unripeMesh"));
 	data->ripeTexture = gf3d_texture_load(sj_object_get_value_as_string(def, "ripeTexture"));
 	data->unripeTexture = gf3d_texture_load(sj_object_get_value_as_string(def, "unripeTexture"));
 	sj_object_get_value_as_float(def, "ripenTime", &data->ripenTime);
