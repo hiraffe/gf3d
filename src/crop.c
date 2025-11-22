@@ -9,6 +9,10 @@ void crop_free(Entity* self)
 	CropEntityData* data;
 	if ((!self) || (!self->data)) return;
 	data = self->data;
+	//gf3d_mesh_free(data->cropMesh);
+	//gf3d_mesh_free(data->unripeMesh);
+	//gf3d_texture_free(data->ripeTexture);
+	//gf3d_texture_free(data->unripeTexture);
 	free(data);
 }
 

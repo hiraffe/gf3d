@@ -2,11 +2,13 @@
 #include "simple_json.h"
 
 #include "gfc_input.h"
+#include "gfc_audio.h"
 
 #include "menu.h"
 
 static SJson* menuDefs = NULL;
 static SJson* buttonDefs = NULL;
+Mix_Music *menuMusic = NULL, *music = NULL;
 
 GameState game_state = GS_MainMenu;
 
@@ -14,6 +16,9 @@ void menu_free()
 {
 	if (!menuDefs) return;
 	menuDefs = NULL;
+
+	Mix_FreeMusic(menuMusic);
+	Mix_FreeMusic(music);
 }
 
 void menu_open(UI* ui)
@@ -50,9 +55,17 @@ GameState menu_execute_command(UI* self)
 	if (strcmp(cmd, "start-game") == 0)
 	{
 		menu_close(self);
+		Mix_HaltMusic;
+		Mix_PlayMusic(music, -1);
 		return GS_Play;
 	}
 	if (strcmp(cmd, "resume-game") == 0)
+	{
+		Mix_ResumeMusic();
+		menu_close(self);
+		return GS_Play;
+	}
+	if (strcmp(cmd, "editor") == 0)
 	{
 		menu_close(self);
 		return GS_Play;
@@ -126,7 +139,11 @@ void menu_init(const char* filename)
 		json = NULL;
 		return;
 	}
-	atexit(menu_close);
+
+	menuMusic = gfc_sound_load_music("audio/monkeys-spinning-monkeys-kevin-macleod-main-version-8413-02-05.mp3");
+	music = gfc_sound_load_music("audio/a-day-in-my-life-dark-cat-main-version-32322-02-31.mp3");
+
+	atexit(menu_free);
 }
 
 SJson* menu_get_def_by_name(const char* name)

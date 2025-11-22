@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     GFC_Vector3D lightPos = { 5,5,20 };
     GFC_Vector3D cam = { 0,50,0 };
     Entity* camEnt;
-    GFC_Matrix4 id, dinoM;
+    Mix_Music* menuMusic;
     //initializtion    
     parse_arguments(argc, argv);
     init_logger("gf3d.log", 0); //1 wont delete log file at end
@@ -74,6 +74,7 @@ int main(int argc, char* argv[])
     gfc_input_init("config/input.cfg");
     gfc_config_def_init();
     gfc_action_init(1024);
+    gfc_audio_init(1024, 1, 0);
     //gf3d init
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
@@ -102,10 +103,12 @@ int main(int argc, char* argv[])
     startMenu = menu_new("start-menu");
     pauseMenu = menu_new("pause-menu");
     menu_open(startMenu);
+    menuMusic = gfc_sound_load_music("audio/monkeys-spinning-monkeys-kevin-macleod-main-version-8413-02-05.mp3");
 
     game_state = menu_get_game_state();
     //gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    
     // main game loop 
     while (!_done)
     {
@@ -115,6 +118,7 @@ int main(int argc, char* argv[])
         
         switch (game_state) {
             case GS_MainMenu:
+                if(!Mix_PlayingMusic()) Mix_PlayMusic(menuMusic, 1);
                 ui_manager_think_all();
                 gf3d_vgraphics_render_start();
                 ui_manager_draw_all();
@@ -122,6 +126,7 @@ int main(int argc, char* argv[])
                 gf3d_vgraphics_render_end();
                 break;
             case GS_Pause:
+                Mix_PauseMusic();
                 ui_manager_think_all();
                 gf3d_vgraphics_render_start();
                 entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
@@ -161,6 +166,7 @@ int main(int argc, char* argv[])
     }
     vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
     //cleanup
+    Mix_FreeMusic(menuMusic);
     slog("gf3d program end");
     exit(0);
     slog_sync();

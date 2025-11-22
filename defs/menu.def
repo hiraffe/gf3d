@@ -14,9 +14,9 @@
 					"command":"start-game"
 				},
 				{
-					"name":"options",
-					"displayName":"Options",
-					"command":"none"
+					"name":"charactor-creator",
+					"displayName":"Character Creator",
+					"command":"editor"
 				},
 				{
 					"name":"quit",
@@ -36,6 +36,11 @@
 					"name":"resume",
 					"displayName":"Resume",
 					"command":"resume-game"
+				},
+				{
+					"name":"charactor-creator",
+					"displayName":"Character Creator",
+					"command":"editor"
 				},
 				{
 					"name":"quit",
