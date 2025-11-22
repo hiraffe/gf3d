@@ -54,7 +54,7 @@ UI* hotbar_new()
 	//populate data
 	gfc_line_cpy(self->name, "Hotbar");
 	gfc_line_cpy(self->type, "main");
-	self->background = NULL;
+	self->background = NULL; 
 	self->item_selected = 0;
 	self->item_max = 0;
 

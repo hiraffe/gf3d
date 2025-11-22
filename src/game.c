@@ -35,6 +35,7 @@
 #include "shop.h"
 #include "shop_menu.h"
 #include "hotbar.h"
+#include "menu.h"
 
 extern int __DEBUG;
 
@@ -54,9 +55,11 @@ void exitGame()
 int main(int argc, char* argv[])
 {
     //local variables
+    GameState game_state;
     World* world;
     Entity* monster;
     Entity *shop, *shop2;
+    UI *startMenu, *pauseMenu;
     UI* hotbar;
     float theta = 0;
     GFC_Vector3D lightPos = { 5,5,20 };
@@ -78,6 +81,7 @@ int main(int argc, char* argv[])
     //entity init
     entity_system_init(1024); 
     ui_manager_init(16);
+    menu_init("defs/menu.def");
     crops_init("defs/crops.def");
     animals_init("defs/animals.def");
     items_init("defs/items.def");
@@ -95,10 +99,13 @@ int main(int argc, char* argv[])
     shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Tool Shop");
     hotbar = hotbar_new();
     hotbar_open(hotbar);
+    startMenu = menu_new("start-menu");
+    pauseMenu = menu_new("pause-menu");
+    menu_open(startMenu);
 
-    gfc_matrix4_identity(id);
+    game_state = menu_get_game_state();
+    //gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
-    // 
     // main game loop 
     while (!_done)
     {
@@ -106,22 +113,49 @@ int main(int argc, char* argv[])
         gf2d_mouse_update();
         gf2d_font_update();
         
-        //gfc_matrix4_rotate_z(dinoM, id, theta);
-        //world updates
-        entity_system_think_all();
-        entity_system_update_all();
-        ui_manager_think_all();
-        //camera updates
-        gf3d_camera_update_view();
-        gf3d_vgraphics_render_start();
-        //3D draws
-        entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
-        world_draw(world);
-        //2D draws
-        gf2d_font_draw_line_tag("ALT+F4 to exit", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
-        ui_manager_draw_all();
-        //gf2d_mouse_draw();
-        gf3d_vgraphics_render_end();
+        switch (game_state) {
+            case GS_MainMenu:
+                ui_manager_think_all();
+                gf3d_vgraphics_render_start();
+                ui_manager_draw_all();
+                gf2d_mouse_draw();
+                gf3d_vgraphics_render_end();
+                break;
+            case GS_Pause:
+                ui_manager_think_all();
+                gf3d_vgraphics_render_start();
+                entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
+                world_draw(world);
+                ui_manager_draw_all();
+                gf2d_mouse_draw();
+                gf3d_vgraphics_render_end();
+                break;
+            case GS_Play:
+                //world updates
+                entity_system_think_all();
+                entity_system_update_all();
+                ui_manager_think_all();
+                //camera updates
+                gf3d_camera_update_view();
+                gf3d_vgraphics_render_start();
+                //3D draws
+                entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
+                world_draw(world);
+                //2D draws
+                //gf2d_font_draw_line_tag("ALT+F4 to exit", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
+                ui_manager_draw_all();
+                gf3d_vgraphics_render_end();
+                if (gfc_input_command_pressed("cancel"))
+                {
+                    menu_set_game_state(GS_Pause);
+                    menu_open(pauseMenu);
+                }
+                break;
+            case GS_Quit:
+                _done = 1;
+                break;
+        }
+        game_state = menu_get_game_state();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();
     }

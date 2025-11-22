@@ -4,9 +4,12 @@
 
 static SJson* animalDefs = NULL;
 
-void animal_free(Entity* animal)
+void animal_free(Entity* self)
 {
-	animalDefs = NULL;
+	AnimalEntityData* data;
+	if ((!self) || (!self->data)) return;
+	data = self->data;
+	free(data);
 }
 
 void animals_close()

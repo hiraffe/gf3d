@@ -19,7 +19,7 @@
 			"name":"chicken",
 			"displayName":"Chicken",
 			"mesh":"models/animals/cat.obj",
-			"texture":"models/crops/candycorn.png",
+			"texture":"models/crops/candy-corn.png",
 			"color":[255,200,10,255]
 		},
 		{
@@ -33,7 +33,7 @@
 			"name":"cat",
 			"displayName":"Cat",
 			"mesh":"models/animals/cat.obj",
-			"texture":"models/crops/orange.png",
+			"texture":"models/crops/green.png",
 			"color":[255,200,10,255]
 		}
 	]

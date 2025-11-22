@@ -13,11 +13,14 @@ typedef struct UI_S
 {
 	Uint8				_inuse;
 	GFC_TextLine		name;
+	GFC_TextLine		title;
 	GFC_TextLine		type;
 	Sprite*				background;
+	GFC_Vector2D		bg_position;
 	Uint8				visible;
 	Uint32				item_selected;
 	Uint32				item_max;
+	GFC_List*			buttons;
 
 	void				(*draw)(struct UI_S* ui);
 	void				(*think)(struct UI_S* ui);

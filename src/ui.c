@@ -27,6 +27,7 @@ UI* ui_new()
 				ui_manager.ui_list[i]._inuse = 1;
 				ui_manager.ui_list[i].visible = 0;
 				ui_manager.ui_list[i].item_selected = 0;
+				ui_manager.ui_list[i].buttons = gfc_list_new();
 				ui_manager.ui_list[i].mData = data;
 
 				return &ui_manager.ui_list[i];
@@ -39,6 +40,13 @@ UI* ui_new()
 void ui_free(UI* ui)
 {
 	if (!ui)return;
+
+	if (ui->buttons)
+	{
+		gfc_list_foreach(ui->buttons, free);
+		gfc_list_delete(ui->buttons);
+	}
+
 	if (ui->free)ui->free(ui);
 	gf2d_sprite_free(ui->background);
 	memset(ui, 0, sizeof(UI));
@@ -87,7 +95,7 @@ void ui_draw(UI* ui)
 	{
 		gf2d_sprite_draw_image(
 			ui->background,
-			gfc_vector2d(500, 200));
+			ui->bg_position);
 	}
 
 	if (ui->draw)ui->draw(ui);

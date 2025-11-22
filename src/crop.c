@@ -4,9 +4,12 @@
 
 static SJson* cropDefs = NULL;
 
-void crop_free(Entity* crop)
+void crop_free(Entity* self)
 {
-	//free data i think
+	CropEntityData* data;
+	if ((!self) || (!self->data)) return;
+	data = self->data;
+	free(data);
 }
 
 void crops_close()

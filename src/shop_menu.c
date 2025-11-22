@@ -3,6 +3,7 @@
 #include "gfc_input.h"
 #include "monster.h"
 #include "hotbar.h"
+#include "menu.h"
 
 #include "shop_menu.h"
 
@@ -15,17 +16,20 @@ void shop_menu_open(UI* ui)
 	ui->item_selected = 0;
 	ui->visible = 1;
 	data->state = SS_Buy;
+
+	menu_set_game_state(GS_Pause);
 }
 
 void shop_menu_close(UI* ui)
 {
 	if (!ui) return;
 	ui->visible = 0;
+
+	menu_set_game_state(GS_Play);
 }
 
 void shop_menu_think(UI* ui)
 {
-	UI_Manager ui_manager = ui_get_manager();
 	ShopMenuData* data;
 	if ((!ui) || (!ui->data)) return;
 	data = ui->data;
@@ -104,7 +108,6 @@ void shop_draw_inventory(UI* ui, Inventory* inv, char str[16])
 
 void shop_menu_draw(UI* ui)
 {
-	UI_Manager ui_manager = ui_get_manager();
 	ShopMenuData* data;
 	if ((!ui)||(!ui->data)) return;
 	data = ui->data;
@@ -145,7 +148,7 @@ UI* shop_menu_new(ShopEntityData* shop, const char* name)
 	gfc_line_cpy(self->name, name);
 	gfc_line_cpy(self->type, "menu");
 	self->background = gf2d_sprite_load_image("images/ui/window_background.png");
-	self->item_selected = 0;
+	self->bg_position = gfc_vector2d(500, 200);
 	self->item_max = 0;
 	data->state = SS_Buy;
 	data->shopData = shop;
