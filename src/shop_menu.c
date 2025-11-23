@@ -1,6 +1,8 @@
 #include "simple_logger.h"
 
 #include "gfc_input.h"
+#include "gfc_audio.h"
+
 #include "monster.h"
 #include "hotbar.h"
 #include "menu.h"
@@ -26,6 +28,7 @@ void shop_menu_close(UI* ui)
 	ui->visible = 0;
 
 	menu_set_game_state(GS_Play);
+	Mix_ResumeMusic();
 }
 
 void shop_menu_think(UI* ui)

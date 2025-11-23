@@ -4,6 +4,7 @@
 #include "gfc_vector.h"
 #include "inventory.h"
 #include "item.h"
+#include "gfc_audio.h"
 
 #include "entity.h"
 
@@ -14,6 +15,8 @@ typedef struct
 	Inventory*	inventory;
 	Item*		item_held;
 	Uint32		item_index;
+	Mix_Chunk*  plant_sound;
+	Mix_Chunk*  harvest_sound;
 }MonsterEntityData;
 
 /**

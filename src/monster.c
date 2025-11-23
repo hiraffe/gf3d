@@ -91,6 +91,7 @@ void select_nearest_crop(Entity* self)
 		inventory_add_item(data->inventory, nearest->name);
 		entity_free(nearest);
 		//data->item_held = gfc_list_get_nth(data->inventory->itemslist, data->item_index);
+		Mix_PlayChannel(0, data->harvest_sound, 0);
 	}
 
 	// fertilize seeds
@@ -159,6 +160,7 @@ void monster_think(Entity* self)
 				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 0));
 				gfc_vector3d_sub(cropLocation, cropLocation, gfc_vector3d(0, 0, 6));
 				crop_spawn(cropLocation, data->item_held->crop);
+				Mix_PlayChannel(0, data->plant_sound, 0);
 				data->item_held->count--;
 			}
 		}
@@ -229,10 +231,12 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	data->item_held = inventory_get_item_by_name(inventory, "hoe");
 	data->item_index = 0;
 
+	data->harvest_sound = Mix_LoadWAV("audio/effects/harvest.wav");
+	data->plant_sound = Mix_LoadWAV("audio/effects/plant.wav");
+
 	self->think = monster_think;
 	//self->update = monster_update;
 	self->free = monster_free;
-
 
 	slog("Monster spawned: %s", self->name);
 	theMonster = self;

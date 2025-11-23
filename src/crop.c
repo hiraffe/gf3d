@@ -1,5 +1,7 @@
 #include "simple_logger.h"
 
+#include "gfc_audio.h"
+
 #include "crop.h"
 
 static SJson* cropDefs = NULL;
