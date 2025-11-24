@@ -9,6 +9,8 @@
 
 #include "shop_menu.h"
 
+Mix_Chunk* sold = NULL;
+
 void shop_menu_open(UI* ui)
 {
 	ShopMenuData* data;
@@ -46,6 +48,7 @@ void shop_menu_think(UI* ui)
 		if (ui->item_selected >= ui->item_max) {
 			ui->item_selected = ui->item_max;
 		}
+		menu_play_selected();
 	}
 
 	if (gfc_input_command_pressed("panup")) {
@@ -53,6 +56,7 @@ void shop_menu_think(UI* ui)
 		if (ui->item_selected < 0) {
 			ui->item_selected = 0;
 		}
+		menu_play_selected();
 	}
 
 	if (gfc_input_command_pressed("enter")) 
@@ -60,6 +64,7 @@ void shop_menu_think(UI* ui)
 		if (ui->item_selected >= ui->item_max)
 		{
 			ui->item_selected = 0;
+			menu_play_click();
 			if (data->state == SS_Buy)  {
 				data->state = SS_Sell;
 			}
@@ -68,6 +73,7 @@ void shop_menu_think(UI* ui)
 			}
 		}
 		else {
+			Mix_PlayChannel(0, sold, 0);
 			if (data->state == SS_Buy) {
 				ui->mData->gold -= shop_sell_item(data->shopData->sell_list, ui->mData->inventory, ui->item_selected);
 			}
@@ -79,6 +85,7 @@ void shop_menu_think(UI* ui)
 
 	if (gfc_input_command_pressed("cancel"))
 	{
+		menu_play_click();
 		shop_menu_close(ui);
 	}
 }
@@ -159,6 +166,8 @@ UI* shop_menu_new(ShopEntityData* shop, const char* name)
 	self->think = shop_menu_think;
 	self->draw = shop_menu_draw;
 	//self->free = shop_menu_free;
+
+	sold = Mix_LoadWAV("audio/effects/coin.wav");
 
 	slog("shop menu created: %s", self->name);
 	return self;

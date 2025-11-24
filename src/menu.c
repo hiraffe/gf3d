@@ -9,6 +9,7 @@
 static SJson* menuDefs = NULL;
 static SJson* buttonDefs = NULL;
 Mix_Music *menuMusic = NULL, *music = NULL;
+Mix_Chunk *selected = NULL, *click = NULL;
 
 GameState game_state = GS_MainMenu;
 
@@ -19,6 +20,8 @@ void menu_free()
 
 	Mix_FreeMusic(menuMusic);
 	Mix_FreeMusic(music);
+	Mix_FreeChunk(selected);
+	Mix_FreeChunk(click);
 }
 
 void menu_open(UI* ui)
@@ -42,6 +45,16 @@ GameState menu_get_game_state()
 void menu_set_game_state(GameState g)
 {
 	game_state = g;
+}
+
+void menu_play_selected()
+{
+	Mix_PlayChannel(0, selected, 0);
+}
+
+void menu_play_click()
+{
+	Mix_PlayChannel(0, click, 0);
 }
 
 GameState menu_execute_command(UI* self)
@@ -84,15 +97,18 @@ void menu_think(UI* self)
 	if (gfc_input_command_pressed("pandown"))
 	{
 		self->item_selected = (self->item_selected + 1) % self->item_max;
+		menu_play_selected();
 	}
 	if (gfc_input_command_pressed("panup"))
 	{
 		self->item_selected = (self->item_selected - 1 + self->item_max) % self->item_max;  // prevents negatives
+		menu_play_selected();
 	}
 
 	//handle commands
 	if (gfc_input_command_pressed("enter"))
 	{
+		menu_play_click();
 		game_state = menu_execute_command(self);
 	}
 }
@@ -142,6 +158,8 @@ void menu_init(const char* filename)
 
 	menuMusic = gfc_sound_load_music("audio/monkeys-spinning-monkeys-kevin-macleod-main-version-8413-02-05.mp3");
 	music = gfc_sound_load_music("audio/a-day-in-my-life-dark-cat-main-version-32322-02-31.mp3");
+	selected = Mix_LoadWAV("audio/effects/selected.wav");
+	click = Mix_LoadWAV("audio/effects/click.wav");
 
 	atexit(menu_free);
 }

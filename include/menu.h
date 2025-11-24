@@ -38,6 +38,10 @@ GameState menu_get_game_state();
 
 void menu_set_game_state(GameState g);
 
+void menu_play_selected();
+
+void menu_play_click();
+
 void menu_init(const char* filename);
 
 
