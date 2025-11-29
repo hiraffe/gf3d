@@ -4,6 +4,7 @@
 		{
 			"name":"start-menu",
 			"title":"Welcome",
+			"title_position":[560,205],
 			"background":"images/bg_flat.png",
 			"bg_position":[0,0],
 			"buttons":
@@ -11,23 +12,27 @@
 				{
 					"name":"start",
 					"displayName":"Play",
-					"command":"start-game"
+					"command":"start-game",
+					"position":[505,250]
 				},
 				{
 					"name":"charactor-creator",
 					"displayName":"Character Creator",
-					"command":"editor"
+					"command":"editor",
+					"position":[505,280]
 				},
 				{
 					"name":"quit",
 					"displayName":"Quit",
-					"command":"end-game"
+					"command":"end-game",
+					"position":[505,310]
 				}
 			]
 		},
 		{
 			"name":"pause-menu",
 			"title":"Pause",
+			"title_position":[560,205],
 			"background":"images/ui/window_background.png",
 			"bg_position":[500,200],
 			"buttons":
@@ -35,17 +40,60 @@
 				{
 					"name":"resume",
 					"displayName":"Resume",
-					"command":"resume-game"
+					"command":"resume-game",
+					"position":[505,250]
 				},
 				{
 					"name":"charactor-creator",
 					"displayName":"Character Creator",
-					"command":"editor"
+					"command":"editor",
+					"position":[505,280]
 				},
 				{
 					"name":"quit",
 					"displayName":"Quit",
-					"command":"end-game"
+					"command":"end-game",
+					"position":[505,310]
+				}
+			]
+		},
+		{
+			"name":"character-creator",
+			"title":"Character Creator",
+			"title_position":[700,205],
+			"background":NULL,
+			"bg_position":[700,200],
+			"buttons":
+			[
+				{
+					"name":"hair",
+					"displayName":"Hair        <                           >",
+					"command":"change-hair",
+					"position":[730, 250]
+				},
+				{
+					"name":"hair-color",
+					"displayName":"Hair Color  <                           >",
+					"command":"change-haircolor",
+					"position":[730, 280]
+				},
+				{
+					"name":"shirt",
+					"displayName":"Shirt       <                           >",
+					"command":"change-shirt",
+					"position":[730, 330]
+				},
+				{
+					"name":"shirt-color",
+					"displayName":"Shirt Color <                           >",
+					"command":"change-shirtcolor",
+					"position":[730, 360]
+				},
+				{
+					"name":"start",
+					"displayName":"Done",
+					"command":"start-game",
+					"position":[730, 600]
 				}
 			]
 		}

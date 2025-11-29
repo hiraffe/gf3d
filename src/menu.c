@@ -27,6 +27,7 @@ void menu_free()
 void menu_open(UI* ui)
 {
 	if (!ui) return;
+	if (ui->visible == 1) return;
 	ui->visible = 1;
 	ui->item_selected = 0;
 }
@@ -34,6 +35,7 @@ void menu_open(UI* ui)
 void menu_close(UI* ui)
 {
 	if (!ui) return;
+	if (ui->visible == 0) return;
 	ui->visible = 0;
 }
 
@@ -81,7 +83,7 @@ GameState menu_execute_command(UI* self)
 	if (strcmp(cmd, "editor") == 0)
 	{
 		menu_close(self);
-		return GS_Play;
+		return GS_CharacterCreator;
 	}
 	if (strcmp(cmd, "end-game") == 0)
 	{
@@ -119,28 +121,15 @@ void menu_draw(UI* ui)
 	GFC_Color color;
 	int offset = 0;
 
-	gf2d_font_draw_line_tag(ui->title, FT_H2, GFC_COLOR_YELLOW, gfc_vector2d(560, 205));
+	gf2d_font_draw_line_tag(ui->title, FT_H2, GFC_COLOR_YELLOW, ui->title_position);
 
 	for (int i = 0; i < ui->buttons->count; i++)
 	{
 		btn = gfc_list_get_nth(ui->buttons, i);
 		color = (i == ui->item_selected) ? GFC_COLOR_WHITE : GFC_COLOR_YELLOW;
-		gf2d_font_draw_line_tag(btn->text, FT_H5, color, gfc_vector2d(505, 250 + offset));
+		gf2d_font_draw_line_tag(btn->text, FT_H5, color, btn->position);
 		offset += 30;
 	}
-}
-
-void menu_button_add(UI* ui, const char* name, const char* text, const char* cmd)
-{
-	Menu_Button* btn = gfc_allocate_array(sizeof(Menu_Button), 1);
-
-	gfc_line_cpy(btn->name, name);
-	gfc_line_cpy(btn->text, text);
-	gfc_line_cpy(btn->command, cmd);
-
-	// set button position, size, hitbox, etc.
-	gfc_list_append(ui->buttons, btn);
-	ui->item_max++;
 }
 
 void menu_init(const char* filename)
@@ -191,10 +180,25 @@ SJson* menu_get_def_by_name(const char* name)
 	return NULL;
 }
 
+void menu_button_add(UI* ui, const char* name, const char* text, const char* cmd, GFC_Vector2D pos)
+{
+	Menu_Button* btn = gfc_allocate_array(sizeof(Menu_Button), 1);
+
+	gfc_line_cpy(btn->name, name);
+	gfc_line_cpy(btn->text, text);
+	gfc_line_cpy(btn->command, cmd);
+	btn->position = pos;
+
+	// set button position, size, hitbox, etc.
+	gfc_list_append(ui->buttons, btn);
+	ui->item_max++;
+}
+
 SJson* menu_get_buttons(UI* menu, SJson* json)
 {
 	SJson* buttons = sj_object_get_value(json, "buttons");
 	int buttonCount = sj_array_get_count(buttons);
+	GFC_Vector2D pos = { 0 };
 
 	for (int i = 0; i < buttonCount; i++)
 	{
@@ -203,7 +207,17 @@ SJson* menu_get_buttons(UI* menu, SJson* json)
 		const char* name = sj_get_string_value(sj_object_get_value(btnJson, "name"));
 		const char* display = sj_get_string_value(sj_object_get_value(btnJson, "displayName"));
 		const char* command = sj_get_string_value(sj_object_get_value(btnJson, "command"));
-		menu_button_add(menu, name, display, command);
+		
+		Menu_Button* btn = gfc_allocate_array(sizeof(Menu_Button), 1);
+
+		gfc_line_cpy(btn->name, name);
+		gfc_line_cpy(btn->text, display);
+		gfc_line_cpy(btn->command, command);
+		sj_object_get_vector2d(btnJson, "position", &btn->position);
+
+		// set button position, size, hitbox, etc.
+		gfc_list_append(menu->buttons, btn);
+		menu->item_max++;
 	}
 }
 
@@ -219,6 +233,7 @@ UI* menu_new(const char* name)
 	//populate data
 	gfc_line_cpy(self->name, name);
 	gfc_line_cpy(self->title, sj_object_get_value_as_string(def, "title"));
+	sj_object_get_vector2d(def, "title_position", &self->title_position);
 	gfc_line_cpy(self->type, "menu");
 	self->background = gf2d_sprite_load_image(sj_object_get_value_as_string(def, "background"));
 	sj_object_get_vector2d(def, "bg_position", &self->bg_position);
@@ -230,6 +245,6 @@ UI* menu_new(const char* name)
 
 	menu_get_buttons(self, def);
 
-	slog("start menu created");
+	slog("%s created", self->name);
 	return self;
 }

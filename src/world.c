@@ -5,6 +5,7 @@
 #include "gf3d_obj_load.h"
 
 #include "animal.h"
+#include "shop.h"
 
 #include "world.h"
 
@@ -20,11 +21,20 @@ void spawn_animals()
 	Entity* a5 = animal_spawn(pos, "cat");
 }
 
+void spawn_shops()
+{
+	Entity* shop = shop_spawn(gfc_vector3d(-50, -50, 6), "Seed Shop");
+	Entity* shop2 = shop_spawn(gfc_vector3d(-70, -50, 6), "Tool Shop");
+}
+
 World* world_new()
 {
 	World* world;
 	world = gfc_allocate_array(sizeof(World), 1);
 	if (!world) return NULL;
+
+	//spawn_animals();
+	//spawn_shops(); //doesnt work for some reason
 
 	// load all the crop defs
 	return world;
@@ -63,8 +73,6 @@ World* world_load(const char* filename)
 	sj_object_get_color_value(config, "lightColor", &world->lightColor);
 	sj_object_get_vector3d(config, "lightPos", &world->lightPos);
 	sj_free(json);
-
-	spawn_animals();
 
 	return world;
 }

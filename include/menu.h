@@ -6,6 +6,7 @@
 typedef enum
 {
 	GS_MainMenu,
+	GS_CharacterCreator,
 	GS_Play,
 	GS_Pause,
 	GS_Quit
@@ -16,6 +17,7 @@ typedef struct
 	GFC_TextLine name;
 	GFC_TextLine text;
 	GFC_TextLine command;
+	GFC_Vector2D position;
 }Menu_Button;
 
 /**

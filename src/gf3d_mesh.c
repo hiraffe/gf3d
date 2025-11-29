@@ -201,6 +201,19 @@ VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* 
     mesh_manager.attributeDescriptions[2].location = 2;
     mesh_manager.attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
     mesh_manager.attributeDescriptions[2].offset = offsetof(Vertex, texel);
+
+    /*
+    mesh_manager.attributeDescriptions[3].binding = 0;
+    mesh_manager.attributeDescriptions[3].location = 3;
+    mesh_manager.attributeDescriptions[3].format = VK_FORMAT_R32G32_SFLOAT;
+    mesh_manager.attributeDescriptions[3].offset = offsetof(Vertex, bone);
+
+    mesh_manager.attributeDescriptions[4].binding = 0;
+    mesh_manager.attributeDescriptions[4].location = 4;
+    mesh_manager.attributeDescriptions[4].format = VK_FORMAT_R32G32_SFLOAT;
+    mesh_manager.attributeDescriptions[4].offset = offsetof(Vertex, weight);
+    */
+
     if (count)*count = MESH_ATTRIBUTE_COUNT;
     return mesh_manager.attributeDescriptions;
 }

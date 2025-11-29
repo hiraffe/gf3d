@@ -216,7 +216,8 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	//populate monster data
 	gfc_line_cpy(self->name, "notAgumon");
 	self->entityType = "monster";
-	self->mesh = gf3d_mesh_load("models/dino/dino.obj");
+	//self->mesh = gf3d_mesh_load("models/dino/dino.obj");
+	self->mesh = gf3d_mesh_load("models/character/body.obj");
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->position = position;
 	self->color = color;
