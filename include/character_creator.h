@@ -6,14 +6,14 @@
 typedef struct
 {
 	Mesh* body;
-	Texture* skincolors[8];
-	Mesh* hair[8];
-	Texture* haircolors[8];
-	Mesh* tops[4];
-	Texture* topcolors[8];
+	Texture* skincolors[1];
+	Mesh* hair[2];
+	Texture* haircolors[1];
+	Mesh* tops[2];
+	Texture* topcolors[1];
 	Texture* bottomcolors[8];
-	Mesh* shoes[2];
-	Texture* shoecolors[8];
+	Mesh* shoes[1];
+	Texture* shoecolors[1];
 
 	int currentSkincolor;
 	int currentHair;
@@ -29,8 +29,12 @@ typedef struct {
 	CharacterAppearance appearance;
 } CharacterPreview;
 
-void character_preview_draw(CharacterAppearance* a, GFC_Vector3D lightPos, GFC_Color lightColor);
+void character_preview_draw(GFC_Vector3D lightPos, GFC_Color lightColor);
+
+void character_change_appearance(const char* category);
 
 CharacterAppearance* character_appearance_load();
+
+CharacterAppearance* character_update_appearance();
 
 #endif

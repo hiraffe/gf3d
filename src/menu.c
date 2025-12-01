@@ -61,19 +61,23 @@ void menu_play_click()
 GameState menu_execute_command(UI* self)
 {
 	Menu_Button* btn;
-	const char* cmd;
+	const char *cmd, * cmd2;
 
 	btn = gfc_list_get_nth(self->buttons, self->item_selected);
-	cmd = btn->command;
+	cmd = malloc(strlen(btn->command) + 1);
+	strcpy(cmd, btn->command);
+	cmd = strtok(cmd, "-");
+	cmd2 = strtok(NULL, "");
+	slog("%s, %s, %s", btn->command, cmd, cmd2);
 	
-	if (strcmp(cmd, "start-game") == 0)
+	if (strcmp(cmd, "start") == 0)
 	{
 		menu_close(self);
 		Mix_HaltMusic;
 		Mix_PlayMusic(music, -1);
 		return GS_Play;
 	}
-	if (strcmp(cmd, "resume-game") == 0)
+	if (strcmp(cmd, "resume") == 0)
 	{
 		Mix_ResumeMusic();
 		menu_close(self);
@@ -84,9 +88,14 @@ GameState menu_execute_command(UI* self)
 		menu_close(self);
 		return GS_CharacterCreator;
 	}
-	if (strcmp(cmd, "end-game") == 0)
+	if (strcmp(cmd, "end") == 0)
 	{
 		return GS_Quit;
+	}
+	if (strcmp(cmd, "change") == 0)
+	{
+		character_change_appearance(cmd2);
+		return GS_CharacterCreator;
 	}
 
 	slog("Unknown UI command: %s", cmd);

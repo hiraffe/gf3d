@@ -177,6 +177,8 @@ void monster_think(Entity* self)
 	{
 		inventory_print(data->inventory);
 	}
+
+	data->appearance = character_update_appearance();
 }
 
 void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)

@@ -145,7 +145,8 @@ int main(int argc, char* argv[])
                 gf3d_camera_update_view();
                 gf3d_vgraphics_render_start();
                 // draw preview entity
-                character_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
+                //character_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
+                character_preview_draw(lightPos, GFC_COLOR_WHITE);
                 ui_manager_draw_all();
                 
                 gf3d_vgraphics_render_end();

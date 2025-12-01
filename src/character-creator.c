@@ -3,6 +3,8 @@
 
 #include "character_creator.h"
 
+CharacterAppearance* a = NULL;
+
 //static SJson* appearanceDefs = NULL;
 
 void character_creator_free()
@@ -80,8 +82,46 @@ SJson* character_creator_get_categories(CharacterAppearance *a, SJson* json)
 }
 */
 
-CharacterAppearance* character_appearance_load() { 
-	CharacterAppearance* a;
+CharacterAppearance* character_update_appearance()
+{
+	return a;
+}
+
+void character_change_appearance(const char* category)
+{
+	if (strcmp(category, "skin") == 0)
+	{
+		a->currentSkincolor = (a->currentSkincolor + 1) % (sizeof(a->skincolors) / sizeof(a->skincolors[0]));
+	}
+	if (strcmp(category, "hair") == 0)
+	{
+		a->currentHair = (a->currentHair + 1) % (sizeof(a->hair) / sizeof(a->hair[0]));
+	}
+	if (strcmp(category, "haircolor") == 0)
+	{
+		a->currentHaircolor = (a->currentHaircolor + 1) % (sizeof(a->haircolors) / sizeof(a->haircolors[0]));
+	}
+	if (strcmp(category, "top") == 0)
+	{
+		a->currentTop = (a->currentTop + 1) % (sizeof(a->tops) / sizeof(a->tops[0]));
+	}
+	if (strcmp(category, "topcolor") == 0)
+	{
+		a->currentTopcolor = (a->currentTopcolor + 1) % (sizeof(a->topcolors) / sizeof(a->topcolors[0]));
+	}
+	if (strcmp(category, "shoe") == 0)
+	{
+		a->currentShoes = (a->currentShoes + 1) % (sizeof(a->shoes) / sizeof(a->shoes[0]));
+	}
+	if (strcmp(category, "shoecolor") == 0)
+	{
+		a->currentShoecolor = (a->currentShoecolor + 1) % (sizeof(a->shoecolors) / sizeof(a->shoecolors[0]));
+	}
+
+}
+
+CharacterAppearance* character_appearance_load() 
+{ 
 	a = gfc_allocate_array(sizeof(CharacterAppearance), 1);
 	if (!a) {
 		slog("failed to allocate appearance");
@@ -118,7 +158,7 @@ CharacterAppearance* character_appearance_load() {
 	return a; 
 }
 
-void character_preview_draw(CharacterAppearance* a, GFC_Vector3D lightPos, GFC_Color lightColor)
+void character_preview_draw(GFC_Vector3D lightPos, GFC_Color lightColor)
 {
 	if (!a) return;
 	//slog("drawing happening");
