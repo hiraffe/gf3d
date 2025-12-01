@@ -7,7 +7,6 @@
 #include "menu.h"
 
 static SJson* menuDefs = NULL;
-static SJson* buttonDefs = NULL;
 Mix_Music *menuMusic = NULL, *music = NULL;
 Mix_Chunk *selected = NULL, *click = NULL;
 
@@ -180,20 +179,6 @@ SJson* menu_get_def_by_name(const char* name)
 	return NULL;
 }
 
-void menu_button_add(UI* ui, const char* name, const char* text, const char* cmd, GFC_Vector2D pos)
-{
-	Menu_Button* btn = gfc_allocate_array(sizeof(Menu_Button), 1);
-
-	gfc_line_cpy(btn->name, name);
-	gfc_line_cpy(btn->text, text);
-	gfc_line_cpy(btn->command, cmd);
-	btn->position = pos;
-
-	// set button position, size, hitbox, etc.
-	gfc_list_append(ui->buttons, btn);
-	ui->item_max++;
-}
-
 SJson* menu_get_buttons(UI* menu, SJson* json)
 {
 	SJson* buttons = sj_object_get_value(json, "buttons");
@@ -202,20 +187,14 @@ SJson* menu_get_buttons(UI* menu, SJson* json)
 
 	for (int i = 0; i < buttonCount; i++)
 	{
-		SJson* btnJson = sj_array_get_nth(buttons, i);
-
-		const char* name = sj_get_string_value(sj_object_get_value(btnJson, "name"));
-		const char* display = sj_get_string_value(sj_object_get_value(btnJson, "displayName"));
-		const char* command = sj_get_string_value(sj_object_get_value(btnJson, "command"));
-		
+		SJson* btnJson = sj_array_get_nth(buttons, i);		
 		Menu_Button* btn = gfc_allocate_array(sizeof(Menu_Button), 1);
 
-		gfc_line_cpy(btn->name, name);
-		gfc_line_cpy(btn->text, display);
-		gfc_line_cpy(btn->command, command);
+		gfc_line_cpy(btn->name, sj_get_string_value(sj_object_get_value(btnJson, "name")));
+		gfc_line_cpy(btn->text, sj_get_string_value(sj_object_get_value(btnJson, "displayName")));
+		gfc_line_cpy(btn->command, sj_get_string_value(sj_object_get_value(btnJson, "command")));
 		sj_object_get_vector2d(btnJson, "position", &btn->position);
 
-		// set button position, size, hitbox, etc.
 		gfc_list_append(menu->buttons, btn);
 		menu->item_max++;
 	}

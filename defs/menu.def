@@ -32,7 +32,7 @@
 		{
 			"name":"pause-menu",
 			"title":"Pause",
-			"title_position":[560,205],
+			"title_position":[590,205],
 			"background":"images/ui/window_background.png",
 			"bg_position":[500,200],
 			"buttons":
@@ -60,40 +60,70 @@
 		{
 			"name":"character-creator",
 			"title":"Character Creator",
-			"title_position":[700,205],
+			"title_position":[710,120],
 			"background":NULL,
-			"bg_position":[700,200],
+			"bg_position":[700,120],
 			"buttons":
 			[
+				{
+					"name":"skincolor",
+					"displayName":"Skin        <                           >",
+					"command":"change-skin",
+					"position":[730, 170]
+				},
 				{
 					"name":"hair",
 					"displayName":"Hair        <                           >",
 					"command":"change-hair",
-					"position":[730, 250]
+					"position":[730, 220]
 				},
 				{
 					"name":"hair-color",
 					"displayName":"Hair Color  <                           >",
 					"command":"change-haircolor",
-					"position":[730, 280]
+					"position":[730, 250]
 				},
 				{
-					"name":"shirt",
-					"displayName":"Shirt       <                           >",
-					"command":"change-shirt",
+					"name":"top",
+					"displayName":"Top       <                           >",
+					"command":"change-top",
+					"position":[730, 300]
+				},
+				{
+					"name":"top-color",
+					"displayName":"Top Color <                           >",
+					"command":"change-topcolor",
 					"position":[730, 330]
 				},
 				{
-					"name":"shirt-color",
-					"displayName":"Shirt Color <                           >",
-					"command":"change-shirtcolor",
-					"position":[730, 360]
+					"name":"bottom",
+					"displayName":"Bottom <                           >",
+					"command":"change-bottom",
+					"position":[730, 380]
+				},
+				{
+					"name":"bottom-color",
+					"displayName":"Bottom Color <                           >",
+					"command":"change-bottomcolor",
+					"position":[730, 410]
+				},
+				{
+					"name":"shoes",
+					"displayName":"Shoes <                           >",
+					"command":"change-shoes",
+					"position":[730, 460]
+				},
+				{
+					"name":"shoe-color",
+					"displayName":"Shoe Color <                           >",
+					"command":"change-shoecolor",
+					"position":[730, 490]
 				},
 				{
 					"name":"start",
 					"displayName":"Done",
 					"command":"start-game",
-					"position":[730, 600]
+					"position":[730, 540]
 				}
 			]
 		}

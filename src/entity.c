@@ -80,21 +80,25 @@ void entity_system_init(Uint32 max_ents)
 
 void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
-	if(!ent)return;
 	GFC_Matrix4 modelMat;
+	if(!ent)return;
+	if (!ent->mesh)
+	{
+		//slog("no mesh data for %s", ent->name);
+		return;
+	}
+
+	if (ent->draw)
+	{
+		ent->draw(ent, lightPos, lightColor);
+		return;
+	}
 	
 	gfc_matrix4_from_vectors(
 		modelMat,
 		ent->position,
 		ent->rotation,
 		ent->scale);
-	if (!ent->mesh)
-	{
-		//slog("no mesh data for %s", ent->name);
-		return;
-	}
-	//slog("entity model matrix:");
-	//gfc_matrix4_slog(modelMat);
 	
 	gf3d_mesh_draw(
 		ent->mesh,

@@ -6,17 +6,20 @@
 #include "item.h"
 #include "gfc_audio.h"
 
+#include "character_creator.h"
+
 #include "entity.h"
 
 typedef struct
 {
-	Entity*		cam;
-	float		gold;
-	Inventory*	inventory;
-	Item*		item_held;
-	Uint32		item_index;
-	Mix_Chunk*  plant_sound;
-	Mix_Chunk*  harvest_sound;
+	Entity*				cam;
+	float				gold;
+	Inventory*			inventory;
+	Item*				item_held;
+	Uint32				item_index;
+	Mix_Chunk*			plant_sound;
+	Mix_Chunk*			harvest_sound;
+	CharacterAppearance* appearance;
 }MonsterEntityData;
 
 /**
@@ -35,6 +38,8 @@ Entity* monster_spawn(GFC_Vector3D position, GFC_Color color);
  * @brief set the camera entity that will follow the player around
  */
 void monster_set_camera_ent(Entity* self, Entity* camera);
+
+CharacterAppearance* monster_get_appearance(Entity* self);
 
 
 #endif

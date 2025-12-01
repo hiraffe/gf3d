@@ -36,6 +36,7 @@
 #include "shop_menu.h"
 #include "hotbar.h"
 #include "menu.h"
+#include "character_creator.h"
 
 extern int __DEBUG;
 
@@ -93,8 +94,8 @@ int main(int argc, char* argv[])
     gf2d_mouse_load("actors/mouse.actor");
 
     world = world_load("defs/terrain.def");
-    monster = monster_spawn(gfc_vector3d(0,0,6), GFC_COLOR_ORANGE);
-    camEnt = camera_entity_spawn(gfc_vector3d(0, 10, -5), monster);
+    monster = monster_spawn(gfc_vector3d(0,0,0), GFC_COLOR_ORANGE);
+    camEnt = camera_entity_spawn(gfc_vector3d(0, 50, -5), monster);
     monster_set_camera_ent(monster, camEnt);
     //shop = shop_spawn(gfc_vector3d(-50,-50,6), "Seed Shop");
     //shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Tool Shop");
@@ -140,10 +141,13 @@ int main(int argc, char* argv[])
                 menu_open(editorMenu);
                 // just update the preview entity
                 ui_manager_think_all();
-                //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+                gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+                gf3d_camera_update_view();
                 gf3d_vgraphics_render_start();
                 // draw preview entity
+                character_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
                 ui_manager_draw_all();
+                
                 gf3d_vgraphics_render_end();
                 break;
             case GS_Play:
@@ -158,7 +162,6 @@ int main(int argc, char* argv[])
                 entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
                 world_draw(world);
                 //2D draws
-                //gf2d_font_draw_line_tag("ALT+F4 to exit", FT_H1, GFC_COLOR_WHITE, gfc_vector2d(10, 10));
                 ui_manager_draw_all();
                 gf3d_vgraphics_render_end();
                 if (gfc_input_command_pressed("cancel"))

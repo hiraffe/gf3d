@@ -158,7 +158,6 @@ void monster_think(Entity* self)
 			{
 				GFC_Vector3D cropLocation = self->position;
 				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 0));
-				gfc_vector3d_sub(cropLocation, cropLocation, gfc_vector3d(0, 0, 6));
 				crop_spawn(cropLocation, data->item_held->crop);
 				Mix_PlayChannel(0, data->plant_sound, 0);
 				data->item_held->count--;
@@ -178,14 +177,36 @@ void monster_think(Entity* self)
 	{
 		inventory_print(data->inventory);
 	}
+}
 
-	// get position
-	/*
-	if (gfc_input_command_pressed("select"))
-	{
-		slog("%i, %i, %i", self->position.x, self->position.y, self->position.z);
-	}
-	*/
+void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
+{
+	GFC_Matrix4 modelMat;
+	CharacterAppearance* a;
+	MonsterEntityData* data;
+	if ((!self) || !(self->data)) return;
+	data = self->data;
+	a = data->appearance;
+
+	gfc_matrix4_from_vectors(
+		modelMat,
+		self->position,
+		self->rotation,
+		self->scale);
+
+	gf3d_mesh_draw(self->mesh, modelMat, self->color, self->texture, lightPos, lightColor);
+	gf3d_mesh_draw(a->hair[a->currentHair], modelMat, self->color, a->haircolors[a->currentHaircolor], lightPos, lightColor);
+	gf3d_mesh_draw(a->tops[a->currentTop], modelMat, self->color, a->topcolors[a->currentTopcolor], lightPos, lightColor);
+	gf3d_mesh_draw(a->shoes[a->currentShoes], modelMat, self->color, a->shoecolors[a->currentShoecolor], lightPos, lightColor);
+}
+
+CharacterAppearance* monster_get_appearance(Entity* self)
+{
+	MonsterEntityData* data;
+	if ((!self) || !(self->data)) return;
+	data = self->data;
+
+	return data->appearance;
 }
 
 void monster_set_camera_ent(Entity* self, Entity* camera)
@@ -237,7 +258,14 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 
 	self->think = monster_think;
 	//self->update = monster_update;
+	self->draw = monster_draw;
 	self->free = monster_free;
+
+	data->appearance = character_appearance_load();
+	if (!data->appearance)
+	{
+		return;
+	}
 
 	slog("Monster spawned: %s", self->name);
 	theMonster = self;

@@ -37,12 +37,13 @@ void camera_entity_think(Entity* self)
 	offset = gfc_vector3d(0, 1, 0);
 	gfc_vector3d_rotate_about_z(&offset, data->angle);
 	gfc_vector3d_copy(d, data->target->position);
+	gfc_vector3d_add(d, data->target->position, gfc_vector3d(0,0,10));
 	gfc_vector3d_scale(offset, offset, data->followDistance);
 
-	self->position.x = data->target->position.x - offset.x; //
-	self->position.y = data->target->position.y - offset.y; //
-	self->position.z = data->target->position.z + data->followHeight;
-	gf3d_camera_look_at(data->target->position, &self->position);
+	self->position.x = d.x - offset.x; //
+	self->position.y = d.y - offset.y; //
+	self->position.z = d.z + data->followHeight;
+	gf3d_camera_look_at(d, &self->position);
 }
 
 Entity* camera_entity_spawn(GFC_Vector3D position, Entity* target)
