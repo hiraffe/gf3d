@@ -95,7 +95,7 @@
 		{
 			"name":"hoe",
 			"displayName":"Hoe",
-			"price":10,
+			"price":1,
 			"type":"tool",
 			"strength":50
 		}

@@ -12,9 +12,20 @@
 
 #include "gf3d_pipeline.h"
 
+#define MAX_BONES 64
+#define MAX_LIGHTS 32
+#define MAX_INFLUENCES 4
 
 //forward declaration:
 typedef struct ObjData_S ObjData;
+
+typedef struct {
+    char            name[64];
+    int             parentIndex;   // -1 root
+    GFC_Matrix4     inverseBind;   // inverse bind (bindPose^-1)
+    GFC_Matrix4     local;         // local transform (T*R*S)
+    GFC_Matrix4     global;        // global transform = parent.global * local
+} Bone;
 
 typedef struct
 {
@@ -38,14 +49,52 @@ typedef struct
 
 typedef struct
 {
-    GFC_Vector3D vertex;
-    GFC_Vector3D normal;
-    GFC_Vector2D texel;
+    GFC_Matrix4     bones[MAX_BONES];
+}ArmatureUBO;
+
+typedef struct
+{
+    GFC_Vector4D    ambient;
+    GFC_Vector4D    diffuse;
+    GFC_Vector4D    specular;
+    GFC_Vector4D    emission;
+    float           transparency;
+    float           shininess;
+    GFC_Vector2D    padding;
+}MaterialUBO;
+
+typedef struct
+{
+    GFC_Vector4D    color;
+    GFC_Vector4D    direction;
+    GFC_Vector4D    position;
+    float           ambientCoefficient;
+    float           attenuation;
+    float           angle;
+    float           brightness;
+}Light;
+
+typedef struct
+{
+    Light           lights[MAX_LIGHTS];
+    GFC_Vector4D    flags;
+}LightUBO;
+
+typedef struct
+{
+    GFC_Vector3D    vertex;
+    GFC_Vector3D    normal;
+    GFC_Vector2D    texel;
+
+    // skinning fields
+    uint32_t    bone[MAX_INFLUENCES]; // 4 x uint
+    float       weight[MAX_INFLUENCES]; // 4 x float
+
 }Vertex;
 
 typedef struct
 {
-    Uint16  verts[3];
+    Uint16          verts[3];
 }Face;
 
 typedef struct
@@ -61,10 +110,10 @@ typedef struct
 
 typedef struct
 {
-    GFC_TextLine        filename;
-    Uint32              _refCount;
-    GFC_List*           primitives;
-    GFC_Box             bounds;
+    GFC_TextLine    filename;
+    Uint32          _refCount;
+    GFC_List*       primitives;
+    GFC_Box         bounds;
 }Mesh;
 
 /**

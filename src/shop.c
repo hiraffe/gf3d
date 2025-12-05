@@ -7,14 +7,6 @@
 
 #include "shop.h"
 
-
-Entity* theShop = { 0 };
-
-Entity* shop_get_the()
-{
-	return theShop;
-}
-
 void shop_free(Entity* self)
 {
 	ShopEntityData* data;
@@ -48,11 +40,16 @@ float shop_sell_item(Inventory* inv, Inventory* otherInv, int itemIndex)
 	item = gfc_list_get_nth(inv->itemslist, itemIndex);
 	if (item->count <= 0) return;
 
+	if (strcmp(item->name, "hoe") == 0)
+	{
+		slog("cannot sell hoe");
+		return;
+	}
 	float price = item->price;
 	if (price > 0)
 	{
 		totalGold += price;
-		slog("Sold %s for %.2f gold", item->name, price);
+		//slog("Sold %s for %.2f gold", item->name, price);
 		inventory_add_item(otherInv, item->name);
 		item->count--;
 	}
@@ -170,7 +167,7 @@ Entity* shop_spawn(GFC_Vector3D position, const char* name)
 	self->collisionRadius = 4;
 
 	inv = inventory_new();
-	if (strcmp(name, "Seed Shop") == 0) {
+	if (strcmp(name, "Scary Seeds") == 0) {
 		inv = shop_populate_seeds(inv);
 	}
 	else {
@@ -178,13 +175,15 @@ Entity* shop_spawn(GFC_Vector3D position, const char* name)
 	}
 	data->sell_list = inv;
 	data->isOpen = 1;
-	//shop_menu = shop_menu_new(self->data);
 	data->menu = shop_menu_new(self->data, name);
+	if (!data->menu)
+	{
+		slog("shop menu cannot be created?");
+	}
 
 	self->think = shop_think;
 	self->free = shop_free;
 
 	slog("Shop spawned: %s", self->name);
-	theShop = self;
 	return self;
 }

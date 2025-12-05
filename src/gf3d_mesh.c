@@ -11,7 +11,7 @@
 #define MESH_ATTRIBUTE_COUNT 3
 
 extern int __DEBUG;
-
+ 
 typedef struct
 {
     Mesh* mesh_list;
@@ -205,7 +205,7 @@ VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* 
     /*
     mesh_manager.attributeDescriptions[3].binding = 0;
     mesh_manager.attributeDescriptions[3].location = 3;
-    mesh_manager.attributeDescriptions[3].format = VK_FORMAT_R32G32_SFLOAT;
+    mesh_manager.attributeDescriptions[3].format = VK_FORMAT_R32G32B32A32_UINT;
     mesh_manager.attributeDescriptions[3].offset = offsetof(Vertex, bone);
 
     mesh_manager.attributeDescriptions[4].binding = 0;
@@ -213,6 +213,7 @@ VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* 
     mesh_manager.attributeDescriptions[4].format = VK_FORMAT_R32G32_SFLOAT;
     mesh_manager.attributeDescriptions[4].offset = offsetof(Vertex, weight);
     */
+    
 
     if (count)*count = MESH_ATTRIBUTE_COUNT;
     return mesh_manager.attributeDescriptions;

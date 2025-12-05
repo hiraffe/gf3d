@@ -105,7 +105,7 @@ void shop_draw_inventory(UI* ui, Inventory* inv, char str[16])
 		if (item->count <= 0) continue;
 		if (!item->sellable) continue;
 
-		snprintf(itemStr, sizeof(itemStr), "%s (%i)", item->name, item->count);
+		snprintf(itemStr, sizeof(itemStr), "%s (%i)", item->displayName, item->count);
 		snprintf(priceStr, sizeof(priceStr), "$%d", item->price);
 		color = (i == ui->item_selected) ? GFC_COLOR_WHITE : GFC_COLOR_YELLOW;
 		gf2d_font_draw_line_tag(itemStr, FT_H5, color, gfc_vector2d(505, 250+offset));
@@ -124,7 +124,7 @@ void shop_menu_draw(UI* ui)
 
 	if (data->state == SS_Buy)
 	{
-		gf2d_font_draw_line_tag(ui->name, FT_H2, GFC_COLOR_YELLOW, gfc_vector2d(560, 205));
+		gf2d_font_draw_line_tag(ui->name, FT_H2, GFC_COLOR_YELLOW, gfc_vector2d(505, 205));
 		ui->item_max = data->shopData->sell_list->itemslist->count;
 		shop_draw_inventory(ui, data->shopData->sell_list, "Sell");
 	}

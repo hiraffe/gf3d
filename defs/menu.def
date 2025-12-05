@@ -16,12 +16,6 @@
 					"position":[505,250]
 				},
 				{
-					"name":"charactor-creator",
-					"displayName":"Character Creator",
-					"command":"editor",
-					"position":[505,280]
-				},
-				{
 					"name":"quit",
 					"displayName":"Quit",
 					"command":"end-game",

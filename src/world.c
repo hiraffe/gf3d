@@ -6,6 +6,8 @@
 
 #include "animal.h"
 #include "shop.h"
+#include "shop_menu.h"
+#include "ui.h"
 
 #include "world.h"
 
@@ -23,8 +25,8 @@ void spawn_animals()
 
 void spawn_shops()
 {
-	Entity* shop = shop_spawn(gfc_vector3d(-50, -50, 6), "Seed Shop");
-	Entity* shop2 = shop_spawn(gfc_vector3d(-70, -50, 6), "Tool Shop");
+	Entity* shop = shop_spawn(gfc_vector3d(-50, -50, 6), "Scary Seeds");
+	Entity* shop2 = shop_spawn(gfc_vector3d(-70, -50, 6), "Terrifying Tools");
 }
 
 World* world_new()
@@ -34,7 +36,7 @@ World* world_new()
 	if (!world) return NULL;
 
 	//spawn_animals();
-	//spawn_shops(); //doesnt work for some reason
+	//spawn_shops(); //shop menus dont work for some reason (issue is in ui_new ?
 
 	// load all the crop defs
 	return world;

@@ -93,14 +93,10 @@ int main(int argc, char* argv[])
     slog_sync();
     gf2d_mouse_load("actors/mouse.actor");
 
-    world = world_load("defs/terrain.def");
-    monster = monster_spawn(gfc_vector3d(0,0,0), GFC_COLOR_ORANGE);
+    monster = monster_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_ORANGE);
     camEnt = camera_entity_spawn(gfc_vector3d(0, 50, -5), monster);
     monster_set_camera_ent(monster, camEnt);
-    //shop = shop_spawn(gfc_vector3d(-50,-50,6), "Seed Shop");
-    //shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Tool Shop");
-    hotbar = hotbar_new();
-    hotbar_open(hotbar);
+
     startMenu = menu_new("start-menu");
     pauseMenu = menu_new("pause-menu");
     editorMenu = menu_new("character-creator");
@@ -108,6 +104,32 @@ int main(int argc, char* argv[])
     menuMusic = gfc_sound_load_music("audio/monkeys-spinning-monkeys-kevin-macleod-main-version-8413-02-05.mp3");
 
     game_state = menu_get_game_state();
+
+    /*
+    while (game_state == GS_MainMenu)
+    {
+        gfc_input_update();
+        gf2d_mouse_update();
+        gf2d_font_update();
+
+        if (!Mix_PlayingMusic()) Mix_PlayMusic(menuMusic, 1);
+        ui_manager_think_all();
+        gf3d_vgraphics_render_start();
+        ui_manager_draw_all();
+        gf2d_mouse_draw();
+        gf3d_vgraphics_render_end();
+        game_state = menu_get_game_state();
+    }
+    Mix_PauseMusic();
+    slog("loading");
+    */
+
+    world = world_load("defs/terrain.def");
+    shop = shop_spawn(gfc_vector3d(-50,-50,6), "Scary Seeds");
+    shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Terrrifying Tools");
+    hotbar = hotbar_new();
+    hotbar_open(hotbar);
+    
     //gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     
@@ -145,10 +167,8 @@ int main(int argc, char* argv[])
                 gf3d_camera_update_view();
                 gf3d_vgraphics_render_start();
                 // draw preview entity
-                //character_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
                 character_preview_draw(lightPos, GFC_COLOR_WHITE);
                 ui_manager_draw_all();
-                
                 gf3d_vgraphics_render_end();
                 break;
             case GS_Play:

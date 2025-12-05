@@ -140,6 +140,14 @@ void monster_think(Entity* self)
 	stepPosition = self->position;
 	gfc_vector3d_add(stepPosition, stepPosition, movement);
 
+	// face direction moving in
+	if (movement.x != 0 || movement.y != 0)
+	{
+		float angle = atan2(movement.y, movement.x); 
+		angle -= 30;
+		self->rotation.z = angle;
+	}
+
 	if (!entity_check_collision(self, stepPosition, self->collisionRadius))
 	{
 		gfc_vector3d_add(self->position, self->position, movement);
@@ -178,6 +186,7 @@ void monster_think(Entity* self)
 		inventory_print(data->inventory);
 	}
 
+	// maybe go in an update function
 	data->appearance = character_update_appearance();
 }
 
@@ -196,10 +205,10 @@ void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
 		self->rotation,
 		self->scale);
 
-	gf3d_mesh_draw(self->mesh, modelMat, self->color, self->texture, lightPos, lightColor);
-	gf3d_mesh_draw(a->hair[a->currentHair], modelMat, self->color, a->haircolors[a->currentHaircolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->tops[a->currentTop], modelMat, self->color, a->topcolors[a->currentTopcolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->shoes[a->currentShoes], modelMat, self->color, a->shoecolors[a->currentShoecolor], lightPos, lightColor);
+	gf3d_mesh_draw(a->body, modelMat, GFC_COLOR_WHITE, a->skincolors[a->currentSkincolor], lightPos, lightColor);
+	gf3d_mesh_draw(a->hair[a->currentHair], modelMat, GFC_COLOR_WHITE, a->haircolors[a->currentHaircolor], lightPos, lightColor);
+	gf3d_mesh_draw(a->tops[a->currentTop], modelMat, GFC_COLOR_WHITE, a->topcolors[a->currentTopcolor], lightPos, lightColor);
+	gf3d_mesh_draw(a->shoes[a->currentShoes], modelMat, GFC_COLOR_WHITE, a->shoecolors[a->currentShoecolor], lightPos, lightColor);
 }
 
 CharacterAppearance* monster_get_appearance(Entity* self)
@@ -244,7 +253,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->position = position;
 	self->color = color;
-	self->rotation = gfc_vector3d(0, 0, 135);
+	self->rotation = gfc_vector3d(0, 0, 0);
 	self->velocity = gfc_vector3d(0, 0, 0);
 	self->collisionRadius = 4;
 

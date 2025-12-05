@@ -41,7 +41,12 @@ void hotbar_draw(UI* ui)
 	if (!ui) return;
 
 	item_held = ui->mData->item_held;
-	snprintf(str, sizeof(str), "Item held: %s (%i)", item_held->displayName, item_held->count);
+	if (item_held->count == 1) {
+		snprintf(str, sizeof(str), "Item held: %s", item_held->displayName);
+	}
+	else{
+		snprintf(str, sizeof(str), "Item held: %s (%i)", item_held->displayName, item_held->count);
+	}
 	gf2d_font_draw_line_tag(str, FT_H2, GFC_COLOR_WHITE, gfc_vector2d(10, 650));
 }
 
