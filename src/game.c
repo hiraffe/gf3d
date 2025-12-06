@@ -37,6 +37,7 @@
 #include "hotbar.h"
 #include "menu.h"
 #include "character_creator.h"
+#include "npc.h"
 
 extern int __DEBUG;
 
@@ -87,6 +88,7 @@ int main(int argc, char* argv[])
     crops_init("defs/crops.def");
     animals_init("defs/animals.def");
     items_init("defs/items.def");
+    npc_init("defs/npc.def");
 
     //game init
     srand(SDL_GetTicks());
@@ -125,8 +127,9 @@ int main(int argc, char* argv[])
     */
 
     world = world_load("defs/terrain.def");
-    shop = shop_spawn(gfc_vector3d(-50,-50,6), "Scary Seeds");
-    shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Terrrifying Tools");
+    //shop = shop_spawn(gfc_vector3d(-50,-50,6), "Scary Seeds");
+    //shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Terrrifying Tools");
+    character_creator_closet_load();
     hotbar = hotbar_new();
     hotbar_open(hotbar);
     
@@ -167,7 +170,7 @@ int main(int argc, char* argv[])
                 gf3d_camera_update_view();
                 gf3d_vgraphics_render_start();
                 // draw preview entity
-                character_preview_draw(lightPos, GFC_COLOR_WHITE);
+                character_creator_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
                 ui_manager_draw_all();
                 gf3d_vgraphics_render_end();
                 break;

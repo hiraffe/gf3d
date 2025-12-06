@@ -8,6 +8,7 @@
 #include "shop.h"
 #include "shop_menu.h"
 #include "ui.h"
+#include "npc.h"
 
 #include "world.h"
 
@@ -29,16 +30,23 @@ void spawn_shops()
 	Entity* shop2 = shop_spawn(gfc_vector3d(-70, -50, 6), "Terrifying Tools");
 }
 
+void spawn_npcs()
+{
+	Entity* npc = npc_spawn("npc1");
+}
+
 World* world_new()
 {
 	World* world;
 	world = gfc_allocate_array(sizeof(World), 1);
 	if (!world) return NULL;
 
+	// load all the crop defs
+
 	//spawn_animals();
 	//spawn_shops(); //shop menus dont work for some reason (issue is in ui_new ?
+	spawn_npcs();
 
-	// load all the crop defs
 	return world;
 }
 

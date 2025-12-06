@@ -62,6 +62,8 @@ GameState menu_execute_command(UI* self)
 {
 	Menu_Button* btn;
 	const char *cmd, * cmd2;
+	Entity* monster;
+	MonsterEntityData* data;
 
 	btn = gfc_list_get_nth(self->buttons, self->item_selected);
 	cmd = malloc(strlen(btn->command) + 1);
@@ -94,7 +96,9 @@ GameState menu_execute_command(UI* self)
 	}
 	if (strcmp(cmd, "change") == 0)
 	{
-		character_change_appearance(cmd2);
+		monster = monster_get_the();
+		data = monster->data;
+		character_creator_change_appearance(data->appearance, cmd2);
 		return GS_CharacterCreator;
 	}
 

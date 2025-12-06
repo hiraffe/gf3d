@@ -14,27 +14,31 @@ typedef struct
 	Texture* bottomcolors[8];
 	Mesh* shoes[1];
 	Texture* shoecolors[1];
+}CharacterCloset;
 
+typedef struct {
 	int currentSkincolor;
 	int currentHair;
 	int currentHaircolor;
 	int currentTop;
 	int currentTopcolor;
+	int currentBottom;
 	int currentBottomcolor;
 	int currentShoes;
 	int currentShoecolor;
 }CharacterAppearance;
 
-typedef struct {
-	CharacterAppearance appearance;
-} CharacterPreview;
 
-void character_preview_draw(GFC_Vector3D lightPos, GFC_Color lightColor);
+void character_creator_preview_draw(CharacterAppearance* a, GFC_Vector3D lightPos, GFC_Color lightColor);
 
-void character_change_appearance(const char* category);
+CharacterAppearance* character_creator_change_appearance_all(CharacterAppearance* a, int skincolor, GFC_Vector4D clothing, GFC_Vector4D colors);
 
-CharacterAppearance* character_appearance_load();
+CharacterAppearance* character_creator_change_appearance(CharacterAppearance* a, const char* category);
 
-CharacterAppearance* character_update_appearance();
+void character_creator_closet_load();
+
+CharacterCloset* character_creator_get_closet();
+
+CharacterAppearance* character_creator_appearance_new();
 
 #endif

@@ -94,7 +94,6 @@ void shop_sell_all(Entity* self, Entity* monster)
 
 void shop_think(Entity* self)
 {
-	const Uint8* keystate = SDL_GetKeyboardState(NULL);
 	ShopEntityData* data;
 	Entity* monster = monster_get_the();
 	if ((!self)||(!self->data)||(!monster)) return;

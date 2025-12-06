@@ -82,15 +82,16 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
 	GFC_Matrix4 modelMat;
 	if(!ent)return;
-	if (!ent->mesh)
-	{
-		//slog("no mesh data for %s", ent->name);
-		return;
-	}
 
 	if (ent->draw)
 	{
 		ent->draw(ent, lightPos, lightColor);
+		return;
+	}
+
+	if (!ent->mesh)
+	{
+		//slog("no mesh data for %s", ent->name);
 		return;
 	}
 	

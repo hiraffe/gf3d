@@ -1,0 +1,51 @@
+{
+	"npc":
+	[
+		{
+			"name": "npc1",
+			"displayName": "Larissa",
+			"position": [0,10,0],
+			"skin":1,
+			"clothing":[0,0,0,0],
+			"colors":[0,0,0,0],
+			"dialogue1":"Hello! I am Larissa!",
+			"dialogue2":"Wonderful day we're having!"
+		},
+		{
+			"name": "npc2",
+			"displayName": "DJ Kehoe",
+			"position": [ 0, 0, 0 ],
+			"clothing": [ 0, 0, 0, 0 ],
+			"colors": [ 0, 0, 0, 0 ],
+			"dialogue1": "Are you working on your deliverables?",
+			"dialogue2": "Imagine taking multiple of my classes..."
+		},
+		{
+			"name": "npc3",
+			"displayName": "Freddy",
+			"position": [ 0, 0, 0 ],
+			"clothing": [ 0, 0, 0, 0 ],
+			"colors": [ 0, 0, 0, 0 ],
+			"dialogue1": "You look like you've seen a ghost!",
+			"dialogue2": "Come to my pizzeria."
+		},
+		{
+			"name": "npc4",
+			"displayName": "Godot",
+			"position": [ 0, 0, 0 ],
+			"clothing": [ 0, 0, 0, 0 ],
+			"colors": [ 0, 0, 0, 0 ],
+			"dialogue1": "Have you seen my associates? I think I've given them the wrong directions.",
+			"dialogue2": "Ah well, nothing to be done..."
+		},
+		{
+			"name": "npc5",
+			"displayName": "Hira",
+			"position": [ 0, 0, 0 ],
+			"clothing": [ 0, 0, 0, 0 ],
+			"colors": [ 0, 0, 0, 0 ],
+			"dialogue1": "Hey! I'm Hira, I made this game.",
+			"dialogue2": "Who are you!?"
+		}
+	]
+}

@@ -185,19 +185,19 @@ void monster_think(Entity* self)
 	{
 		inventory_print(data->inventory);
 	}
-
-	// maybe go in an update function
-	data->appearance = character_update_appearance();
 }
 
 void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
 	GFC_Matrix4 modelMat;
+	CharacterCloset* closet;
 	CharacterAppearance* a;
 	MonsterEntityData* data;
 	if ((!self) || !(self->data)) return;
 	data = self->data;
 	a = data->appearance;
+	closet = character_creator_get_closet();
+	if ((!a) || (!closet)) return;
 
 	gfc_matrix4_from_vectors(
 		modelMat,
@@ -205,10 +205,10 @@ void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
 		self->rotation,
 		self->scale);
 
-	gf3d_mesh_draw(a->body, modelMat, GFC_COLOR_WHITE, a->skincolors[a->currentSkincolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->hair[a->currentHair], modelMat, GFC_COLOR_WHITE, a->haircolors[a->currentHaircolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->tops[a->currentTop], modelMat, GFC_COLOR_WHITE, a->topcolors[a->currentTopcolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->shoes[a->currentShoes], modelMat, GFC_COLOR_WHITE, a->shoecolors[a->currentShoecolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->body, modelMat, GFC_COLOR_WHITE, closet->skincolors[a->currentSkincolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->hair[a->currentHair], modelMat, GFC_COLOR_WHITE, closet->haircolors[a->currentHaircolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->tops[a->currentTop], modelMat, GFC_COLOR_WHITE, closet->topcolors[a->currentTopcolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->shoes[a->currentShoes], modelMat, GFC_COLOR_WHITE, closet->shoecolors[a->currentShoecolor], lightPos, lightColor);
 }
 
 CharacterAppearance* monster_get_appearance(Entity* self)
@@ -272,7 +272,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->draw = monster_draw;
 	self->free = monster_free;
 
-	data->appearance = character_appearance_load();
+	data->appearance = character_creator_appearance_new();
 	if (!data->appearance)
 	{
 		return;

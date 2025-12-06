@@ -3,7 +3,7 @@
 
 #include "character_creator.h"
 
-CharacterAppearance* a = NULL;
+CharacterCloset* closet = NULL;
 
 //static SJson* appearanceDefs = NULL;
 
@@ -82,85 +82,92 @@ SJson* character_creator_get_categories(CharacterAppearance *a, SJson* json)
 }
 */
 
-CharacterAppearance* character_update_appearance()
+CharacterCloset* character_creator_get_closet()
 {
-	return a;
+	return closet;
 }
 
-void character_change_appearance(const char* category)
+void character_creator_closet_load()
 {
-	if (strcmp(category, "skin") == 0)
-	{
-		a->currentSkincolor = (a->currentSkincolor + 1) % (sizeof(a->skincolors) / sizeof(a->skincolors[0]));
-	}
-	if (strcmp(category, "hair") == 0)
-	{
-		a->currentHair = (a->currentHair + 1) % (sizeof(a->hair) / sizeof(a->hair[0]));
-	}
-	if (strcmp(category, "haircolor") == 0)
-	{
-		a->currentHaircolor = (a->currentHaircolor + 1) % (sizeof(a->haircolors) / sizeof(a->haircolors[0]));
-	}
-	if (strcmp(category, "top") == 0)
-	{
-		a->currentTop = (a->currentTop + 1) % (sizeof(a->tops) / sizeof(a->tops[0]));
-	}
-	if (strcmp(category, "topcolor") == 0)
-	{
-		a->currentTopcolor = (a->currentTopcolor + 1) % (sizeof(a->topcolors) / sizeof(a->topcolors[0]));
-	}
-	if (strcmp(category, "shoe") == 0)
-	{
-		a->currentShoes = (a->currentShoes + 1) % (sizeof(a->shoes) / sizeof(a->shoes[0]));
-	}
-	if (strcmp(category, "shoecolor") == 0)
-	{
-		a->currentShoecolor = (a->currentShoecolor + 1) % (sizeof(a->shoecolors) / sizeof(a->shoecolors[0]));
-	}
-
-}
-
-CharacterAppearance* character_appearance_load() 
-{ 
-	a = gfc_allocate_array(sizeof(CharacterAppearance), 1);
-	if (!a) {
+	closet = gfc_allocate_array(sizeof(CharacterCloset), 1);
+	if (!closet) {
 		slog("failed to allocate appearance");
 		return;
 	}
-	
-	a->body = gf3d_mesh_load("models/character/body.obj");
 
-	a->skincolors[0] = gf3d_texture_load("models/crops/green.png");
+	closet->body = gf3d_mesh_load("models/character/body.obj");
 
-	a->hair[0] = gf3d_mesh_load("models/character/hair1.obj");
-	a->hair[1] = gf3d_mesh_load("models/character/hair2.obj");
+	closet->skincolors[0] = gf3d_texture_load("models/crops/green.png");
 
-	a->haircolors[0] = gf3d_texture_load("models/crops/green.png");
+	closet->hair[0] = gf3d_mesh_load("models/character/hair1.obj");
+	closet->hair[1] = gf3d_mesh_load("models/character/hair2.obj");
 
-	a->tops[0] = gf3d_mesh_load("models/character/shirt1.obj");
-	a->tops[1] = gf3d_mesh_load("models/character/shirt2.obj");
+	closet->haircolors[0] = gf3d_texture_load("models/crops/green.png");
 
-	a->topcolors[0] = gf3d_texture_load("images/default.png");
+	closet->tops[0] = gf3d_mesh_load("models/character/shirt1.obj");
+	closet->tops[1] = gf3d_mesh_load("models/character/shirt2.obj");
 
-	a->shoes[0] = gf3d_mesh_load("models/character/shoes.obj");
+	closet->topcolors[0] = gf3d_texture_load("images/default.png");
 
-	a->shoecolors[0] = gf3d_texture_load("images/default.png");
+	closet->shoes[0] = gf3d_mesh_load("models/character/shoes.obj");
 
-	// default items
-	a->currentHair = 1;
-	a->currentHaircolor = 0;
-	a->currentTop = 0;
-	a->currentTopcolor = 0;
-	a->currentBottomcolor = 0;
-	a->currentShoes = 0;
-	a->currentShoecolor = 0;
-
-	return a; 
+	closet->shoecolors[0] = gf3d_texture_load("images/default.png");
 }
 
-void character_preview_draw(GFC_Vector3D lightPos, GFC_Color lightColor)
+CharacterAppearance* character_creator_change_appearance_all(CharacterAppearance* a, int skincolor, GFC_Vector4D clothing, GFC_Vector4D colors)
 {
 	if (!a) return;
+	a->currentSkincolor = skincolor;
+	a->currentHair = clothing.x;
+	a->currentHaircolor = colors.x;
+	a->currentTop = clothing.y;
+	a->currentTopcolor = colors.y;
+	a->currentBottom = clothing.z;
+	a->currentBottomcolor = colors.z;
+	a->currentShoes = clothing.w;
+	a->currentShoecolor = colors.w;
+
+	return a;
+}
+
+CharacterAppearance* character_creator_change_appearance(CharacterAppearance *a, const char* category)
+{
+	if (!a) return;
+	if (strcmp(category, "skin") == 0)
+	{
+		a->currentSkincolor = (a->currentSkincolor + 1) % (sizeof(closet->skincolors) / sizeof(closet->skincolors[0]));
+	}
+	if (strcmp(category, "hair") == 0)
+	{
+		a->currentHair = (a->currentHair + 1) % (sizeof(closet->hair) / sizeof(closet->hair[0]));
+	}
+	if (strcmp(category, "haircolor") == 0)
+	{
+		a->currentHaircolor = (a->currentHaircolor + 1) % (sizeof(closet->haircolors) / sizeof(closet->haircolors[0]));
+	}
+	if (strcmp(category, "top") == 0)
+	{
+		a->currentTop = (a->currentTop + 1) % (sizeof(closet->tops) / sizeof(closet->tops[0]));
+	}
+	if (strcmp(category, "topcolor") == 0)
+	{
+		a->currentTopcolor = (a->currentTopcolor + 1) % (sizeof(closet->topcolors) / sizeof(closet->topcolors[0]));
+	}
+	if (strcmp(category, "shoe") == 0)
+	{
+		a->currentShoes = (a->currentShoes + 1) % (sizeof(closet->shoes) / sizeof(closet->shoes[0]));
+	}
+	if (strcmp(category, "shoecolor") == 0)
+	{
+		a->currentShoecolor = (a->currentShoecolor + 1) % (sizeof(closet->shoecolors) / sizeof(closet->shoecolors[0]));
+	}
+
+	return a;
+}
+
+void character_creator_preview_draw(CharacterAppearance *a, GFC_Vector3D lightPos, GFC_Color lightColor)
+{
+	if ((!closet)||(!a)) return;
 	//slog("drawing happening");
 	GFC_Matrix4 modelMat;
 	
@@ -170,14 +177,25 @@ void character_preview_draw(GFC_Vector3D lightPos, GFC_Color lightColor)
 		gfc_vector3d(0, 0, 3),
 		gfc_vector3d(1.5, 1.5, 1.5));
 
-	gf3d_mesh_draw(a->body, modelMat, GFC_COLOR_WHITE, a->skincolors[a->currentSkincolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->hair[a->currentHair], modelMat, GFC_COLOR_WHITE, a->haircolors[a->currentHaircolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->tops[a->currentTop], modelMat, GFC_COLOR_WHITE, a->topcolors[a->currentTopcolor], lightPos, lightColor);
-	gf3d_mesh_draw(a->shoes[a->currentShoes], modelMat, GFC_COLOR_WHITE, a->shoecolors[a->currentShoecolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->body, modelMat, GFC_COLOR_WHITE, closet->skincolors[a->currentSkincolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->hair[a->currentHair], modelMat, GFC_COLOR_WHITE, closet->haircolors[a->currentHaircolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->tops[a->currentTop], modelMat, GFC_COLOR_WHITE, closet->topcolors[a->currentTopcolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->shoes[a->currentShoes], modelMat, GFC_COLOR_WHITE, closet->shoecolors[a->currentShoecolor], lightPos, lightColor);
 }
 
-CharacterPreview* character_preview_new()
+CharacterAppearance* character_creator_appearance_new()
 {
-	CharacterPreview* preview;
-	preview = gfc_allocate_array(sizeof(CharacterPreview), 1);
+	CharacterAppearance* a;
+	a = gfc_allocate_array(sizeof(CharacterAppearance), 1);
+	
+	// default items
+	a->currentHair = 1;
+	a->currentHaircolor = 0;
+	a->currentTop = 0;
+	a->currentTopcolor = 0;
+	a->currentBottomcolor = 0;
+	a->currentShoes = 0;
+	a->currentShoecolor = 0;
+
+	return a;
 }
