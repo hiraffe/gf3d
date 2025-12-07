@@ -33,6 +33,10 @@ void spawn_shops()
 void spawn_npcs()
 {
 	Entity* npc = npc_spawn("npc1");
+	Entity* npc2 = npc_spawn("npc2");
+	Entity* npc3 = npc_spawn("npc3");
+	Entity* npc4 = npc_spawn("npc4");
+	Entity* npc5 = npc_spawn("npc5");
 }
 
 World* world_new()

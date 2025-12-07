@@ -131,7 +131,6 @@ int main(int argc, char* argv[])
     //shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Terrrifying Tools");
     character_creator_closet_load();
     hotbar = hotbar_new();
-    hotbar_open(hotbar);
     
     //gfc_matrix4_identity(id);
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
@@ -153,16 +152,16 @@ int main(int argc, char* argv[])
                 gf3d_vgraphics_render_end();
                 break;
             case GS_Pause:
-                Mix_PauseMusic();
+                hotbar_close(hotbar);
                 ui_manager_think_all();
                 gf3d_vgraphics_render_start();
                 entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
                 world_draw(world);
                 ui_manager_draw_all();
-                gf2d_mouse_draw();
                 gf3d_vgraphics_render_end();
                 break;
             case GS_CharacterCreator:
+                hotbar_close(hotbar);
                 menu_open(editorMenu);
                 // just update the preview entity
                 ui_manager_think_all();
@@ -186,10 +185,12 @@ int main(int argc, char* argv[])
                 entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
                 world_draw(world);
                 //2D draws
+                hotbar_open(hotbar);
                 ui_manager_draw_all();
                 gf3d_vgraphics_render_end();
                 if (gfc_input_command_pressed("cancel"))
                 {
+                    Mix_PauseMusic();
                     menu_set_game_state(GS_Pause);
                     menu_open(pauseMenu);
                 }

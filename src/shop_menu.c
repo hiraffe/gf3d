@@ -21,6 +21,7 @@ void shop_menu_open(UI* ui)
 	ui->visible = 1;
 	data->state = SS_Buy;
 
+	Mix_PauseMusic();
 	menu_set_game_state(GS_Pause);
 }
 

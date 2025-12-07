@@ -15,6 +15,7 @@ typedef struct
 	GFC_TextLine			dialogue2;
 	UI*						dialogue_box;
 	CharacterAppearance*	appearance;
+	Uint8					spokenTo;
 }NPCEntityData;
 
 void npc_init(const char* filename);

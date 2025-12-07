@@ -4,7 +4,7 @@
 		{
 			"name": "npc1",
 			"displayName": "Larissa",
-			"position": [0,10,0],
+			"position": [10,10,0],
 			"skin":1,
 			"clothing":[0,0,0,0],
 			"colors":[0,0,0,0],
@@ -14,7 +14,7 @@
 		{
 			"name": "npc2",
 			"displayName": "DJ Kehoe",
-			"position": [ 0, 0, 0 ],
+			"position": [ -10, 20, 0 ],
 			"clothing": [ 0, 0, 0, 0 ],
 			"colors": [ 0, 0, 0, 0 ],
 			"dialogue1": "Are you working on your deliverables?",
@@ -23,7 +23,7 @@
 		{
 			"name": "npc3",
 			"displayName": "Freddy",
-			"position": [ 0, 0, 0 ],
+			"position": [ 0, 50, 0 ],
 			"clothing": [ 0, 0, 0, 0 ],
 			"colors": [ 0, 0, 0, 0 ],
 			"dialogue1": "You look like you've seen a ghost!",
@@ -32,16 +32,16 @@
 		{
 			"name": "npc4",
 			"displayName": "Godot",
-			"position": [ 0, 0, 0 ],
+			"position": [ 10, 80, 0 ],
 			"clothing": [ 0, 0, 0, 0 ],
 			"colors": [ 0, 0, 0, 0 ],
-			"dialogue1": "Have you seen my associates? I think I've given them the wrong directions.",
-			"dialogue2": "Ah well, nothing to be done..."
+			"dialogue1": "Have you seen my associates?",
+			"dialogue2": "I think I've given them the wrong directions..."
 		},
 		{
 			"name": "npc5",
 			"displayName": "Hira",
-			"position": [ 0, 0, 0 ],
+			"position": [ -10, 90, 0 ],
 			"clothing": [ 0, 0, 0, 0 ],
 			"colors": [ 0, 0, 0, 0 ],
 			"dialogue1": "Hey! I'm Hira, I made this game.",

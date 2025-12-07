@@ -13,6 +13,7 @@ typedef struct UI_S
 {
 	Uint8				_inuse;
 	GFC_TextLine		name;
+	GFC_TextLine		text;
 	GFC_TextLine		title;
 	GFC_Vector2D		title_position;
 	GFC_TextLine		type;

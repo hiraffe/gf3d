@@ -17,21 +17,7 @@ void hotbar_close(UI* ui)
 
 void hotbar_think(UI* ui)
 {
-	// disappear when another menu is open
-
-	/*
-	int i;
-	UI_Manager ui_manager;
-
-	ui_manager = ui_get_manager();
-	for (i = 0; i < ui_manager.ui_max; i++)
-	{
-		if (ui_manager.ui_list[i].visible)
-		{
-			ui_draw(&ui_manager.ui_list[i]);
-		}
-	}
-	*/
+	//
 }
 
 void hotbar_draw(UI* ui)
