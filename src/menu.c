@@ -70,7 +70,7 @@ GameState menu_execute_command(UI* self)
 	strcpy(cmd, btn->command);
 	cmd = strtok(cmd, "-");
 	cmd2 = strtok(NULL, "");
-	slog("%s, %s, %s", btn->command, cmd, cmd2);
+	//slog("%s, %s, %s", btn->command, cmd, cmd2);
 	
 	if (strcmp(cmd, "start") == 0)
 	{

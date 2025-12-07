@@ -208,6 +208,7 @@ void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
 	gf3d_mesh_draw(closet->body, modelMat, GFC_COLOR_WHITE, closet->skincolors[a->currentSkincolor], lightPos, lightColor);
 	gf3d_mesh_draw(closet->hair[a->currentHair], modelMat, GFC_COLOR_WHITE, closet->haircolors[a->currentHaircolor], lightPos, lightColor);
 	gf3d_mesh_draw(closet->tops[a->currentTop], modelMat, GFC_COLOR_WHITE, closet->topcolors[a->currentTopcolor], lightPos, lightColor);
+	gf3d_mesh_draw(closet->bottoms[a->currentBottom], modelMat, GFC_COLOR_WHITE, closet->bottomcolors[a->currentBottomcolor], lightPos, lightColor);
 	gf3d_mesh_draw(closet->shoes[a->currentShoes], modelMat, GFC_COLOR_WHITE, closet->shoecolors[a->currentShoecolor], lightPos, lightColor);
 }
 

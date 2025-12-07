@@ -6,8 +6,8 @@
 			"displayName": "Larissa",
 			"position": [10,10,0],
 			"skin":1,
-			"clothing":[0,0,0,0],
-			"colors":[0,0,0,0],
+			"clothing":[4,1,5,0],
+			"colors":[4,1,0,0],
 			"dialogue1":"Hello! I am Larissa!",
 			"dialogue2":"Wonderful day we're having!"
 		},
@@ -15,26 +15,28 @@
 			"name": "npc2",
 			"displayName": "DJ Kehoe",
 			"position": [ -10, 20, 0 ],
-			"clothing": [ 0, 0, 0, 0 ],
-			"colors": [ 0, 0, 0, 0 ],
-			"dialogue1": "Are you working on your deliverables?",
-			"dialogue2": "Imagine taking multiple of my classes..."
+			"clothing": [ 2, 3, 0, 1 ],
+			"colors": [ 1, 6, 0, 0 ],
+			"dialogue1": "Imagine taking multiple of my classes...",
+			"dialogue2": "Have you updated your scrum journal?"
 		},
 		{
 			"name": "npc3",
-			"displayName": "Freddy",
+			"displayName": "Freddy Fazbear",
 			"position": [ 0, 50, 0 ],
-			"clothing": [ 0, 0, 0, 0 ],
-			"colors": [ 0, 0, 0, 0 ],
-			"dialogue1": "You look like you've seen a ghost!",
-			"dialogue2": "Come to my pizzeria."
+			"skin":  5,
+			"clothing": [ 3, 0, 3, 0 ],
+			"colors": [ 0, 5, 5, 1 ],
+			"dialogue1": "Come to my pizzeria.",
+			"dialogue2": "Har har har har har..."
 		},
 		{
 			"name": "npc4",
 			"displayName": "Godot",
 			"position": [ 10, 80, 0 ],
-			"clothing": [ 0, 0, 0, 0 ],
-			"colors": [ 0, 0, 0, 0 ],
+			"skin": 4,
+			"clothing": [ 1, 3, 1, 1 ],
+			"colors": [ 6, 3, 0, 0 ],
 			"dialogue1": "Have you seen my associates?",
 			"dialogue2": "I think I've given them the wrong directions..."
 		},
@@ -42,9 +44,10 @@
 			"name": "npc5",
 			"displayName": "Hira",
 			"position": [ -10, 90, 0 ],
-			"clothing": [ 0, 0, 0, 0 ],
-			"colors": [ 0, 0, 0, 0 ],
-			"dialogue1": "Hey! I'm Hira, I made this game.",
+			"skin":3,
+			"clothing": [ 0, 2, 2, 0 ],
+			"colors": [ 0, 4, 5, 2 ],
+			"dialogue1": "Haii! I'm Hira, I made this game.",
 			"dialogue2": "Who are you!?"
 		}
 	]

@@ -6,14 +6,15 @@
 typedef struct
 {
 	Mesh* body;
-	Texture* skincolors[1];
-	Mesh* hair[2];
-	Texture* haircolors[1];
-	Mesh* tops[2];
-	Texture* topcolors[1];
-	Texture* bottomcolors[8];
-	Mesh* shoes[1];
-	Texture* shoecolors[1];
+	Texture* skincolors[6];
+	Mesh* hair[5];
+	Texture* haircolors[7];
+	Mesh* tops[4];
+	Texture* topcolors[7];
+	Mesh* bottoms[6];
+	Texture* bottomcolors[6];
+	Mesh* shoes[2];
+	Texture* shoecolors[4];
 }CharacterCloset;
 
 typedef struct {
