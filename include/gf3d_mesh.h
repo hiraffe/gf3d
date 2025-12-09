@@ -85,11 +85,6 @@ typedef struct
     GFC_Vector3D    vertex;
     GFC_Vector3D    normal;
     GFC_Vector2D    texel;
-
-    // skinning fields
-    uint32_t    bone[MAX_INFLUENCES]; // 4 x uint
-    float       weight[MAX_INFLUENCES]; // 4 x float
-
 }Vertex;
 
 typedef struct
@@ -200,5 +195,7 @@ Pipeline* gf3d_mesh_get_pipeline();
  * @param colorMod the color for the UBO
  */
 MeshUBO gf3d_mesh_get_ubo(GFC_Matrix4 modelMat,GFC_Color colorMod);
+
+void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
 
 #endif

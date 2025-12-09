@@ -57,7 +57,10 @@ void exitGame()
 int main(int argc, char* argv[])
 {
     //local variables
-    GameState game_state;
+    GameState game_state; 
+    GFC_Matrix4 id;
+    Mesh* skybox;
+    Texture* sky;
     World* world;
     Entity* monster;
     Entity *shop, *shop2;
@@ -94,6 +97,9 @@ int main(int argc, char* argv[])
     srand(SDL_GetTicks());
     slog_sync();
     gf2d_mouse_load("actors/mouse.actor");
+
+    skybox = gf3d_mesh_load("models/sky/sky.obj");
+    sky = gf3d_texture_load("models/sky/sky.png");
 
     monster = monster_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_ORANGE);
     camEnt = camera_entity_spawn(gfc_vector3d(0, 50, -5), monster);
@@ -132,7 +138,8 @@ int main(int argc, char* argv[])
     character_creator_closet_load();
     hotbar = hotbar_new();
     
-    //gfc_matrix4_identity(id);
+    gfc_matrix4_identity(id); 
+    gfc_matrix4_scale(id, id, gfc_vector3d(500, 500, 500)); // or 100, or 500
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     
     // main game loop 
@@ -182,6 +189,7 @@ int main(int argc, char* argv[])
                 gf3d_camera_update_view();
                 gf3d_vgraphics_render_start();
                 //3D draws
+                gf3d_mesh_sky_draw(skybox, id, GFC_COLOR_WHITE, sky);
                 entity_system_draw_all(lightPos, GFC_COLOR_WHITE);
                 world_draw(world);
                 //2D draws

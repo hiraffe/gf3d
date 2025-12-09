@@ -261,6 +261,8 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	data->gold = 100;
 	inventory = inventory_new();
 	inventory_add_item(inventory, "hoe");
+	inventory_add_item(inventory, "pumpkin-seeds");
+	inventory_add_item(inventory, "pumpkin-seeds");
 	data->inventory = inventory;
 	data->item_held = inventory_get_item_by_name(inventory, "hoe");
 	data->item_index = 0;
