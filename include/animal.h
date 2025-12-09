@@ -5,14 +5,23 @@
 
 #include "entity.h"
 
+typedef enum
+{
+	AES_Roaming,
+	AES_Grazing,
+	AES_Following,
+	AES_Captive
+}AnimalEntityState;
+
 typedef struct
 {
-	int				species;			/**< which animal it is */
-	GFC_Vector3D	home;				/**< central starting position */
-	GFC_Vector3D	target;				/**< where animal is moving towards */
-	float			roamingRadius;		/**< how far the animal can go */
-	float			speed;				/**< movement speed */
-	float			idleTime;			/**< time to wait before next move */
+	int					species;			/**< which animal it is */
+	GFC_Vector3D		home;				/**< central starting position */
+	GFC_Vector3D		target;				/**< where animal is moving towards */
+	float				roamingRadius;		/**< how far the animal can go */
+	float				speed;				/**< movement speed */
+	float				idleTime;			/**< time to wait before next move */
+	AnimalEntityState	state;
 }AnimalEntityData;
 
 /**

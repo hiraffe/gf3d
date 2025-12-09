@@ -86,6 +86,7 @@ void gf3d_mesh_init(Uint32 mesh_max)
     );
     */
     
+    /*
     slog("PIPE: %p", mesh_manager.pipe);
     slog("SKY PIPE: %p", mesh_manager.sky_pipe);
     slog("sizeof(MeshUBO) = %zu", sizeof(MeshUBO));
@@ -96,6 +97,7 @@ void gf3d_mesh_init(Uint32 mesh_max)
     slog("offsetof(Vertex, vertex) = %zu", offsetof(Vertex, vertex));
     slog("offsetof(Vertex, normal) = %zu", offsetof(Vertex, normal));
     slog("offsetof(Vertex, texel) = %zu", offsetof(Vertex, texel));
+    */
 
     mesh_manager.defaultTexture = gf3d_texture_load("images/default.png");
     slog("mesh manager initiliazed");
@@ -367,7 +369,7 @@ void gf3d_mesh_primitive_queue_render(MeshPrimitive* prim, Pipeline* pipe, void*
 void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
     MeshUBO ubo = { 0 };
-    slog("Drawing mesh with pipeline: %p", mesh_manager.pipe);
+    //slog("Drawing mesh with pipeline: %p", mesh_manager.pipe);
     if (!mesh) return;
     gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);
@@ -384,7 +386,7 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
 void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)
 {
     SkyUBO ubo = { 0 };
-    slog("Drawing SKYBOX with pipeline: %p", mesh_manager.sky_pipe);
+    //slog("Drawing SKYBOX with pipeline: %p", mesh_manager.sky_pipe);
     if (!mesh) return;
     gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);

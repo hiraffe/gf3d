@@ -9,6 +9,7 @@
 #include "shop_menu.h"
 #include "ui.h"
 #include "npc.h"
+#include "door.h"
 
 #include "world.h"
 
@@ -50,6 +51,7 @@ World* world_new()
 	//spawn_animals();
 	//spawn_shops(); //shop menus dont work for some reason (issue is in ui_new ?
 	spawn_npcs();
+	Entity* plot = plot_spawn(gfc_vector3d(-100, 100, 0), GFC_COLOR_WHITE);
 
 	return world;
 }

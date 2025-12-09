@@ -93,11 +93,17 @@
 			"type":"tool"
 		},
 		{
-			"name":"hoe",
-			"displayName":"Hoe",
-			"price":1,
-			"type":"tool",
-			"strength":50
+			"name": "hoe",
+			"displayName": "Hoe",
+			"price": 1,
+			"type": "tool",
+			"strength": 50
+		},
+		{
+			"name": "lead",
+			"displayName": "Lead",
+			"price": 5,
+			"type": "tool"
 		}
 	]
 }
