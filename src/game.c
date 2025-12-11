@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     hotbar = hotbar_new();
     
     gfc_matrix4_identity(id); 
-    gfc_matrix4_scale(id, id, gfc_vector3d(500, 500, 500)); // or 100, or 500
+    //gfc_matrix4_scale(id, id, gfc_vector3d(100, 100, 100)); // or 100, or 500
     //gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     
     // main game loop 

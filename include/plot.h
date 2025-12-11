@@ -5,6 +5,7 @@
 
 typedef struct
 {
+	const char* size;
 	Mesh* long_fence;
 	Mesh* short_fence;
 	Mesh* sideways_fence;
@@ -16,6 +17,6 @@ typedef struct
 	Entity* door;
 }PlotEntityData;
 
-Entity* plot_spawn(GFC_Vector3D position, GFC_Color color);
+Entity* plot_spawn(GFC_Vector3D position, const char* size);
 
 #endif

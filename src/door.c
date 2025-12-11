@@ -19,6 +19,7 @@ void door_open(Entity* self)
 
 	self->mesh = data->openMesh;
 	data->isOpen = 1;
+	self->collisionRadius = 0;
 }
 
 void door_close(Entity* self)
@@ -29,6 +30,7 @@ void door_close(Entity* self)
 
 	self->mesh = data->closedMesh;
 	data->isOpen = 0;
+	self->collisionRadius = 2;
 }
 
 void door_think(Entity* self)
@@ -71,11 +73,11 @@ Entity* door_spawn(GFC_Vector3D position, GFC_Color color)
 	gfc_line_cpy(self->name, "door");
 	self->entityType = "door";
 	self->mesh = gf3d_mesh_load("models/fence/closed-door.obj");
-	self->texture = gf3d_texture_load("models/dino/dino.png");
+	self->texture = gf3d_texture_load("models/fence/wood-texture.png");
 	self->position = position;
 	self->color = color;
 	self->rotation = gfc_vector3d(0, 0, 0);
-	self->collisionRadius = 4;
+	self->collisionRadius = 2;
 
 	data->openMesh = gf3d_mesh_load("models/fence/open-door.obj");
 	data->closedMesh = gf3d_mesh_load("models/fence/closed-door.obj");
