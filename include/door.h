@@ -12,4 +12,6 @@ typedef struct
 
 Entity* door_spawn(GFC_Vector3D position, GFC_Color color);
 
+Uint8 door_is_open(Entity* self);
+
 #endif

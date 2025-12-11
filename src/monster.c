@@ -104,14 +104,15 @@ void select_nearest_crop(Entity* self)
 
 void monster_think(Entity* self)
 {
-	const Uint8* keystate = SDL_GetKeyboardState(NULL);
 	GFC_Vector3D dir, cameraDir;
 	float move = 0, moveSide = 0;
 	float moveStep = 0.5;
 	GFC_Vector3D stepPosition;
+
 	MonsterEntityData* data;
 	if ((!self) || !(self->data)) return;
 	data = self->data;
+
 	if (!data->cam)return;
 	CameraEntityData* camData;
 	camData = data->cam->data;
@@ -178,6 +179,13 @@ void monster_think(Entity* self)
 	{
 		select_nearest_crop(self);
 	}
+}
+
+monster_update(Entity* self)
+{
+	MonsterEntityData* data;
+	if ((!self) || !(self->data)) return;
+	data = self->data;
 
 	// --- print inventory ---
 	inventory_update(data->inventory);
@@ -261,8 +269,8 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	data->gold = 100;
 	inventory = inventory_new();
 	inventory_add_item(inventory, "hoe");
-	inventory_add_item(inventory, "pumpkin-seeds");
-	inventory_add_item(inventory, "pumpkin-seeds");
+	inventory_add_item(inventory, "pumpkin_seeds");
+	inventory_add_item(inventory, "pumpkin_seeds");
 	data->inventory = inventory;
 	data->item_held = inventory_get_item_by_name(inventory, "hoe");
 	data->item_index = 0;
@@ -271,7 +279,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	data->plant_sound = Mix_LoadWAV("audio/effects/plant.wav");
 
 	self->think = monster_think;
-	//self->update = monster_update;
+	self->update = monster_update;
 	self->draw = monster_draw;
 	self->free = monster_free;
 

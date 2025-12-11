@@ -1,7 +1,48 @@
 #include "simple_logger.h"
 
+#include "monster.h"
+#include "door.h"
+
 #include "plot.h"
 
+Uint8 plot_inside(Entity* plot, GFC_Vector3D pos)
+{
+	PlotEntityData* data;
+	if ((!plot)||(!plot->data)) return 0;
+	data = plot->data;
+
+	if (pos.x >= data->aabb_min.x && pos.x <= data->aabb_max.x && pos.y >= data->aabb_min.y && pos.y <= data->aabb_max.y)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+Uint8 plot_inside_doorway(Entity* plot, GFC_Vector3D pos)
+{
+	PlotEntityData* data;
+	if ((!plot) || (!plot->data)) return 0;
+	data = plot->data;
+
+	if (pos.x >= data->door_min.x && pos.x <= data->door_max.x && pos.y >= data->door_min.y && pos.y <= data->door_max.y)	
+	{
+		return 1;
+	}
+	return 0;
+}
+
+void plot_think(Entity* self)
+{
+	PlotEntityData* data;
+	if ((!self) || (!self ->data)) return 0;
+	data = self->data;
+
+	Entity* monster = monster_get_the();
+	if (plot_inside(self, monster->position))
+	{
+		slog("monster inside");
+	}
+}
 
 void plot_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
 {
@@ -65,6 +106,44 @@ void plot_set_size(Entity* self)
 		gfc_vector3d_add(data->sideL_pos, self->position, gfc_vector3d(-55, 0, 0));
 		gfc_vector3d_add(data->back_pos, self->position, gfc_vector3d(-55, 50, 0));
 	}
+
+	// AABB calculation
+	float halfW = (strcmp(data->size, "small") == 0) ? 25 : 55;
+	float frontOffset = 5;        // your frontR offset
+	float backOffset = 50;       // your back_pos offset
+
+	// Convert to world coordinates
+	data->aabb_min = gfc_vector3d(
+		self->position.x - halfW,
+		self->position.y,
+		-9999  // Z not relevant for top-down
+	);
+
+	data->aabb_max = gfc_vector3d(
+		self->position.x + halfW,
+		self->position.y + backOffset,
+		9999
+	);
+
+	// Door opening width
+	float doorWidth = 10;
+	float halfDoor = doorWidth * 0.5f;
+
+	// Y position of the front fence
+	float frontY = self->position.y;
+
+	// Doorway AABB
+	data->door_min = gfc_vector3d(
+		self->position.x - halfDoor,
+		frontY - 5,   // let them enter slightly before touching fence
+		-9999
+	);
+
+	data->door_max = gfc_vector3d(
+		self->position.x + halfDoor,
+		frontY + 5,
+		9999
+	);
 }
 
 Entity* plot_spawn(GFC_Vector3D position, const char* size)
@@ -88,6 +167,7 @@ Entity* plot_spawn(GFC_Vector3D position, const char* size)
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
 	self->rotation = gfc_vector3d(0, 0, 0);
+	self->collisionRadius = 0;
 
 	data->size = size;
 	data->long_fence = gf3d_mesh_load("models/fence/long-fence.obj");
@@ -97,6 +177,7 @@ Entity* plot_spawn(GFC_Vector3D position, const char* size)
 
 	plot_set_size(self);
 
+	self->think = plot_think;
 	self->draw = plot_draw;
 
 	slog("Plot spawned: %s", self->name);

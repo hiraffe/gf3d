@@ -11,6 +11,15 @@ void door_free(Entity* self)
 	data = self->data;
 }
 
+Uint8 door_is_open(Entity* self)
+{
+	DoorEntityData* data;
+	if ((!self) || (!self->data)) return;
+	data = self->data;
+
+	return data->isOpen;
+}
+
 void door_open(Entity* self)
 {
 	DoorEntityData* data;

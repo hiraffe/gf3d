@@ -1,4 +1,7 @@
-#include "simple_logger.h"
+﻿#include "simple_logger.h"
+
+#include "plot.h"
+#include "door.h"
 
 #include "entity.h"
 
@@ -170,6 +173,35 @@ int entity_check_collision(Entity* self, GFC_Vector3D newPos, float radius)
 		Entity* other = &entity_system.entity_list[i];
 		if (!other->_inuse) continue;
 		if (other == self) continue;
+
+		// plots collision
+		if (strcmp(other->entityType, "plot") == 0)
+		{
+			if ((!other) || (!other->data)) return 0;
+			PlotEntityData* data = other->data;
+
+			Uint8 wasInside = plot_inside(other, self->position);
+			Uint8 willBeInside = plot_inside(other, newPos);
+
+			if (wasInside && !willBeInside)
+			{
+				if (door_is_open(data->door) && plot_inside_doorway(other, newPos))
+				{
+					return 0;
+				}
+				return 1;
+			}
+			if (!wasInside && willBeInside)
+			{
+				if (door_is_open(data->door) && plot_inside_doorway(other, newPos))
+				{
+					return 0;
+				}
+				return 1;
+			}
+		}
+
+
 		if (other->collisionRadius <= 0) continue; // skip non-collidable
 
 		float combinedRadius = radius + other->collisionRadius;

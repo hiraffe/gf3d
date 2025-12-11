@@ -379,7 +379,7 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
 void gf3d_mesh_sky_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture)
 {
     SkyUBO ubo = { 0 };
-    slog("Drawing SKYBOX with pipeline: %p", mesh_manager.sky_pipe);
+    //slog("Drawing SKYBOX with pipeline: %p", mesh_manager.sky_pipe);
     if (!mesh) return;
     gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);
