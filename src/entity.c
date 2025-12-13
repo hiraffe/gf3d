@@ -199,6 +199,14 @@ int entity_check_collision(Entity* self, GFC_Vector3D newPos, float radius)
 				}
 				return 1;
 			}
+			if (wasInside && willBeInside)
+			{
+				self->inPlot = 1;
+			}
+			else
+			{
+				self->inPlot = 0;
+			}
 		}
 
 

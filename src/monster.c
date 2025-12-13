@@ -157,27 +157,30 @@ void monster_think(Entity* self)
 	// get current item held
 	set_item_held(self);
 
-	// --- plant crops ---
-	if (gfc_input_command_pressed("use"))
+	if (self->inPlot)
 	{
-		if (data->item_held && data->item_held->type && strcmp(data->item_held->type, "seed") == 0)
+		// --- plant crops ---
+		if (gfc_input_command_pressed("use"))
 		{
-			slog("item: %s, type: %s", data->item_held->name, data->item_held->type);
-			if (data->item_held->count > 0)
+			if (data->item_held && data->item_held->type && strcmp(data->item_held->type, "seed") == 0)
 			{
-				GFC_Vector3D cropLocation = self->position;
-				gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 10, 0));
-				crop_spawn(cropLocation, data->item_held->crop);
-				Mix_PlayChannel(0, data->plant_sound, 0);
-				data->item_held->count--;
+				slog("item: %s, type: %s", data->item_held->name, data->item_held->type);
+				if (data->item_held->count > 0)
+				{
+					GFC_Vector3D cropLocation = self->position;
+					gfc_vector3d_add(cropLocation, cropLocation, gfc_vector3d(0, 2, 0));
+					crop_spawn(cropLocation, data->item_held->crop);
+					Mix_PlayChannel(0, data->plant_sound, 0);
+					data->item_held->count--;
+				}
 			}
 		}
-	}
 
-	// --- harvest crops ---
-	if (gfc_input_command_pressed("select"))
-	{
-		select_nearest_crop(self);
+		// --- harvest crops ---
+		if (gfc_input_command_pressed("select"))
+		{
+			select_nearest_crop(self);
+		}
 	}
 }
 
@@ -193,6 +196,7 @@ monster_update(Entity* self)
 	{
 		inventory_print(data->inventory);
 	}
+
 }
 
 void monster_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color lightColor)
@@ -265,6 +269,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	self->rotation = gfc_vector3d(0, 0, 0);
 	self->velocity = gfc_vector3d(0, 0, 0);
 	self->collisionRadius = 4;
+	self->inPlot = 0;
 
 	data->gold = 100;
 	inventory = inventory_new();

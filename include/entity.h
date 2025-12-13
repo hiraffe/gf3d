@@ -22,6 +22,7 @@ typedef struct Entity_S
 	GFC_Vector3D	rotation;
 	GFC_Vector3D	scale;
 	GFC_Vector3D	velocity;
+	Uint8			inPlot;
 
 	GFC_Box			bounds;
 	float			collisionRadius;
