@@ -163,6 +163,7 @@ Entity* shop_spawn(GFC_Vector3D position, const char* name)
 	self->mesh = gf3d_mesh_load("models/dino/dino.obj");
 	self->texture = gf3d_texture_load("models/dino/dino.png");
 	self->position = position;
+	self->rotation = gfc_vector3d(0, 0, 30);
 	self->color = GFC_COLOR_WHITE;
 	self->collisionRadius = 4;
 

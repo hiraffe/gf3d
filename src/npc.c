@@ -158,7 +158,7 @@ Entity* npc_spawn(const char* name)
 	self->entityType = "npc";
 	sj_object_get_vector3d(def, "position", &self->position);
 	self->color = GFC_COLOR_WHITE;
-	self->rotation = gfc_vector3d(0, 0, 0);
+	self->rotation = gfc_vector3d(0, 0, 30);
 	self->velocity = gfc_vector3d(0, 0, 0);
 	self->collisionRadius = 2;
 	sj_object_get_value_as_int(def, "skin", &data->skin);

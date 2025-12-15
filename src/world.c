@@ -10,24 +10,42 @@
 #include "ui.h"
 #include "npc.h"
 #include "door.h"
+#include "plot.h"
 
 #include "world.h"
 
 //static World* theWorld; //do that thing yeah
 
+void spawn_plots()
+{
+	Entity* plot = plot_spawn(gfc_vector3d(-100, 10, 0), "small");
+	Entity* plot2 = plot_spawn(gfc_vector3d(50, 10, 0), "small");
+	Entity* plot3 = plot_spawn(gfc_vector3d(-35, 10, 0), "small");
+}
+
 void spawn_animals()
 {
-	Entity* a1 = animal_spawn(gfc_vector3d(0,-100,0), "deer");
-	Entity* a2 = animal_spawn(gfc_vector3d(10, -100, 0), "cow");
-	Entity* a3 = animal_spawn(gfc_vector3d(20, -100, 0), "chicken");
-	Entity* a4 = animal_spawn(gfc_vector3d(30, -100, 0), "lamb");
-	Entity* a5 = animal_spawn(gfc_vector3d(40, -100, 0), "cat");
+	Entity* a1 = animal_spawn(gfc_vector3d(-110,250,0), "deer");
+	Entity* b1 = animal_spawn(gfc_vector3d(-115,240,0), "deer");
+	Entity* c1 = animal_spawn(gfc_vector3d(-110,250,0), "deer");
+	Entity* a2 = animal_spawn(gfc_vector3d(-190, 200, 0), "cow");
+	Entity* b2 = animal_spawn(gfc_vector3d(-200, 210, 0), "cow");
+	Entity* c2 = animal_spawn(gfc_vector3d(-195, 200, 0), "cow");
+	Entity* a3 = animal_spawn(gfc_vector3d(-130, 230, 0), "chicken");
+	Entity* b3 = animal_spawn(gfc_vector3d(-130, 230, 0), "chicken");
+	Entity* c3 = animal_spawn(gfc_vector3d(-130, 230, 0), "chicken");
+	Entity* a4 = animal_spawn(gfc_vector3d(-100, -120, 0), "lamb");
+	Entity* b4 = animal_spawn(gfc_vector3d(-100, -120, 0), "lamb");
+	Entity* c4 = animal_spawn(gfc_vector3d(-100, -120, 0), "lamb");
+	Entity* a5 = animal_spawn(gfc_vector3d(-100, -110, 0), "cat");
+	Entity* b5 = animal_spawn(gfc_vector3d(-100, -110, 0), "cat");
+	Entity* c5 = animal_spawn(gfc_vector3d(-100, -110, 0), "cat");
 }
 
 void spawn_shops()
 {
-	Entity* shop = shop_spawn(gfc_vector3d(-50, -50, 6), "Scary Seeds");
-	Entity* shop2 = shop_spawn(gfc_vector3d(-70, -50, 6), "Terrifying Tools");
+	Entity* shop = shop_spawn(gfc_vector3d(160, -100, 6), "Scary Seeds");
+	Entity* shop2 = shop_spawn(gfc_vector3d(160, -120, 6), "Terrifying Tools");
 }
 
 void spawn_npcs()
@@ -50,7 +68,7 @@ World* world_new()
 	spawn_animals();
 	//spawn_shops(); //shop menus dont work for some reason (issue is in ui_new ?
 	spawn_npcs();
-	Entity* plot = plot_spawn(gfc_vector3d(-100, 0, 0), "small");
+	spawn_plots();
 
 	return world;
 }
@@ -84,6 +102,10 @@ World* world_load(const char* filename)
 	str = sj_object_get_string(config, "terrainMesh");
 	world->terrain = gf3d_mesh_load(str);
 	world->texture = gf3d_texture_load(sj_object_get_string(config, "terrainTexture"));
+	world->town = gf3d_mesh_load(sj_object_get_string(config, "townMesh")); //thank you gerhald3d on free3d.com
+	world->townTexture = gf3d_texture_load(sj_object_get_string(config, "townTexture"));
+	world->sign = gf3d_mesh_load("models/fence/sign.obj");
+	world->signTexture = gf3d_texture_load("models/fence/fence-texture.png");
 	world->lightColor = GFC_COLOR_WHITE;
 	sj_object_get_color_value(config, "lightColor", &world->lightColor);
 	sj_object_get_vector3d(config, "lightPos", &world->lightPos);
@@ -106,6 +128,10 @@ World* world_draw(World* world)
 	if (!world)return;
 	gfc_matrix4_identity(modelMat);
 	gf3d_mesh_draw(world->terrain, modelMat, GFC_COLOR_WHITE, world->texture, world->lightPos, world->lightColor);
+
+	gf3d_mesh_draw(world->sign, modelMat, GFC_COLOR_WHITE, world->signTexture, world->lightPos, world->lightColor);
+
+	gf3d_mesh_draw(world->town, modelMat, GFC_COLOR_WHITE, world->townTexture, world->lightPos, world->lightColor);
 
 	//entity system draw all entites in the world entity list
 }

@@ -136,8 +136,8 @@ int main(int argc, char* argv[])
     */
 
     world = world_load("defs/terrain.def");
-    //shop = shop_spawn(gfc_vector3d(-50,-50,6), "Scary Seeds");
-    //shop2 = shop_spawn(gfc_vector3d(-70,-50,6), "Terrrifying Tools");
+    shop = shop_spawn(gfc_vector3d(120,-100,6), "Scary Seeds");
+    shop2 = shop_spawn(gfc_vector3d(120,-230,6), "Terrrifying Tools");
     character_creator_closet_load();
     hotbar = hotbar_new();
     

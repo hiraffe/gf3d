@@ -7,6 +7,10 @@ typedef struct
 {
 	Mesh*			terrain;
 	Texture*		texture;
+	Mesh*			town;
+	Texture*		townTexture;
+	Mesh*			sign;
+	Texture*		signTexture;
 	GFC_Color		lightColor;
 	GFC_Vector3D	lightPos;
 	GFC_List*		entities; //just the ones in the world	

@@ -201,7 +201,7 @@ Entity* animal_spawn(GFC_Vector3D position, const char* name)
 
 	data->home = position;
 	data->target = position;
-	data->roamingRadius = 50;
+	data->roamingRadius = 100;
 	data->speed = 0.2f;
 	data->idleTime = 0;
 

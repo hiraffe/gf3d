@@ -1,8 +1,8 @@
 # Blender 5.0.0 MTL File: 'terrain.blend'
 # www.blender.org
 
-newmtl Material
-Ns 360.000000
+newmtl Cottage_FREE
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
