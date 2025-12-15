@@ -11,7 +11,7 @@
 		{
 			"name":"cow",
 			"displayName":"Cow",
-			"mesh":"models/animals/cow.obj",
+			"mesh":"models/animals/deer2.obj",
 			"texture":"models/crops/chocolate.png",
 			"color":[255,200,10,255]
 		},

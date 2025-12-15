@@ -17,12 +17,11 @@
 
 void spawn_animals()
 {
-	GFC_Vector3D pos = gfc_vector3d(0,-100,0);
-	Entity* a1 = animal_spawn(pos, "deer");
-	Entity* a2 = animal_spawn(pos, "cow");
-	Entity* a3 = animal_spawn(pos, "chicken");
-	Entity* a4 = animal_spawn(pos, "lamb");
-	Entity* a5 = animal_spawn(pos, "cat");
+	Entity* a1 = animal_spawn(gfc_vector3d(0,-100,0), "deer");
+	Entity* a2 = animal_spawn(gfc_vector3d(10, -100, 0), "cow");
+	Entity* a3 = animal_spawn(gfc_vector3d(20, -100, 0), "chicken");
+	Entity* a4 = animal_spawn(gfc_vector3d(30, -100, 0), "lamb");
+	Entity* a5 = animal_spawn(gfc_vector3d(40, -100, 0), "cat");
 }
 
 void spawn_shops()
@@ -48,10 +47,10 @@ World* world_new()
 
 	// load all the crop defs
 
-	//spawn_animals();
+	spawn_animals();
 	//spawn_shops(); //shop menus dont work for some reason (issue is in ui_new ?
 	spawn_npcs();
-	Entity* plot = plot_spawn(gfc_vector3d(-100, 100, 0), "small");
+	Entity* plot = plot_spawn(gfc_vector3d(-100, 0, 0), "small");
 
 	return world;
 }

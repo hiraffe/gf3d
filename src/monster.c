@@ -5,6 +5,7 @@
 #include "gf2d_font.h"
 
 #include "crop.h"
+#include "animal.h"
 #include "camera_entity.h"
 
 #include "monster.h"
@@ -102,6 +103,43 @@ void select_nearest_crop(Entity* self)
 	}
 }
 
+void select_nearest_animal(Entity* self)
+{
+	int i;
+	Entity* nearest = NULL;
+	float nearestDist = 10;
+	EntitySystem entity_system = entity_get_system();
+	MonsterEntityData* data = self->data;
+	AnimalEntityData* animalData = NULL;
+
+	for (i = 0; i < entity_system.entity_max; i++)
+	{
+		Entity* ent = &entity_system.entity_list[i];
+		if (!ent->_inuse) continue;
+		if (!ent->data) continue;
+		if (ent->entityType != "animal") continue;
+
+		// find the nearest animal
+		if (gfc_vector3d_distance_between_less_than(self->position, ent->position, nearestDist))
+		{
+			animalData = ent->data;
+			nearest = ent;
+			nearestDist = gfc_vector3d_magnitude_between(self->position, ent->position);
+		}
+	}
+
+	if ((!nearest)) return; // no animals nearby
+
+	// lead animal
+	nearest->inPlot = self->inPlot;
+	if (animalData->state == AES_Following)
+	{
+		animalData->state = AES_Grazing;
+		return;
+	}
+	animalData->state = AES_Following;
+}
+
 void monster_think(Entity* self)
 {
 	GFC_Vector3D dir, cameraDir;
@@ -156,6 +194,15 @@ void monster_think(Entity* self)
 
 	// get current item held
 	set_item_held(self);
+
+	// grab animal
+	if (data->item_held && strcmp(data->item_held->name, "lead") == 0)
+	{
+		if (gfc_input_command_pressed("use"))
+		{
+			select_nearest_animal(self);
+		}
+	}
 
 	if (self->inPlot)
 	{
@@ -274,7 +321,7 @@ Entity *monster_spawn(GFC_Vector3D position, GFC_Color color)
 	data->gold = 100;
 	inventory = inventory_new();
 	inventory_add_item(inventory, "hoe");
-	inventory_add_item(inventory, "pumpkin_seeds");
+	inventory_add_item(inventory, "lead");
 	inventory_add_item(inventory, "pumpkin_seeds");
 	data->inventory = inventory;
 	data->item_held = inventory_get_item_by_name(inventory, "hoe");

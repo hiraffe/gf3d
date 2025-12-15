@@ -71,6 +71,7 @@ int main(int argc, char* argv[])
     GFC_Vector3D cam = { 0,50,0 };
     Entity* camEnt;
     Mix_Music* menuMusic;
+    Sprite* bg;
     //initializtion    
     parse_arguments(argc, argv);
     init_logger("gf3d.log", 0); //1 wont delete log file at end
@@ -97,6 +98,8 @@ int main(int argc, char* argv[])
     srand(SDL_GetTicks());
     slog_sync();
     gf2d_mouse_load("actors/mouse.actor");
+
+    bg = gf2d_sprite_load_image("images/bg_flat2.png");
 
     skybox = gf3d_mesh_load("models/sky/sky.obj");
     sky = gf3d_texture_load("models/sky/sky.png");
@@ -170,14 +173,13 @@ int main(int argc, char* argv[])
             case GS_CharacterCreator:
                 hotbar_close(hotbar);
                 menu_open(editorMenu);
-                // just update the preview entity
                 ui_manager_think_all();
                 gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
                 gf3d_camera_update_view();
                 gf3d_vgraphics_render_start();
-                // draw preview entity
-                character_creator_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
+                //gf2d_sprite_draw_image(bg, gfc_vector2d(0, 0));
                 ui_manager_draw_all();
+                character_creator_preview_draw(monster_get_appearance(monster), lightPos, GFC_COLOR_WHITE);
                 gf3d_vgraphics_render_end();
                 break;
             case GS_Play:

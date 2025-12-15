@@ -1,5 +1,7 @@
 #include "simple_logger.h"
 
+#include "monster.h"
+
 #include "animal.h"
 
 static SJson* animalDefs = NULL;
@@ -19,44 +21,113 @@ void animals_close()
 
 void animal_think(Entity* self)
 {
+	GFC_Vector3D dir;
 	AnimalEntityData* data;
 	if (!self || !self->data) return;
 	data = self->data;
 
-	// Countdown idle timer
-	data->idleTime -= 0.1f;
-	if (data->idleTime > 0)
+	if (data->state == AES_Grazing)
 	{
-		return; // still resting
-	}
+		// reached target - start grazing
+		data->idleTime -= 0.1f;
+		if (data->idleTime > 0)
+		{
+			data->state == AES_Grazing;
+			return; // still grazing
+		}
 
-	// Compute direction to current target
-	GFC_Vector3D dir;
-	gfc_vector3d_sub(dir, data->target, self->position);
-	float dist = gfc_vector3d_magnitude(dir);
-
-	if (dist < 2.0f ) //|| !entity_check_collision(self, data->target, self->collisionRadius))
-	{
-		// reached target — choose a new one
-		data->idleTime = (float)(rand() % 50) / 10.0f; // random idle 0–5s
+		// choose a new target
+		data->idleTime = (float)(rand() % 250) / 10.0f; // random idle 0–5s
 		float angle = ((float)rand() / RAND_MAX) * GFC_PI * 2;
 		float radius = ((float)rand() / RAND_MAX) * data->roamingRadius;
 
+		if (self->inPlot)
+		{
+			// captive
+			data->target.x = self->position.x + cosf(angle) * 50;
+			data->target.y = self->position.y + sinf(angle) * 50;
+			data->target.z = self->position.z;
+
+			data->state = AES_Roaming;
+			return; 
+		}
 		data->target.x = data->home.x + cosf(angle) * radius;
 		data->target.y = data->home.y + sinf(angle) * radius;
 		data->target.z = self->position.z;
 
-		return;
+		data->state = AES_Roaming;
 	}
 
-	// Move toward target
-	gfc_vector3d_normalize(&dir);
-	GFC_Vector3D step;
-	gfc_vector3d_scale(step, dir, data->speed);
-	gfc_vector3d_add(self->position, self->position, step);
+	if (data->state == AES_Roaming)
+	{
+		// compute direction to current target
+		gfc_vector3d_sub(dir, data->target, self->position);
+		float dist = gfc_vector3d_magnitude(dir);
 
-	// Optional: rotate to face movement direction
-	self->rotation.z = atan2f(dir.y, dir.x) * (180.0f / GFC_PI);
+		if (dist < 2.0f)
+		{
+			data->state = AES_Grazing;
+			return;
+		}
+		
+		// move toward target
+		gfc_vector3d_normalize(&dir);
+		GFC_Vector3D step;
+		gfc_vector3d_scale(step, dir, data->speed);
+
+		if (!entity_check_collision(self, step, self->collisionRadius))
+		{
+			//roation
+			if (dir.x != 0 || dir.y != 0)
+			{
+				float angle = atan2(dir.y, dir.x);
+				angle -= 30;
+				self->rotation.z = angle;
+			}
+			
+			gfc_vector3d_add(self->position, self->position, step);
+			return;
+		}
+
+		/*
+		if (self->inPlot)
+		{
+			gfc_vector3d_add(self->position, self->position, step);
+			return;
+		}
+		*/
+
+		data->state = AES_Grazing;
+	}
+
+	if (data->state == AES_Following)
+	{
+		//slog("%s following human", self->name);
+		Entity* monster = monster_get_the();
+		data->target = monster->position;
+		self->collisionRadius = 0;
+		gfc_vector3d_sub(dir, data->target, self->position);
+		float dist = gfc_vector3d_magnitude(dir);
+
+		if (dist < 9.0f)
+		{
+			return;
+		}
+
+		// move toward target
+		gfc_vector3d_normalize(&dir);
+		GFC_Vector3D step;
+		gfc_vector3d_scale(step, dir, data->speed);
+
+		if (dir.x != 0 || dir.y != 0)
+		{
+			float angle = atan2(dir.y, dir.x);
+			angle -= 30;
+			self->rotation.z = angle;
+		}
+			gfc_vector3d_add(self->position, self->position, step);
+		return;
+	}
 }
 
 void animals_init(const char* filename)
@@ -126,11 +197,11 @@ Entity* animal_spawn(GFC_Vector3D position, const char* name)
 	self->position = position;
 	self->color = GFC_COLOR_WHITE;
 	self->rotation = gfc_vector3d(0, 0, 0);
-	//self->collisionRadius = 8;
+	self->collisionRadius = 2;
 
 	data->home = position;
 	data->target = position;
-	data->roamingRadius = 300;
+	data->roamingRadius = 50;
 	data->speed = 0.2f;
 	data->idleTime = 0;
 

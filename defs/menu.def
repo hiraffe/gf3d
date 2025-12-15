@@ -6,7 +6,7 @@
 			"title":"Welcome",
 			"title_position":[560,205],
 			"background":"images/bg_flat.png",
-			"bg_position":[35,0],
+			"bg_position":[0,0],
 			"buttons":
 			[
 				{
@@ -55,8 +55,8 @@
 			"name":"character-creator",
 			"title":"Character Creator",
 			"title_position":[710,120],
-			"background":NULL,
-			"bg_position":[700,120],
+			"background":"images/bg_flat2.pn",
+			"bg_position":[0,0],
 			"buttons":
 			[
 				{
@@ -114,10 +114,10 @@
 					"position":[730, 490]
 				},
 				{
-					"name":"start",
-					"displayName":"Done",
-					"command":"start-game",
-					"position":[730, 540]
+					"name": "start",
+					"displayName": "Done",
+					"command": "start-game",
+					"position": [730, 540]
 				}
 			]
 		}

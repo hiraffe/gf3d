@@ -40,7 +40,7 @@ void plot_think(Entity* self)
 	Entity* monster = monster_get_the();
 	if (plot_inside(self, monster->position))
 	{
-		slog("monster inside");
+		//slog("monster inside");
 	}
 }
 
