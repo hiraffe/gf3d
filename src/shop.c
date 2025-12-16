@@ -135,8 +135,8 @@ Inventory* shop_populate_equipment(Inventory* inv)
 		inventory_add_item(inv, "fertilizer2");
 		inventory_add_item(inv, "pest_control");
 		inventory_add_item(inv, "watering-can");
-		inventory_add_item(inv, "lead");
 	}
+	inventory_add_item(inv, "lead");
 	return inv;
 }
 

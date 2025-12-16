@@ -3,9 +3,9 @@
 	[
 		{
 			"name":"start-menu",
-			"title":"Welcome",
+			"title":"Freaky Farmer",
 			"title_position":[560,205],
-			"background":"images/bg_flat.png",
+			"background":"images/bg_flat2.png",
 			"bg_position":[0,0],
 			"buttons":
 			[
@@ -19,7 +19,7 @@
 					"name":"quit",
 					"displayName":"Quit",
 					"command":"end-game",
-					"position":[505,310]
+					"position":[505,290]
 				}
 			]
 		},
